@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AlgoMentor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f0f1a; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+    h1 { font-size: 2.5rem; color: #a78bfa; margin-bottom: 6px; }
+    .subtitle { color: #888; margin-bottom: 30px; font-size: 0.95rem; }
+    .card { background: #1a1a2e; border: 1px solid #2e2e4e; border-radius: 16px; padding: 30px; width: 100%; max-width: 780px; }
+    textarea { width: 100%; background: #0f0f1a; border: 1px solid #3b3b5c; color: #e0e0e0; border-radius: 10px; padding: 14px; font-size: 0.95rem; resize: vertical; min-height: 160px; outline: none; }
+    textarea:focus { border-color: #a78bfa; }
+    .modes { display: flex; gap: 12px; margin: 16px 0; }
+    .mode-btn { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #3b3b5c; background: #0f0f1a; color: #aaa; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .mode-btn.active { background: #a78bfa; color: #fff; border-color: #a78bfa; }
+    .ask-btn { width: 100%; padding: 14px; background: #7c3aed; color: white; border: none; border-radius: 10px; font-size: 1rem; cursor: pointer; margin-top: 4px; transition: background 0.2s; }
+    .ask-btn:hover { background: #6d28d9; }
+    .ask-btn:disabled { background: #444; cursor: not-allowed; }
+    .result { margin-top: 24px; background: #0f0f1a; border: 1px solid #2e2e4e; border-radius: 10px; padding: 20px; white-space: pre-wrap; font-size: 0.92rem; line-height: 1.7; display: none; }
+    .loader { text-align: center; color: #a78bfa; margin-top: 20px; display: none; font-size: 0.95rem; }
+    .badge { display: inline-block; background: #1e1e3a; color: #a78bfa; border: 1px solid #a78bfa44; border-radius: 20px; padding: 3px 12px; font-size: 0.78rem; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>⚡ AlgoMentor</h1>
+  <p class="subtitle">Your AI-powered DSA problem assistant</p>
+  <span class="badge">Powered by Gemini · Built by psTech</span>
+
+  <div class="card">
+    <textarea id="problem" placeholder="Paste your LeetCode / DSA problem here..."></textarea>
+
+    <div class="modes">
+      <button class="mode-btn active" onclick="setMode('explain', this)">💡 Explain</button>
+      <button class="mode-btn" onclick="setMode('hint', this)">🔍 Hint</button>
+      <button class="mode-btn" onclick="setMode('solution', this)">✅ Solution</button>
+    </div>
+
+    <button class="ask-btn" id="askBtn" onclick="askAlgoMentor()">Ask AlgoMentor</button>
+
+    <div class="loader" id="loader">⏳ AlgoMentor is thinking...</div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    let currentMode = 'explain';
+
+    function setMode(mode, btn) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    async function askAlgoMentor() {
+      const problem = document.getElementById('problem').value.trim();
+      if (!problem) { alert('Paste a problem first!'); return; }
+
+      const btn = document.getElementById('askBtn');
+      const loader = document.getElementById('loader');
+      const result = document.getElementById('result');
+
+      btn.disabled = true;
+      loader.style.display = 'block';
+      result.style.display = 'none';
+
+      try {
+        const res = await fetch('/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ problem, mode: currentMode })
+        });
+        const data = await res.json();
+        result.textContent = data.result;
+        result.style.display = 'block';
+      } catch (e) {
+        result.textContent = 'Error: Could not reach AlgoMentor. Try again.';
+        result.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        loader.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
