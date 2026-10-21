@@ -1,4 +1,6 @@
 FROM eclipse-temurin:21-jdk AS build
+# The Node binary that frontend-maven-plugin downloads needs libatomic.
+RUN apt-get update && apt-get install -y --no-install-recommends libatomic1 && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY mvnw pom.xml ./
 COPY .mvn .mvn

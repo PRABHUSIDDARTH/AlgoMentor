@@ -20,6 +20,13 @@ jobs:
     - name: Build and test (backend + frontend unit tests)
       run: ./mvnw -B verify
 
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image (what Cloud Run deploys)
+      run: docker build -t algomentor .
+
   e2e:
     runs-on: ubuntu-latest
     steps:
