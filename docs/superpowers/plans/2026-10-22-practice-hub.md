@@ -346,7 +346,7 @@
 - Test: `frontend/src/practice/tests.test.ts`, `frontend/src/pages/TestRunner.test.tsx`
 
 **Interfaces:**
-- Consumes: Tasks 3, 4, 6, 8 (`levelFor` is needed for the difficulty mix; implement Task 8's `levelScore` and `levelFor` first if absent, or pass the level in)
+- Consumes: Tasks 3, 4 and 6. `generateTest` takes `level` as a parameter, and `/today` passes `1` until Task 8 wires in the real level.
 - Produces:
   - `mulberry32(seed: number): () => number`
   - `type PracticeTest = { id: string; seed: number; createdAt: number; durationMin: 60; problems: { problemId: string; kind: 'revision' | 'new'; result?: 'solved' | 'hinted' | 'skipped' }[]; finishedAt?: number }`
@@ -380,7 +380,7 @@
 
 **Files:**
 - Create: `frontend/src/practice/level.ts`, `frontend/src/pages/Level.tsx`, `frontend/src/components/practice/{ReadinessMeter,GapList}.tsx`
-- Modify: `frontend/src/pages/Today.tsx` (level and readiness summary at the top)
+- Modify: `frontend/src/pages/Today.tsx` (level and readiness summary at the top; Generate test now passes `levelFor(levelScore(...).total)` instead of `1`)
 - Test: `frontend/src/practice/level.test.ts`, `frontend/src/pages/Level.test.tsx`
 
 **Interfaces:**
