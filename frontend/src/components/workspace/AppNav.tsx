@@ -12,12 +12,12 @@ interface Props {
 export function AppNav({ onJump, onMenu }: Props) {
   return (
     <header className="bg-band text-on-band">
-      <nav aria-label="App" className="flex items-center gap-5 px-4 py-2.5 text-[12.5px] sm:px-5">
+      <nav aria-label="App" className="flex items-center gap-2 px-3 py-2.5 text-[12.5px] sm:gap-5 sm:px-5">
         <Button variant="ghost" size="icon" aria-label="Recent problems" onClick={onMenu} className="text-on-band hover:bg-on-band/10 hover:text-on-band min-[1200px]:hidden">
           <Menu className="size-4" aria-hidden="true" />
         </Button>
         <Logo className="text-[16px] text-on-band" />
-        <Link to="/app" aria-current="page" className="pb-[3px] shadow-[0_2px_0_var(--sage)]">Workspace</Link>
+        <Link to="/app" aria-current="page" className="hidden pb-[3px] shadow-[0_2px_0_var(--sage)] sm:inline">Workspace</Link>
         <span className="flex-1" />
         <button
           type="button"
