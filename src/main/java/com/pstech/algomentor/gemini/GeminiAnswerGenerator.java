@@ -1,6 +1,10 @@
 package com.pstech.algomentor.gemini;
 
+import java.util.function.Consumer;
+
 import com.google.genai.Client;
+import com.google.genai.ResponseStream;
+import com.google.genai.types.GenerateContentResponse;
 import com.pstech.algomentor.AlgoMentorProperties;
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
@@ -20,6 +24,20 @@ public class GeminiAnswerGenerator implements AnswerGenerator {
 	@Override
 	public String generate(String prompt) {
 		return client().models.generateContent(config.model(), prompt, null).text();
+	}
+
+	@Override
+	public void stream(String prompt, Consumer<String> onChunk) {
+		// Closing the stream also stops the request if onChunk throws (e.g. the browser left).
+		try (ResponseStream<GenerateContentResponse> stream = client().models.generateContentStream(config.model(),
+				prompt, null)) {
+			for (GenerateContentResponse response : stream) {
+				String text = response.text();
+				if (text != null && !text.isEmpty()) {
+					onChunk.accept(text);
+				}
+			}
+		}
 	}
 
 	// Created lazily so the app (and tests) can start without GEMINI_API_KEY set.
