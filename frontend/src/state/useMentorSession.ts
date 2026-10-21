@@ -33,13 +33,16 @@ export interface SessionError {
   partial?: string
   /** The request never reached the server (offline, DNS, ...). */
   network?: boolean
+  /** The failed request was a follow-up question, shown under the follow-up box. */
+  followup?: boolean
 }
 
 export interface SessionState {
   problem: ProblemContext | null
   tab: Tab
   hints: string[]
-  streaming: { tab: Tab; text: string } | null
+  /** `followup` marks a follow-up answer streaming under `tab`, not the tab's own content. */
+  streaming: { tab: Tab; text: string; followup?: boolean } | null
   explain?: string
   solution: Partial<Record<Language, string>>
   language: Language
@@ -92,7 +95,7 @@ function fromText(text: string): ProblemContext {
   return { key: historyKey({ statement }), source: 'custom', title: 'Custom: ' + statement.slice(0, 40), statement, tags: [] }
 }
 
-type Request = { tab: Tab; payload: AskPayload; onDone: (text: string) => void }
+type Request = { tab: Tab; payload: AskPayload; onDone: (text: string) => void; followup?: boolean }
 
 /** All workspace state for one problem at a time: hints, explanation, solutions, follow-ups. */
 export function useMentorSession() {
@@ -126,7 +129,7 @@ export function useMentorSession() {
     lastRequest.current = request
     const ac = new AbortController()
     controller.current = ac
-    dispatch({ status: 'streaming', error: undefined, streaming: { tab: request.tab, text: '' } })
+    dispatch({ status: 'streaming', error: undefined, streaming: { tab: request.tab, text: '', followup: request.followup } })
 
     askStream(request.payload, (chunk) => {
       if (ac.signal.aborted) return
@@ -141,7 +144,7 @@ export function useMentorSession() {
       .catch((err: unknown) => {
         if (ac.signal.aborted || (err instanceof DOMException && err.name === 'AbortError')) return
         busy.current = false
-        const error: SessionError = { tab: request.tab, message: NETWORK_MESSAGE }
+        const error: SessionError = { tab: request.tab, message: NETWORK_MESSAGE, followup: request.followup }
         let cooldownUntil: number | undefined
         if (err instanceof StreamCutError) {
           error.message = err.message
@@ -264,6 +267,7 @@ export function useMentorSession() {
     if (!p || !q || followups.length >= MAX_FOLLOWUP_TURNS * 2) return
     run({
       tab,
+      followup: true,
       payload: { problem: promptText(p), mode: 'followup', previousHints: hints, conversation: followups, question: q, solutionRevealed },
       onDone: (text) => dispatch((s) => ({ followups: [...s.followups, { role: 'user', text: q }, { role: 'mentor', text }] })),
     })

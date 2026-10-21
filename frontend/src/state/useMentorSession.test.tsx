@@ -121,6 +121,7 @@ describe('useMentorSession', () => {
     const { result } = await openTwoSum()
     act(() => result.current.askFollowUp('why a map?'))
     expect(calls[0].payload).toMatchObject({ mode: 'followup', question: 'why a map?', conversation: [], solutionRevealed: false })
+    expect(result.current.streaming).toMatchObject({ tab: 'hints', followup: true })
     await finish(calls[0], 'Because lookups are O(1).')
     act(() => result.current.askFollowUp('and memory?'))
     expect(calls[1].payload.conversation).toEqual([
@@ -149,6 +150,13 @@ describe('useMentorSession', () => {
     await act(async () => calls[0].fail(new ApiError(429, 'Too many requests. Please wait a minute and try again.')))
     expect(result.current.cooldownUntil).toBe(1_030_000)
     expect(result.current.error?.message).toContain('Too many requests')
+  })
+
+  it('followUpErrorIsMarkedAsFollowUp', async () => {
+    const { result } = await openTwoSum()
+    act(() => result.current.askFollowUp('why?'))
+    await act(async () => calls[0].fail(new ApiError(400, 'Follow-up questions can be at most 1000 characters.')))
+    expect(result.current.error).toMatchObject({ followup: true, message: expect.stringContaining('1000') })
   })
 
   it('networkFailureIsFlagged', async () => {

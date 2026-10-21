@@ -151,45 +151,69 @@
   }
 }
 
-/* Rendered Markdown: problem statements and mentor answers. */
+/* Rendered Markdown: problem statements and mentor answers. :where() keeps these rules weak, so
+   components inside (code blocks, complexity panel) style themselves. */
 @layer components {
   .prose-am {
     font-size: 13.5px;
     line-height: 1.7;
     overflow-wrap: anywhere;
   }
-  .prose-am p, .prose-am ul, .prose-am ol, .prose-am table, .prose-am blockquote {
-    margin: 0 0 12px;
-  }
-  .prose-am h1, .prose-am h2, .prose-am h3, .prose-am h4 {
+  .prose-am :where(p, ul, ol, table, blockquote) { margin: 0 0 12px; }
+  .prose-am :where(h1, h2, h3, h4) {
     font-family: var(--font-display);
     font-weight: 500;
     letter-spacing: -0.01em;
     margin: 18px 0 8px;
     line-height: 1.3;
   }
-  .prose-am h1 { font-size: 19px; }
-  .prose-am h2 { font-size: 17px; }
-  .prose-am h3, .prose-am h4 { font-size: 15px; }
-  .prose-am > :first-child > :first-child { margin-top: 0; }
-  .prose-am ul { list-style: disc; padding-left: 20px; }
-  .prose-am ol { list-style: decimal; padding-left: 20px; }
-  .prose-am li { margin: 3px 0; }
-  .prose-am strong { font-weight: 600; }
-  .prose-am a { text-decoration: underline; text-underline-offset: 3px; }
-  .prose-am code {
+  .prose-am :where(h1) { font-size: 19px; }
+  .prose-am :where(h2) { font-size: 17px; }
+  .prose-am :where(h3, h4) { font-size: 15px; }
+  .prose-am > :where(:first-child) > :where(:first-child) { margin-top: 0; }
+  .prose-am :where(ul) { list-style: disc; padding-left: 20px; }
+  .prose-am :where(ol) { list-style: decimal; padding-left: 20px; }
+  .prose-am :where(li) { margin: 3px 0; }
+  .prose-am :where(strong) { font-weight: 600; }
+  .prose-am :where(a) { text-decoration: underline; text-underline-offset: 3px; }
+  .prose-am :where(:not(pre) > code) {
     font-family: var(--font-mono);
     font-size: 12px;
     background: var(--grey);
     padding: 1px 5px;
     border-radius: 3px;
   }
-  .prose-am table { border-collapse: collapse; display: block; overflow-x: auto; }
-  .prose-am th, .prose-am td { border: 1px solid var(--line-strong); padding: 5px 9px; text-align: left; }
-  .prose-am blockquote { border-left: 2px solid var(--sage); padding-left: 12px; color: var(--ink-muted); }
+  .prose-am :where(table) { border-collapse: collapse; display: block; overflow-x: auto; }
+  .prose-am :where(th, td) { border: 1px solid var(--line-strong); padding: 5px 9px; text-align: left; }
+  .prose-am :where(blockquote) { border-left: 2px solid var(--sage); padding-left: 12px; color: var(--ink-muted); }
+}
+
+@layer components {
+  /* Streaming caret: blinks, or stays solid when motion is reduced. */
+  /* While streaming, the caret follows the last line of text. */
+  .streaming-am > div:last-of-type > :last-child::after,
+  .caret-am {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    margin-left: 2px;
+    vertical-align: -2px;
+    background: var(--ink);
+    animation: am-blink 1s steps(1) infinite;
+  }
+  .code-am .hljs-keyword, .code-am .hljs-built_in, .code-am .hljs-type, .code-am .hljs-literal { color: var(--code-keyword); }
+  .code-am .hljs-string, .code-am .hljs-number { color: var(--code-string); }
+  .code-am .hljs-comment { color: var(--code-comment); font-style: italic; }
+  .code-am .hljs-title, .code-am .hljs-function { color: var(--code-fg); font-weight: 500; }
+}
+
+@keyframes am-blink {
+  50% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .caret-am, .streaming-am > div:last-of-type > :last-child::after { animation: none; }
   *,
   *::before,
   *::after {

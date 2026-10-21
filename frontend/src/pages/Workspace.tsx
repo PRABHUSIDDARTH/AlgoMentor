@@ -1,17 +1,15 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { AppNav } from '@/components/workspace/AppNav'
 import { EmptyState } from '@/components/workspace/EmptyState'
 import { JumpToProblem } from '@/components/workspace/JumpToProblem'
+import { MentorPanel } from '@/components/workspace/MentorPanel'
 import { ProblemPane } from '@/components/workspace/ProblemPane'
 import { RecentSidebar } from '@/components/workspace/RecentSidebar'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
-import { useMentorSession, type MentorSession } from '@/state/useMentorSession'
+import { useMentorSession } from '@/state/useMentorSession'
 
-/** Task 10 fills this slot with the mentor panel. */
-export type MentorSlot = (session: MentorSession) => ReactNode
-
-export default function Workspace({ mentor }: { mentor?: MentorSlot }) {
+export default function Workspace() {
   const session = useMentorSession()
   const [params, setParams] = useSearchParams()
   const [jumpOpen, setJumpOpen] = useState(false)
@@ -72,7 +70,7 @@ export default function Workspace({ mentor }: { mentor?: MentorSlot }) {
                 {problemError && <p role="alert" className="mx-6 mt-4 rounded-md border border-danger/40 px-3 py-2 text-[12.5px] text-danger">{problemError}</p>}
                 <ProblemPane key={session.problem.key + session.problem.statement.length} problem={session.problem} onEdit={session.editStatement} />
               </div>
-              <div className="bg-sand">{mentor?.(session)}</div>
+              <div className="bg-sand"><MentorPanel key={session.problem.key} session={session} /></div>
             </div>
           ) : session.status === 'loadingProblem' ? (
             <p className="px-6 py-10 text-[13px] text-ink-muted" role="status">Fetching the problem from LeetCode…</p>
