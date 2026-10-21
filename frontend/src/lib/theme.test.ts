@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { resolveTheme, setThemeChoice, THEME_KEY } from './theme'
+import { mockMatchMedia } from '../../vitest.setup'
+import { getThemeChoice, nextThemeChoice, setThemeChoice, THEME_KEY } from './theme'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -7,19 +8,25 @@ afterEach(() => {
   localStorage.clear()
 })
 
-describe('resolveTheme', () => {
-  it('follows the system preference for "system"', () => {
-    expect(resolveTheme('system', true)).toBe('dark')
-    expect(resolveTheme('system', false)).toBe('light')
+describe('theme (light and dark only)', () => {
+  it('flips between light and dark', () => {
+    expect(nextThemeChoice('light')).toBe('dark')
+    expect(nextThemeChoice('dark')).toBe('light')
   })
 
-  it('lets an explicit choice win over the system preference', () => {
-    expect(resolveTheme('light', true)).toBe('light')
-    expect(resolveTheme('dark', false)).toBe('dark')
+  it('falls back to the system preference when nothing is saved', () => {
+    mockMatchMedia((q) => q.includes('dark'))
+    expect(getThemeChoice()).toBe('dark')
+    mockMatchMedia(() => false)
+    expect(getThemeChoice()).toBe('light')
   })
-})
 
-describe('setThemeChoice', () => {
+  it('treats a saved "system" value from the old three-way toggle as unsaved', () => {
+    localStorage.setItem(THEME_KEY, 'system')
+    mockMatchMedia(() => false)
+    expect(getThemeChoice()).toBe('light')
+  })
+
   it('applies the dark class and remembers the choice', () => {
     setThemeChoice('dark')
     expect(document.documentElement.classList.contains('dark')).toBe(true)

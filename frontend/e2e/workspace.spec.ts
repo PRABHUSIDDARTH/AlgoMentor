@@ -63,6 +63,22 @@ test('Ctrl K jumps to a LeetCode number', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: '146. LRU Cache' })).toBeVisible()
 })
 
+test('on desktop the workspace fills the window and the panes scroll instead of the page', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await openTwoSum(page)
+  for (let i = 0; i < 3; i++) {
+    await page.getByRole('button', { name: 'Next hint' }).click()
+    await waitForAnswer(page)
+  }
+  const metrics = await page.evaluate(() => {
+    const mentor = document.querySelector('[data-testid="mentor-scroll"]') as HTMLElement
+    return { pageScrolls: document.documentElement.scrollHeight > window.innerHeight + 1, shellHeight: document.querySelector('[data-testid="workspace-shell"]')!.getBoundingClientRect().height, mentorBottom: mentor.getBoundingClientRect().bottom }
+  })
+  expect(metrics.pageScrolls).toBe(false)
+  expect(Math.round(metrics.shellHeight)).toBe(720)
+  expect(Math.round(metrics.mentorBottom)).toBe(720)
+})
+
 test.describe('on a phone', () => {
   test.use({ viewport: { width: 360, height: 780 } })
 

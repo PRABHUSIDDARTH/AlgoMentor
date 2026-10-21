@@ -6,8 +6,7 @@ test('dark theme persists across reloads without a flash', async ({ page }) => {
   const html = page.locator('html')
   await expect(html).not.toHaveClass(/dark/)
   const toggle = page.getByRole('button', { name: 'Theme' })
-  // system -> light -> dark
-  await toggle.click()
+  // Two themes only: one click switches light to dark.
   await toggle.click()
   await expect(html).toHaveClass(/dark/)
   await page.reload({ waitUntil: 'domcontentloaded' })

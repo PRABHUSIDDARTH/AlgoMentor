@@ -133,6 +133,19 @@ describe('Workspace', () => {
     expect(input).toHaveValue('99999')
   })
 
+  it('fillsTheViewportWithIndependentlyScrollingPanes', async () => {
+    renderAt('/app?q=146')
+    await screen.findByRole('heading', { name: '146. LRU Cache', level: 1 })
+    expect(screen.getByTestId('workspace-shell').className).toMatch(/md:h-dvh/)
+    expect(screen.getByTestId('problem-scroll').className).toMatch(/overflow-y-auto/)
+    expect(screen.getByTestId('mentor-scroll').className).toMatch(/overflow-y-auto/)
+  })
+
+  it('emptyStateUsesTheWidth', () => {
+    renderAt('/app')
+    expect(screen.getByTestId('starter-groups').className).toMatch(/lg:grid-cols-3/)
+  })
+
   it('hasLandmarksAndSkipLink', () => {
     renderAt('/app')
     expect(screen.getByRole('main')).toBeInTheDocument()

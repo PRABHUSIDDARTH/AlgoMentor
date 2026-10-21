@@ -56,26 +56,26 @@ export default function Workspace() {
   const problemError = session.error?.tab === 'problem' ? session.error.message : undefined
 
   return (
-    <div className="flex min-h-screen flex-col bg-cream">
+    <div data-testid="workspace-shell" className="flex min-h-dvh flex-col bg-cream md:h-dvh md:overflow-hidden">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-cream">
         Skip to content
       </a>
       <AppNav onJump={() => setJumpOpen(true)} onMenu={() => setMenuOpen(true)} />
-      <div className="grid flex-1 min-[1200px]:grid-cols-[210px_minmax(0,1fr)]">
-        {sidebar('hidden border-r border-line min-[1200px]:grid')}
-        <main id="main" className="min-w-0">
+      <div className="grid min-h-0 flex-1 min-[1200px]:grid-cols-[220px_minmax(0,1fr)]">
+        {sidebar('hidden overflow-y-auto border-r border-line min-[1200px]:grid')}
+        <main id="main" className="min-h-0 min-w-0 md:overflow-hidden">
           {session.problem ? (
             <div className="grid h-full md:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)]">
-              <div className="border-b border-line md:border-r md:border-b-0">
+              <div data-testid="problem-scroll" className="border-b border-line md:min-h-0 md:overflow-y-auto md:border-r md:border-b-0">
                 {problemError && <p role="alert" className="mx-6 mt-4 rounded-md border border-danger/40 px-3 py-2 text-[12.5px] text-danger">{problemError}</p>}
                 <ProblemPane key={session.problem.key + session.problem.statement.length} problem={session.problem} onEdit={session.editStatement} />
               </div>
-              <div className="bg-sand"><MentorPanel key={session.problem.key} session={session} /></div>
+              <div data-testid="mentor-scroll" className="bg-sand md:min-h-0 md:overflow-y-auto"><MentorPanel key={session.problem.key} session={session} /></div>
             </div>
           ) : session.status === 'loadingProblem' ? (
             <p className="px-6 py-10 text-[13px] text-ink-muted" role="status">Fetching the problem from LeetCode…</p>
           ) : (
-            <EmptyState onStart={(v) => void session.openProblem(v)} error={problemError} />
+            <div className="h-full overflow-y-auto"><EmptyState onStart={(v) => void session.openProblem(v)} error={problemError} /></div>
           )}
         </main>
       </div>

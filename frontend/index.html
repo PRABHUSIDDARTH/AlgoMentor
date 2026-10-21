@@ -9,8 +9,8 @@
     <script>
       // Apply the saved theme before first paint so the page never flashes the wrong one.
       (function () {
-        var choice = 'system'
-        try { choice = localStorage.getItem('algomentor.theme') || 'system' } catch (e) {}
+        var choice = null
+        try { choice = localStorage.getItem('algomentor.theme') } catch (e) {}
         var dark = choice === 'dark' || (choice !== 'light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)
         if (dark) document.documentElement.classList.add('dark')
       })()

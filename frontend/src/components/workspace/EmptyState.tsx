@@ -8,11 +8,12 @@ const GROUPS = [
 
 export function EmptyState({ onStart, error }: { onStart: (input: string) => void; error?: string }) {
   return (
-    <div className="mx-auto grid w-full max-w-[560px] content-start gap-4 px-6 py-10">
-      <h1 className="display text-[28px] leading-tight">What are we solving today?</h1>
-      <ProblemStartForm buttonLabel="Start" placeholder="LeetCode number, link, or paste a problem" onSubmit={onStart} className="max-w-none" />
+    <div className="grid w-full content-start gap-5 px-6 py-10 sm:px-10 lg:px-14">
+      <h1 className="display text-[30px] leading-tight xl:text-[36px]">What are we solving today?</h1>
+      <ProblemStartForm buttonLabel="Start" placeholder="LeetCode number, link, or paste a problem" onSubmit={onStart} className="max-w-[720px]" />
       {error && <p role="alert" className="text-[13px] text-danger">{error}</p>}
       <p className="text-[12.5px] text-ink-muted">Not sure where to begin? These cover the patterns that come up most in interviews.</p>
+      <div data-testid="starter-groups" className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {GROUPS.map((g) => (
         <section key={g.name} aria-labelledby={`g-${g.name}`}>
           <h2 id={`g-${g.name}`} className="eyebrow mb-1.5">{g.name}</h2>
@@ -31,6 +32,7 @@ export function EmptyState({ onStart, error }: { onStart: (input: string) => voi
           </div>
         </section>
       ))}
+      </div>
     </div>
   )
 }

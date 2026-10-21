@@ -1,34 +1,27 @@
-export type ThemeChoice = 'light' | 'dark' | 'system'
+export type ThemeChoice = 'light' | 'dark'
 
 export const THEME_KEY = 'algomentor.theme'
 
 /** Fired on window whenever the applied theme may have changed. */
 export const THEME_EVENT = 'algomentor:theme'
 
-const CHOICES: readonly ThemeChoice[] = ['light', 'dark', 'system']
-
-export function resolveTheme(choice: ThemeChoice, prefersDark: boolean): 'light' | 'dark' {
-  if (choice === 'system') return prefersDark ? 'dark' : 'light'
-  return choice
-}
-
-export function getThemeChoice(): ThemeChoice {
-  try {
-    const stored = localStorage.getItem(THEME_KEY)
-    if (stored && (CHOICES as readonly string[]).includes(stored)) return stored as ThemeChoice
-  } catch {
-    // Storage blocked (private mode, disabled cookies): fall back to the system setting.
-  }
-  return 'system'
-}
-
 export function prefersDark(): boolean {
   return typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches
 }
 
+/** The saved choice, or the system preference on a first visit (or after the old "system" option). */
+export function getThemeChoice(): ThemeChoice {
+  try {
+    const stored = localStorage.getItem(THEME_KEY)
+    if (stored === 'light' || stored === 'dark') return stored
+  } catch {
+    // Storage blocked (private mode, disabled cookies): fall back to the system setting.
+  }
+  return prefersDark() ? 'dark' : 'light'
+}
+
 export function applyTheme(choice: ThemeChoice): void {
-  const dark = resolveTheme(choice, prefersDark()) === 'dark'
-  document.documentElement.classList.toggle('dark', dark)
+  document.documentElement.classList.toggle('dark', choice === 'dark')
   window.dispatchEvent(new Event(THEME_EVENT))
 }
 
@@ -43,5 +36,5 @@ export function setThemeChoice(choice: ThemeChoice): void {
 }
 
 export function nextThemeChoice(choice: ThemeChoice): ThemeChoice {
-  return CHOICES[(CHOICES.indexOf(choice) + 1) % CHOICES.length]
+  return choice === 'light' ? 'dark' : 'light'
 }
