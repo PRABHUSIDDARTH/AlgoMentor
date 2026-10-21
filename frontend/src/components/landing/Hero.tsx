@@ -24,7 +24,7 @@ export function Hero() {
         <p className="mt-3 text-[12.5px] text-ink-muted">
           Try{' '}
           {TRY.map((t) => (
-            <Link key={t.q} to={`/app?q=${t.q}`} className="mr-3 text-ink underline-offset-[3px] hover:underline">
+            <Link key={t.q} to={`/app?q=${t.q}`} className="mr-3 inline-block py-1 text-ink underline-offset-[3px] hover:underline">
               {t.label}
             </Link>
           ))}

@@ -28,14 +28,14 @@ export function Nav() {
       <nav aria-label="Main" className="mx-auto flex max-w-[1180px] items-center gap-7 px-5 py-4 text-[13.5px] sm:px-8">
         <Logo />
         <div className="hidden items-center gap-7 md:flex">
-          <Link to="/app" className="text-ink/80 hover:text-ink">Workspace</Link>
+          <Link to="/app" className="py-1 text-ink/80 hover:text-ink">Workspace</Link>
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="text-ink/80 hover:text-ink">{l.label}</a>
+            <a key={l.href} href={l.href} className="py-1 text-ink/80 hover:text-ink">{l.label}</a>
           ))}
         </div>
         <div className="flex-1" />
         <ThemeToggle />
-        <Button asChild className="hidden bg-sage font-semibold text-on-sage hover:bg-sage/90 sm:inline-flex">
+        <Button asChild className="hidden bg-ink font-semibold text-cream hover:bg-ink/90 sm:inline-flex">
           <Link to="/app">Get started</Link>
         </Button>
         <Sheet>
@@ -51,7 +51,7 @@ export function Nav() {
               {LINKS.map((l) => (
                 <a key={l.href} href={l.href} className="rounded-md py-2">{l.label}</a>
               ))}
-              <Button asChild className="mt-3 bg-sage font-semibold text-on-sage hover:bg-sage/90">
+              <Button asChild className="mt-3 bg-ink font-semibold text-cream hover:bg-ink/90">
                 <Link to="/app">Get started</Link>
               </Button>
             </div>

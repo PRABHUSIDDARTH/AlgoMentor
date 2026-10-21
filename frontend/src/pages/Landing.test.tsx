@@ -69,6 +69,22 @@ describe('Landing', () => {
     expect(document.body.textContent ?? '').not.toMatch(/\p{Extended_Pictographic}/u)
   })
 
+  it('heroViewHasOnePrimaryAction', () => {
+    renderLanding()
+    // "Start solving" is the hero's primary action; the nav CTA must not compete with it.
+    for (const cta of screen.getAllByRole('link', { name: 'Get started' })) {
+      expect(cta.className).not.toMatch(/bg-sage/)
+    }
+    expect(screen.getAllByRole('button', { name: 'Start solving' })[0].className).toMatch(/bg-sage/)
+  })
+
+  it('navAndTryLinksHaveComfortableHitAreas', () => {
+    renderLanding()
+    for (const name of ['Workspace', 'How it works', '146. LRU Cache']) {
+      expect(screen.getAllByRole('link', { name })[0].className).toMatch(/py-1/)
+    }
+  })
+
   it('headlineIsReadableAsOneSentence', () => {
     renderLanding()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Understand the problem before you see the answer.')

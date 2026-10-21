@@ -71,7 +71,7 @@ export function DataStructureScene() {
           transition={animate ? { duration: SWAY, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' } : { duration: 0 }}
         >
           {/* sorted array with two pointers, far back */}
-          <div className="absolute left-0 top-1 hidden origin-top-left [transform:translateZ(-160px)_rotateY(18deg)_scale(0.9)] sm:block">
+          <div className="absolute -left-[16%] -top-6 hidden origin-top-left [transform:translateZ(-160px)_rotateY(18deg)_scale(0.85)] sm:block">
             <div className="flex">
               {ARRAY.map((v) => (
                 <div key={v} className="-ml-px grid size-[30px] place-items-center border border-ink/60 bg-grey font-mono text-[12px] first:ml-0">{v}</div>
