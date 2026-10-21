@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -68,6 +68,16 @@ describe('MentorPanel', () => {
     expect(s.revealSolution).not.toHaveBeenCalled()
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reveal solution' }))
     expect(s.revealSolution).toHaveBeenCalledOnce()
+  })
+
+  it('revealDialogReturnsFocusToItsButton', async () => {
+    renderPanel(session({ hints: ['a'] }))
+    const reveal = screen.getByRole('button', { name: 'Reveal solution' })
+    await userEvent.click(reveal)
+    await screen.findByRole('alertdialog')
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull())
+    await waitFor(() => expect(reveal).toHaveFocus())
   })
 
   it('revealSkipsConfirmWhenNoHintsLeft', async () => {
@@ -158,6 +168,14 @@ describe('MentorPanel', () => {
     renderPanel(s)
     await userEvent.click(screen.getByRole('button', { name: 'I solved it' }))
     expect(s.markSolved).toHaveBeenCalledOnce()
+  })
+
+  it('tabPanelsShowAFocusRing', () => {
+    renderPanel(session())
+    // Radix makes tab panels focusable; WCAG 2.4.7 needs a visible indicator when they are.
+    expect(screen.getByRole('tabpanel').className).toMatch(/focus-visible:outline-2/)
+    // shadcn's outline-none sets the outline-style variable to none, so the style must be restated.
+    expect(screen.getByRole('tabpanel').className).toMatch(/focus-visible:outline-solid/)
   })
 
   it('ariaLiveAnnouncesOnlyStartAndFinish', () => {

@@ -14,7 +14,7 @@
   --sage-soft: #8b9a6e;
   --on-sage: #262c1e;
   --line: rgb(38 44 30 / 0.12);
-  --line-strong: rgb(38 44 30 / 0.32);
+  --line-strong: rgb(38 44 30 / 0.6); /* >= 3:1 on every surface (WCAG 1.4.11) */
   --band: #262c1e;
   --on-band: #f7f2eb;
   --band-accent: #b9c49f;
@@ -58,7 +58,7 @@
   --sage-soft: #a8b68a;
   --on-sage: #0e100b;
   --line: rgb(247 242 235 / 0.12);
-  --line-strong: rgb(247 242 235 / 0.32);
+  --line-strong: rgb(247 242 235 / 0.5);
   --band: #000000;
   --on-band: #f7f2eb;
   --band-accent: #a8b68a;

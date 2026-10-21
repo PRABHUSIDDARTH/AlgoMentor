@@ -14,12 +14,20 @@ interface Props {
   hintsLeft: number
   onOpenChange: (open: boolean) => void
   onConfirm: () => void
+  /** Where focus goes when the dialog closes (it isn't opened by a Radix trigger). */
+  returnFocus?: () => void
 }
 
-export function RevealDialog({ open, hintsLeft, onOpenChange, onConfirm }: Props) {
+export function RevealDialog({ open, hintsLeft, onOpenChange, onConfirm, returnFocus }: Props) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent
+        onCloseAutoFocus={(e) => {
+          if (!returnFocus) return
+          e.preventDefault()
+          returnFocus()
+        }}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle>Reveal the solution?</AlertDialogTitle>
           <AlertDialogDescription>

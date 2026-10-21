@@ -54,7 +54,11 @@ export function MentorPanel({ session: s }: { session: MentorSession }) {
     </>
   )
 
+  // The dialog opens from whichever Reveal button was used; focus goes back there on close.
+  const opener = useRef<HTMLElement | null>(null)
+
   function reveal() {
+    opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
     if (s.hintsRemaining > 0 && !s.solutionRevealed) setConfirming(true)
     else s.revealSolution()
   }
@@ -78,7 +82,7 @@ export function MentorPanel({ session: s }: { session: MentorSession }) {
           ))}
         </TabsList>
 
-        <TabsContent value="explain" className="grid gap-3">
+        <TabsContent value="explain" className="grid gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-4 focus-visible:outline-ink">
           {s.explain || tabStream?.tab === 'explain' ? (
             <AnswerView markdown={tabStream?.tab === 'explain' ? tabStream.text : s.explain!} streaming={tabStream?.tab === 'explain'} />
           ) : (
@@ -90,7 +94,7 @@ export function MentorPanel({ session: s }: { session: MentorSession }) {
           {tabError && errorBox(tabError)}
         </TabsContent>
 
-        <TabsContent value="hints" className="grid gap-3.5">
+        <TabsContent value="hints" className="grid gap-3.5 rounded-md focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-4 focus-visible:outline-ink">
           <HintStepper
             seen={s.hints.length}
             current={writingIndex}
@@ -122,7 +126,7 @@ export function MentorPanel({ session: s }: { session: MentorSession }) {
           )}
         </TabsContent>
 
-        <TabsContent value="solution" className="grid gap-3">
+        <TabsContent value="solution" className="grid gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-4 focus-visible:outline-ink">
           {!s.solutionRevealed ? (
             <div className="grid justify-items-start gap-3">
               <p className="text-[13px] leading-relaxed text-ink-muted">The solution stays hidden until you ask for it. Try the hints first; you will remember the pattern better.</p>
@@ -148,6 +152,7 @@ export function MentorPanel({ session: s }: { session: MentorSession }) {
         hintsLeft={s.hintsRemaining}
         onOpenChange={setConfirming}
         onConfirm={() => { setConfirming(false); s.revealSolution() }}
+        returnFocus={() => opener.current?.focus()}
       />
     </section>
   )
