@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,10 +19,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * Rejects oversized bodies and rate-limits each client IP before a request reaches Gemini.
  * Limits are kept in memory, so they apply per instance.
  */
-@Component
 public class RequestGuardInterceptor implements HandlerInterceptor {
 
-	private final AlgoMentorProperties properties;
+	private final AlgoMentorProperties.RateLimit limit;
+
+	private final long maxRequestBytes;
 
 	// Idle IPs are evicted after a day, so the map can't grow without bound.
 	private final Cache<String, Bucket> buckets = Caffeine.newBuilder()
@@ -31,14 +31,15 @@ public class RequestGuardInterceptor implements HandlerInterceptor {
 		.maximumSize(100_000)
 		.build();
 
-	public RequestGuardInterceptor(AlgoMentorProperties properties) {
-		this.properties = properties;
+	public RequestGuardInterceptor(AlgoMentorProperties.RateLimit limit, long maxRequestBytes) {
+		this.limit = limit;
+		this.maxRequestBytes = maxRequestBytes;
 	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws IOException {
-		if (request.getContentLengthLong() > properties.maxRequestBytes()) {
+		if (request.getContentLengthLong() > maxRequestBytes) {
 			return reject(response, HttpStatus.CONTENT_TOO_LARGE, "Request is too large.");
 		}
 		if (!buckets.get(clientIp(request), ip -> newBucket()).tryConsume(1)) {
@@ -53,7 +54,6 @@ public class RequestGuardInterceptor implements HandlerInterceptor {
 	}
 
 	private Bucket newBucket() {
-		AlgoMentorProperties.RateLimit limit = properties.rateLimit();
 		return Bucket.builder()
 			.addLimit(Bandwidth.builder().capacity(limit.perMinute()).refillIntervally(limit.perMinute(), Duration.ofMinutes(1)).build())
 			.addLimit(Bandwidth.builder().capacity(limit.perDay()).refillIntervally(limit.perDay(), Duration.ofDays(1)).build())

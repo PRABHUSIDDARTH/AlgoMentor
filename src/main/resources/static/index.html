@@ -38,6 +38,19 @@
     .result th, .result td { border: 1px solid #3b3b5c; padding: 6px 10px; text-align: left; }
     .result th { background: #1e1e3a; }
     .result blockquote { border-left: 3px solid #a78bfa; padding-left: 12px; color: #aaa; }
+    .answer + .answer { margin-top: 16px; padding-top: 16px; border-top: 1px dashed #3b3b5c; }
+    .answer.error { color: #fca5a5; white-space: pre-wrap; }
+    .answer.streaming > :last-child::after { content: '▍'; color: #a78bfa; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .problem-info { display: none; margin-bottom: 12px; padding: 10px 14px; background: #0f0f1a; border: 1px solid #3b3b5c; border-radius: 10px; font-size: 0.88rem; color: #c4b5fd; }
+    .problem-info .meta { color: #888; margin-left: 6px; }
+    .problem-info a { color: #a78bfa; margin-left: 8px; }
+    .problem-info .diff-easy { color: #4ade80; } .problem-info .diff-medium { color: #facc15; } .problem-info .diff-hard { color: #f87171; }
+    .hint-actions { display: none; gap: 12px; margin-top: 16px; }
+    .hint-actions button { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #a78bfa; background: #1e1e3a; color: #c4b5fd; cursor: pointer; font-size: 0.9rem; }
+    .hint-actions button:hover { background: #2a2a4e; }
+    .hint-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .tip { color: #666; font-size: 0.8rem; margin-top: 8px; }
     .loader { text-align: center; color: #a78bfa; margin-top: 20px; display: none; font-size: 0.95rem; }
     .badge { display: inline-block; background: #1e1e3a; color: #a78bfa; border: 1px solid #a78bfa44; border-radius: 20px; padding: 3px 12px; font-size: 0.78rem; margin-bottom: 20px; }
   </style>
@@ -48,7 +61,9 @@
   <span class="badge">Powered by Gemini · Built by psTech</span>
 
   <div class="card">
-    <textarea id="problem" placeholder="Paste your LeetCode / DSA problem here..."></textarea>
+    <div class="problem-info" id="problemInfo"></div>
+    <textarea id="problem" placeholder="Paste a DSA problem — or just type a LeetCode number (e.g. 1) or link..."></textarea>
+    <p class="tip">Tip: type <b>1</b> or <b>LC 146</b> to fetch the problem from LeetCode · Ctrl+Enter to ask</p>
 
     <div class="modes">
       <button class="mode-btn active" onclick="setMode('explain', this)">💡 Explain</button>
@@ -60,57 +75,211 @@
 
     <div class="loader" id="loader">⏳ AlgoMentor is thinking...</div>
     <div class="result" id="result"></div>
+
+    <div class="hint-actions" id="hintActions">
+      <button id="nextHintBtn" onclick="nextHint()">🔍 Next hint</button>
+      <button onclick="showSolution()">✅ Show solution</button>
+    </div>
   </div>
 
   <script>
+    const MAX_HINTS = 4;
+    const LC_NUMBER = /^(?:#|lc\s*#?|leetcode\s*#?)?\s*\d{1,5}\.?$/i;
+    const LC_URL = /^(?:https?:\/\/)?(?:www\.)?leetcode\.(?:com|cn)\/problems\/[a-z0-9-]+\/?\S*$/i;
+
+    const $ = id => document.getElementById(id);
     let currentMode = 'explain';
+    let hints = [];          // hints shown so far for hintsProblem, oldest first
+    let hintsProblem = null;
+    let busy = false;
 
     function setMode(mode, btn) {
       currentMode = mode;
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase().includes(mode)));
+      if (btn) btn.classList.add('active');
     }
 
-    function showError(message) {
-      const result = document.getElementById('result');
-      result.classList.add('error');
-      result.textContent = '⚠️ ' + message;
+    $('problem').addEventListener('input', () => {
+      $('problemInfo').style.display = 'none';
+      resetHints();
+    });
+    $('problem').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); askAlgoMentor(); }
+    });
+
+    function resetHints() {
+      hints = [];
+      hintsProblem = null;
+      $('hintActions').style.display = 'none';
+    }
+
+    function setBusy(on, message) {
+      busy = on;
+      $('askBtn').disabled = on;
+      $('nextHintBtn').disabled = on || hints.length >= MAX_HINTS;
+      $('loader').textContent = message || '⏳ AlgoMentor is thinking...';
+      $('loader').style.display = on && message !== null ? 'block' : 'none';
+    }
+
+    function newAnswerBlock(replace) {
+      const result = $('result');
+      if (replace) result.innerHTML = '';
+      result.classList.remove('error');
+      const block = document.createElement('div');
+      block.className = 'answer';
+      result.appendChild(block);
       result.style.display = 'block';
+      return block;
     }
 
-    async function askAlgoMentor() {
-      const problem = document.getElementById('problem').value.trim();
-      if (!problem) { alert('Paste a problem first!'); return; }
+    function showErrorIn(block, message) {
+      block.classList.remove('streaming');
+      block.classList.add('error');
+      block.textContent = '⚠️ ' + message;
+    }
 
-      const btn = document.getElementById('askBtn');
-      const loader = document.getElementById('loader');
-      const result = document.getElementById('result');
+    function renderMarkdown(block, text, final) {
+      block.innerHTML = DOMPurify.sanitize(marked.parse(text));
+      if (final) block.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+    }
 
-      btn.disabled = true;
-      loader.style.display = 'block';
-      result.style.display = 'none';
+    async function errorFrom(res) {
+      const data = await res.json().catch(() => ({}));
+      return data.error || `Something went wrong (HTTP ${res.status}). Try again.`;
+    }
+
+    // Replaces a LeetCode number/link in the text box with the fetched statement.
+    async function resolveLeetCode(input) {
+      setBusy(true, '📥 Fetching problem from LeetCode...');
+      const res = await fetch('/problem?ref=' + encodeURIComponent(input));
+      if (!res.ok) throw new Error(await errorFrom(res));
+      const p = await res.json();
+      const statement = `${p.number}. ${p.title} (${p.difficulty})\n\n${p.statement}`;
+      $('problem').value = statement;
+
+      const info = $('problemInfo');
+      info.innerHTML = '';
+      const title = document.createElement('b');
+      title.textContent = `📄 ${p.number}. ${p.title}`;
+      const diff = document.createElement('span');
+      diff.className = 'meta diff-' + (p.difficulty || '').toLowerCase();
+      diff.textContent = p.difficulty;
+      const tags = document.createElement('span');
+      tags.className = 'meta';
+      tags.textContent = p.tags.length ? '· ' + p.tags.join(', ') : '';
+      const link = document.createElement('a');
+      link.href = p.url; link.target = '_blank'; link.rel = 'noopener';
+      link.textContent = 'View on LeetCode ↗';
+      info.append(title, diff, tags, link);
+      info.style.display = 'block';
+      return statement;
+    }
+
+    // Streams an answer from /ask/stream into block. Returns the full text, or null on error.
+    async function streamAnswer(payload, block) {
+      const res = await fetch('/ask/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) { showErrorIn(block, await errorFrom(res)); return null; }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '', text = '', finished = false, renderQueued = false;
+      block.classList.add('streaming');
+
+      const handleEvent = raw => {
+        let event = 'message', data = '';
+        for (const line of raw.split(/\r?\n/)) {
+          if (line.startsWith('event:')) event = line.slice(6).trim();
+          else if (line.startsWith('data:')) data += line.slice(5).replace(/^ /, '');
+        }
+        if (event === 'chunk') {
+          if (!text) $('loader').style.display = 'none';
+          text += JSON.parse(data).text;
+          if (!renderQueued) {
+            renderQueued = true;
+            requestAnimationFrame(() => { renderQueued = false; if (!finished) renderMarkdown(block, text, false); });
+          }
+        } else if (event === 'error') {
+          finished = true;
+          showErrorIn(block, JSON.parse(data).error);
+        } else if (event === 'done') {
+          finished = true;
+        }
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let match;
+        while ((match = buffer.match(/\r?\n\r?\n/))) {
+          handleEvent(buffer.slice(0, match.index));
+          buffer = buffer.slice(match.index + match[0].length);
+        }
+      }
+
+      if (block.classList.contains('error')) return null;
+      block.classList.remove('streaming');
+      renderMarkdown(block, text, true);
+      if (!finished) {
+        const note = document.createElement('p');
+        note.className = 'answer error';
+        note.textContent = '⚠️ The answer was cut off. Try again.';
+        block.appendChild(note);
+        return null;
+      }
+      return text;
+    }
+
+    async function run(mode, previousHints, replace) {
+      if (busy) return;
+      let problem = $('problem').value.trim();
+      if (!problem) { showErrorIn(newAnswerBlock(true), 'Paste a problem first, or type a LeetCode number.'); return; }
 
       try {
-        const res = await fetch('/ask', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ problem, mode: currentMode })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.result) {
-          showError(data.error || `Something went wrong (HTTP ${res.status}). Try again.`);
-        } else {
-          result.classList.remove('error');
-          result.innerHTML = DOMPurify.sanitize(marked.parse(data.result));
-          result.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
-          result.style.display = 'block';
+        if (LC_NUMBER.test(problem) || LC_URL.test(problem)) {
+          problem = await resolveLeetCode(problem);
+          resetHints();
+          previousHints = [];
+        }
+        setBusy(true);
+        const block = newAnswerBlock(replace);
+        const text = await streamAnswer({ problem, mode, previousHints }, block);
+
+        if (mode === 'hint' && text !== null) {
+          hints = [...previousHints, text];
+          hintsProblem = problem;
         }
       } catch (e) {
-        showError('Could not reach AlgoMentor. Check your connection and try again.');
+        showErrorIn(newAnswerBlock(true), e.message && !(e instanceof TypeError) ? e.message
+          : 'Could not reach AlgoMentor. Check your connection and try again.');
       } finally {
-        btn.disabled = false;
-        loader.style.display = 'none';
+        setBusy(false);
+        const showHintActions = mode === 'hint' && hints.length > 0;
+        $('hintActions').style.display = showHintActions ? 'flex' : 'none';
+        $('nextHintBtn').textContent = hints.length >= MAX_HINTS
+          ? '🔍 No more hints' : `🔍 Next hint (${hints.length + 1}/${MAX_HINTS})`;
+        $('nextHintBtn').disabled = hints.length >= MAX_HINTS;
       }
+    }
+
+    function askAlgoMentor() {
+      resetHints();  // Ask always starts over; "Next hint" continues
+      run(currentMode, [], true);
+    }
+
+    function nextHint() {
+      if ($('problem').value.trim() !== hintsProblem) { askAlgoMentor(); return; }
+      run('hint', hints, false);
+    }
+
+    function showSolution() {
+      setMode('solution');
+      resetHints();
+      run('solution', [], true);
     }
   </script>
 </body>

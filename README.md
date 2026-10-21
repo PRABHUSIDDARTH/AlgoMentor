@@ -12,8 +12,19 @@ An AI assistant that explains DSA problems, gives hints, and provides optimal so
 
 ## ✨ Features
 - 💡 Explain any DSA problem with intuition
-- 🔍 Get progressive hints without spoilers
+- 🔍 Step-by-step hints: one at a time, each more specific (up to 4), without spoilers
 - ✅ View optimal solution with time/space complexity
+- 📥 Type just a LeetCode number (`1`, `LC 146`) or paste a problem link to fetch the statement automatically
+- ⚡ Answers stream in as they're generated
+
+## 🔌 API
+| Endpoint | Description |
+| --- | --- |
+| `POST /ask` | `{"problem", "mode": "explain\|hint\|solution", "previousHints": [...]}` → `{"result"}` |
+| `POST /ask/stream` | Same body; Server-Sent Events: `chunk` `{"text"}` … then `done`, or `error` `{"error"}` |
+| `GET /problem?ref=1` | Fetches a LeetCode problem by number or URL → `{number, title, difficulty, tags, url, statement}` |
+
+Errors are always `{"error": "..."}`. LeetCode lookups use LeetCode's public but unofficial endpoints, so Premium problems can't be fetched.
 
 ## 🏗️ Run Locally
 Requires Java 21 (Maven is downloaded by the wrapper).
