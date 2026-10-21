@@ -151,6 +151,44 @@
   }
 }
 
+/* Rendered Markdown: problem statements and mentor answers. */
+@layer components {
+  .prose-am {
+    font-size: 13.5px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+  .prose-am p, .prose-am ul, .prose-am ol, .prose-am table, .prose-am blockquote {
+    margin: 0 0 12px;
+  }
+  .prose-am h1, .prose-am h2, .prose-am h3, .prose-am h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 18px 0 8px;
+    line-height: 1.3;
+  }
+  .prose-am h1 { font-size: 19px; }
+  .prose-am h2 { font-size: 17px; }
+  .prose-am h3, .prose-am h4 { font-size: 15px; }
+  .prose-am > :first-child > :first-child { margin-top: 0; }
+  .prose-am ul { list-style: disc; padding-left: 20px; }
+  .prose-am ol { list-style: decimal; padding-left: 20px; }
+  .prose-am li { margin: 3px 0; }
+  .prose-am strong { font-weight: 600; }
+  .prose-am a { text-decoration: underline; text-underline-offset: 3px; }
+  .prose-am code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--grey);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .prose-am table { border-collapse: collapse; display: block; overflow-x: auto; }
+  .prose-am th, .prose-am td { border: 1px solid var(--line-strong); padding: 5px 9px; text-align: left; }
+  .prose-am blockquote { border-left: 2px solid var(--sage); padding-left: 12px; color: var(--ink-muted); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

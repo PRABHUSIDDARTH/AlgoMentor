@@ -282,12 +282,19 @@ export function useMentorSession() {
 
   const setTab = useCallback((tab: Tab) => dispatch({ tab }), [])
 
+  /** Back to the empty state ("New problem"); history and language are kept. */
+  const reset = useCallback(() => {
+    cancel()
+    lastRequest.current = null
+    dispatch({ ...fresh, problem: null, status: 'idle', tab: 'hints', cooldownUntil: undefined })
+  }, [cancel])
+
   return {
     ...state,
     history,
     hintsRemaining: MAX_HINTS - state.hints.length,
     openProblem, openEntry, editStatement, setTab, explainProblem, nextHint, revealSolution, setLanguage,
-    askFollowUp, markSolved, retry,
+    askFollowUp, markSolved, retry, reset,
   }
 }
 
