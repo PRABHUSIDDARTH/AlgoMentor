@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import { describe, expect, it } from 'vitest'
@@ -78,11 +78,40 @@ describe('Landing', () => {
     expect(screen.getAllByRole('button', { name: 'Start solving' })[0].className).toMatch(/bg-sage/)
   })
 
-  it('navAndTryLinksHaveComfortableHitAreas', () => {
+  it('tryLinksHaveComfortableHitAreas', () => {
     renderLanding()
-    for (const name of ['Workspace', 'How it works', '146. LRU Cache']) {
-      expect(screen.getAllByRole('link', { name })[0].className).toMatch(/py-1/)
+    for (const name of ['1. Two Sum', '146. LRU Cache']) {
+      expect(screen.getByRole('link', { name }).className).toMatch(/py-1/)
     }
+  })
+
+  it('navUsesGooeyNavForPageSections', () => {
+    renderLanding()
+    const header = screen.getByRole('banner')
+    const sections = within(header).getAllByRole('navigation')[0]
+    expect(within(sections).getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how')
+    expect(within(sections).getByRole('link', { name: 'Integrations' })).toHaveAttribute('href', '#integrations')
+    expect(within(sections).getByRole('link', { name: 'FAQ' })).toHaveAttribute('href', '#faq')
+    expect(within(header).getByRole('link', { name: 'Workspace' })).toHaveAttribute('href', '/app')
+  })
+
+  it('logoIsTheTreeMarkWithWordmark', () => {
+    renderLanding()
+    const home = within(screen.getByRole('banner')).getByRole('link', { name: 'AlgoMentor home' })
+    expect(home.querySelector('svg [data-part="leaf"]')).not.toBeNull()
+    expect(home).toHaveTextContent('AlgoMentor')
+  })
+
+  it('beforeHasADrawnUnderlineNotAMarker', () => {
+    renderLanding()
+    const h1 = screen.getByRole('heading', { level: 1 })
+    expect(h1.querySelector('[data-testid="before-underline"] path')).not.toBeNull()
+    expect(h1.innerHTML).not.toContain('linear-gradient')
+  })
+
+  it('usesTheFullScreenWidth', () => {
+    renderLanding()
+    expect(document.body.innerHTML).not.toMatch(/max-w-\[1180px\]/)
   })
 
   it('headlineIsReadableAsOneSentence', () => {

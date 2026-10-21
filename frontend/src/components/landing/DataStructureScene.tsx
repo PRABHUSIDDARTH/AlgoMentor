@@ -63,7 +63,7 @@ export function DataStructureScene() {
         Illustration: a binary tree visited in breadth-first order, two pointers moving through a sorted array, a value
         pushed onto a stack, and a linked list.
       </p>
-      <div ref={ref} data-testid="ds-scene" aria-hidden="true" className="relative h-[330px] origin-top scale-[0.82] [perspective:1100px] sm:h-[380px] sm:scale-100">
+      <div ref={ref} data-testid="ds-scene" aria-hidden="true" className="relative h-[330px] origin-top scale-[0.82] [perspective:1100px] sm:h-[380px] sm:scale-100 xl:h-[420px] xl:scale-[1.1] 2xl:h-[450px] 2xl:scale-[1.18]">
         <m.div
           className="absolute inset-0 [transform-style:preserve-3d]"
           data-animating={animate || undefined}
@@ -92,7 +92,7 @@ export function DataStructureScene() {
           </div>
 
           {/* stack, right */}
-          <div className="absolute right-0 top-0 w-[70px] [transform:translateZ(-110px)_rotateY(-16deg)]">
+          <div className="absolute right-[6%] top-0 w-[70px] [transform:translateZ(-110px)_rotateY(-16deg)]">
             <m.div
               className="grid h-6 place-items-center border border-b-0 border-ink/60 bg-grey font-mono text-[11px]"
               data-animating={animate || undefined}

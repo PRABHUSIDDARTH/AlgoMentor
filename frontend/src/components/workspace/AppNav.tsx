@@ -16,7 +16,7 @@ export function AppNav({ onJump, onMenu }: Props) {
         <Button variant="ghost" size="icon" aria-label="Recent problems" onClick={onMenu} className="text-on-band hover:bg-on-band/10 hover:text-on-band min-[1200px]:hidden">
           <Menu className="size-4" aria-hidden="true" />
         </Button>
-        <Logo className="text-[16px] text-on-band" />
+        <Logo className="text-[17px]" onBand />
         <Link to="/app" aria-current="page" className="hidden pb-[3px] shadow-[0_2px_0_var(--sage)] sm:inline">Workspace</Link>
         <span className="flex-1" />
         <button

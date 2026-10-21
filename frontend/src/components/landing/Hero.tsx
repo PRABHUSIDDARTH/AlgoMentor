@@ -12,7 +12,7 @@ const TRY = [
 
 export function Hero() {
   return (
-    <section className="mx-auto grid max-w-[1180px] items-center gap-6 px-5 pt-12 pb-10 sm:px-8 lg:grid-cols-[1fr_1.05fr] lg:pt-16">
+    <section id="top" className="grid min-h-[calc(100svh-62px)] overflow-x-clip scroll-mt-20 items-center gap-8 px-6 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-12 lg:grid-cols-[1fr_1.1fr] xl:gap-16">
       <div>
         <p className="eyebrow">AI mentor for data structures &amp; algorithms</p>
         <Headline text="Understand the problem before you see the answer." highlight="before" />

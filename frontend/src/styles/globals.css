@@ -24,6 +24,7 @@
   --code-string: #d9cdb8;
   --code-comment: rgb(247 242 235 / 0.5);
   --danger: #8a3b2e;
+  --logo-deep: #495638; /* the logo's deep olive */
 
   /* shadcn/ui variable names, mapped onto the palette */
   --background: var(--cream);
@@ -64,6 +65,7 @@
   --band-accent: #a8b68a;
   --code-bg: #080906;
   --danger: #e0a091;
+  --logo-deep: #eae2d6;
   color-scheme: dark;
 }
 
