@@ -24,6 +24,20 @@ set GEMINI_API_KEY=your_key_here
 python app.py
 ```
 
+Run the tests (no API key needed — Gemini is mocked):
+```bash
+pip install pytest
+pytest
+```
+
+Build and run with Docker:
+```bash
+docker build -t algomentor .
+docker run -p 8080:8080 -e GEMINI_API_KEY=your_key_here algomentor
+```
+
+Optional environment variables: `GEMINI_MODEL` (default `gemini-2.5-flash`) and `RATELIMIT_STORAGE_URI` (default in-memory; e.g. `redis://...` to share limits across instances).
+
 ## 🌐 Deployment
 Deployed on Google Cloud Run via Docker.
 
