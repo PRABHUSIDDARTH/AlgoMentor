@@ -1,9 +1,6 @@
 .git
 .github
-__pycache__
-*.pyc
-.pytest_cache
-tests
-venv
-.venv
+.idea
+.vscode
+target
 .env

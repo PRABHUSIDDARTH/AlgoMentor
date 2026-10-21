@@ -1,4 +1,0 @@
-flask
-google-genai
-gunicorn
-flask-limiter
