@@ -7,10 +7,12 @@ import com.google.genai.ResponseStream;
 import com.google.genai.types.GenerateContentResponse;
 import com.pstech.algomentor.AlgoMentorProperties;
 import jakarta.annotation.PreDestroy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@Profile("!e2e")
 public class GeminiAnswerGenerator implements AnswerGenerator {
 
 	private final AlgoMentorProperties.Gemini config;
