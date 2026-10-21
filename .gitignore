@@ -10,3 +10,6 @@ target/
 .project
 .settings
 .factorypath
+
+# Brainstorming companion mockups
+.superpowers/
