@@ -32,7 +32,7 @@ The user explicitly rejected "AI slop" styling: no decorative pills or badges th
 - Everything the current page does still works: Explain, Hints, Solution, streaming, and LeetCode lookup by number or URL.
 - The follow-up box and the four agreed extras work.
 - Layouts work at 360 px, 768 px and 1280 px wide.
-- No serious or critical axe violations, and all text pairs meet WCAG AA contrast.
+- No serious or critical axe violations, and all text pairs meet WCAG AA contrast, in both light and dark themes.
 - The app still ships as a single jar and Docker image to Cloud Run.
 
 ## 2. Phases
@@ -113,7 +113,7 @@ src/main/java/.../web/SpaController.java   forwards SPA routes to index.html
 | `--line` | `#262C1E` at 12% alpha | hairlines and borders |
 | `--code-bg` | `#1E2318` | code block body (keywords `#B9C49F`, strings `#D9CDB8`, comments cream at 50%) |
 
-**Contrast (WCAG AA, verified).**
+**Light contrast (WCAG AA, verified).**
 
 | Pair | Ratio |
 |---|---|
@@ -145,7 +145,42 @@ Rule: **sage is never used as text on cream, sand or grey** (2.35 to 2.71:1).
 - at most one primary (sage) button per view
 - icons only where they carry meaning, such as copy, external link and search
 
-**Theme.** A single light theme in Phase 1. A dark theme is out of scope.
+**Dark theme.** This is the light palette inverted, with black added: the light surfaces become near-black olive tones, and cream becomes the text colour. It uses the same token names, so components only ever reference tokens.
+
+| Token | Light | Dark |
+|---|---|---|
+| `--cream` (page background) | `#F7F2EB` | `#0E100B` |
+| `--sand` (secondary surfaces) | `#EAE2D6` | `#181C13` |
+| `--grey` (fields, inline code) | `#EEEEEE` | `#22271B` |
+| `--ink` (text) | `#262C1E` | `#F7F2EB` |
+| `--ink-muted` | `#56613F` | `#C9C0B1` |
+| `--sage` (accent) | `#8B9A6E` | `#8B9A6E` (fills), `#A8B68A` (hover, links) |
+| `--line` | ink at 12% | cream at 12% |
+| `--code-bg` | `#1E2318` | `#080906` |
+
+In dark mode the ink-coloured bands (app navbar, Integrations, footer) use `#000000`, so they stay visually distinct from the page.
+
+Dark contrast (verified):
+
+| Pair | Ratio |
+|---|---|
+| cream on page | 17.18:1 |
+| cream on sand | 15.53:1 |
+| cream on fields | 13.72:1 |
+| muted on page | 10.62:1 |
+| muted on sand | 9.60:1 |
+| sage text on page | 6.33:1 |
+| sage text on sand | 5.72:1 |
+| black on sage button | 6.33:1 |
+
+Sage may be used as text in dark mode.
+
+**How the theme is chosen.**
+- It follows `prefers-color-scheme` by default.
+- A Light / Dark / System toggle sits in both navbars as an icon button with an `aria-label`.
+- The choice is stored in localStorage (`algomentor.theme`), wrapped in try/catch.
+- A blocking inline script in `index.html` applies the `dark` class before first paint, so the page never flashes the wrong theme.
+- The `DataStructureScene` uses the same tokens: cream nodes with black labels, and sage for visited nodes.
 
 ## 5. Landing page `/`
 
@@ -322,7 +357,8 @@ Existing request and response shapes are unchanged, so the current UI and API cl
   6. reload `/app`, and Recent still lists Two Sum
   7. Ctrl K opens the palette, and "146" opens LRU Cache
   8. at 360px width the panes stack
-  9. `@axe-core/playwright` on `/` and `/app` finds no serious or critical violations
+  9. the theme toggle switches to dark, the choice survives a reload, and there's no flash of the light theme on load
+  10. `@axe-core/playwright` on `/` and `/app`, in both themes, finds no serious or critical violations
 - **JUnit:** `language` prompt selection, `followup` validation and the solutionRevealed rule, and `SpaController` forwarding. Existing tests stay green.
 - **CI:**
   - the existing job runs `./mvnw -B verify`, which now builds the frontend and runs Vitest
@@ -331,7 +367,7 @@ Existing request and response shapes are unchanged, so the current UI and API cl
 
 ## 12. Out of scope for Phase 1
 
-Accounts and sign-in, the `/login` page, the Connections page, the Progress page, server-side history, dark theme, internationalisation, any analytics or tracking, and changes to rate limits or the Gemini model configuration.
+Accounts and sign-in, the `/login` page, the Connections page, the Progress page, server-side history, internationalisation, any analytics or tracking, and changes to rate limits or the Gemini model configuration.
 
 ## 13. Reference mockups
 
