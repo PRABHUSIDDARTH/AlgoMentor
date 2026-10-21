@@ -27,6 +27,12 @@ public class AskController {
 
 	private static final int MAX_HINT_CHARS = 4000;
 
+	private static final int MAX_QUESTION_CHARS = 1000;
+
+	private static final int MAX_CONVERSATION_ENTRIES = 20;
+
+	private static final int MAX_ENTRY_CHARS = 6000;
+
 	private static final String GEMINI_FAILED = "AlgoMentor couldn't get an answer right now. Please try again shortly.";
 
 	private static final String EMPTY_ANSWER = "The model returned an empty answer. Try rephrasing the problem.";
@@ -142,18 +148,40 @@ public class AskController {
 		Mode mode = Mode.from(request.mode());
 		Language language = Language.parse(request.language());
 		List<String> previousHints = request.previousHints() == null ? List.of() : request.previousHints();
-		if (mode == Mode.HINT) {
-			if (previousHints.size() >= maxHints) {
-				throw new ApiException(HttpStatus.BAD_REQUEST,
-						"You've seen all %d hints. Try Solution mode to see the full answer.".formatted(maxHints));
-			}
-			if (previousHints.stream().anyMatch(h -> h == null || h.length() > MAX_HINT_CHARS)) {
-				throw new ApiException(HttpStatus.BAD_REQUEST, "Previous hints are invalid. Start the hints again.");
-			}
+		if (mode == Mode.HINT && previousHints.size() >= maxHints) {
+			throw new ApiException(HttpStatus.BAD_REQUEST,
+					"You've seen all %d hints. Try Solution mode to see the full answer.".formatted(maxHints));
+		}
+		if ((mode == Mode.HINT || mode == Mode.FOLLOWUP)
+				&& previousHints.stream().anyMatch(h -> h == null || h.length() > MAX_HINT_CHARS)) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "Previous hints are invalid. Start the hints again.");
 		}
 		List<PromptInput.Turn> conversation = request.conversation() == null ? List.of() : request.conversation();
+		if (mode == Mode.FOLLOWUP) {
+			validateFollowup(request.question(), conversation);
+		}
 		return mode.prompt(new PromptInput(problem, previousHints, maxHints, language, conversation,
 				request.question(), Boolean.TRUE.equals(request.solutionRevealed())));
+	}
+
+	private static void validateFollowup(String question, List<PromptInput.Turn> conversation) {
+		if (question == null || question.isBlank()) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "Type a follow-up question first.");
+		}
+		if (question.strip().length() > MAX_QUESTION_CHARS) {
+			throw new ApiException(HttpStatus.BAD_REQUEST,
+					"Follow-up questions can be at most %d characters.".formatted(MAX_QUESTION_CHARS));
+		}
+		if (conversation.size() > MAX_CONVERSATION_ENTRIES) {
+			throw new ApiException(HttpStatus.BAD_REQUEST,
+					"This conversation is too long. Start a new follow-up thread.");
+		}
+		for (PromptInput.Turn turn : conversation) {
+			if (turn == null || !("user".equals(turn.role()) || "mentor".equals(turn.role())) || turn.text() == null
+					|| turn.text().length() > MAX_ENTRY_CHARS) {
+				throw new ApiException(HttpStatus.BAD_REQUEST, "The conversation history is invalid. Start again.");
+			}
+		}
 	}
 
 }

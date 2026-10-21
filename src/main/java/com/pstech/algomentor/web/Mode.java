@@ -4,7 +4,7 @@ import java.util.List;
 
 public enum Mode {
 
-	EXPLAIN, HINT, SOLUTION;
+	EXPLAIN, HINT, SOLUTION, FOLLOWUP;
 
 	/**
 	 * Builds the prompt for this mode. For {@link #HINT}, {@code in.previousHints()} are the hints
@@ -15,7 +15,32 @@ public enum Mode {
 			case EXPLAIN -> "Explain this DSA problem clearly with approach and intuition:\n\n" + in.problem();
 			case SOLUTION -> solutionPrompt(in.problem(), in.language());
 			case HINT -> hintPrompt(in.problem(), in.previousHints(), in.maxHints());
+			case FOLLOWUP -> followupPrompt(in);
 		};
+	}
+
+	private static String followupPrompt(PromptInput in) {
+		StringBuilder prompt = new StringBuilder()
+			.append("You are a DSA tutor answering a student's follow-up question about this problem only. ")
+			.append("If the question is unrelated to the problem, steer back to it briefly.\n");
+		if (!in.solutionRevealed()) {
+			prompt.append("Do not give full code or the complete solution; keep guiding with reasoning.\n");
+		}
+		prompt.append("\nProblem:\n").append(in.problem()).append('\n');
+		if (!in.previousHints().isEmpty()) {
+			prompt.append("\nHints already given:\n");
+			for (int i = 0; i < in.previousHints().size(); i++) {
+				prompt.append(i + 1).append(". ").append(in.previousHints().get(i).strip()).append('\n');
+			}
+		}
+		if (!in.conversation().isEmpty()) {
+			prompt.append("\nConversation so far:\n");
+			for (PromptInput.Turn turn : in.conversation()) {
+				prompt.append("user".equals(turn.role()) ? "Student: " : "Mentor: ").append(turn.text().strip()).append('\n');
+			}
+		}
+		prompt.append("\nStudent's follow-up question:\n").append(in.question().strip()).append('\n');
+		return prompt.toString();
 	}
 
 	private static String solutionPrompt(String problem, Language language) {
