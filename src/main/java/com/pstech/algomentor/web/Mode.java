@@ -7,16 +7,29 @@ public enum Mode {
 	EXPLAIN, HINT, SOLUTION;
 
 	/**
-	 * Builds the prompt for this mode. For {@link #HINT}, {@code previousHints} are the hints the
-	 * user has already seen, so the model gives the next one instead of repeating them.
+	 * Builds the prompt for this mode. For {@link #HINT}, {@code in.previousHints()} are the hints
+	 * the user has already seen, so the model gives the next one instead of repeating them.
 	 */
-	public String prompt(String problem, List<String> previousHints, int maxHints) {
+	public String prompt(PromptInput in) {
 		return switch (this) {
-			case EXPLAIN -> "Explain this DSA problem clearly with approach and intuition:\n\n" + problem;
-			case SOLUTION ->
-				"Give the optimal solution with code (Python/Java) and time/space complexity for:\n\n" + problem;
-			case HINT -> hintPrompt(problem, previousHints, maxHints);
+			case EXPLAIN -> "Explain this DSA problem clearly with approach and intuition:\n\n" + in.problem();
+			case SOLUTION -> solutionPrompt(in.problem(), in.language());
+			case HINT -> hintPrompt(in.problem(), in.previousHints(), in.maxHints());
 		};
+	}
+
+	private static String solutionPrompt(String problem, Language language) {
+		return """
+				Give the optimal solution with code in %s and explain the approach for:
+
+				%s
+
+				End your answer with this fenced block, filled in:
+				```complexity
+				time: O(...) | <short reason>
+				space: O(...) | <short reason>
+				```
+				""".formatted(language.displayName(), problem);
 	}
 
 	private static String hintPrompt(String problem, List<String> previousHints, int maxHints) {

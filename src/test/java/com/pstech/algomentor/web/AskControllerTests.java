@@ -194,6 +194,25 @@ class AskControllerTests {
 			.andExpect(status().isTooManyRequests());
 	}
 
+	@Test
+	void solutionPromptUsesRequestedLanguage() throws Exception {
+		ask("{\"problem\": \"Two Sum\", \"mode\": \"solution\", \"language\": \"java\"}").andExpect(status().isOk());
+		verify(answers).generate(argThat(p -> p.contains("code in Java") && p.contains("```complexity")));
+	}
+
+	@Test
+	void solutionDefaultsToPython() throws Exception {
+		ask("{\"problem\": \"Two Sum\", \"mode\": \"solution\"}").andExpect(status().isOk());
+		verify(answers).generate(argThat(p -> p.contains("code in Python")));
+	}
+
+	@Test
+	void rejectsUnsupportedLanguage() throws Exception {
+		ask("{\"problem\": \"Two Sum\", \"mode\": \"solution\", \"language\": \"rust\"}")
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.error", containsString("Unsupported language")));
+	}
+
 	private String stream(String json) throws Exception {
 		MvcResult result = mvc.perform(post("/ask/stream").contentType(MediaType.APPLICATION_JSON).content(json))
 			.andExpect(request().asyncStarted())

@@ -47,8 +47,13 @@ public class AskController {
 		this.maxHints = properties.maxHints();
 	}
 
-	/** {@code previousHints} is only used in hint mode: the hints already shown, oldest first. */
-	public record AskRequest(String problem, String mode, List<String> previousHints) {
+	/**
+	 * {@code previousHints}: hint and follow-up modes, the hints already shown, oldest first.
+	 * {@code language}: solution mode, "python" (default), "java" or "cpp".
+	 * {@code conversation}, {@code question}, {@code solutionRevealed}: follow-up mode.
+	 */
+	public record AskRequest(String problem, String mode, List<String> previousHints, String language,
+			List<PromptInput.Turn> conversation, String question, Boolean solutionRevealed) {
 	}
 
 	public record AskResponse(String result) {
@@ -135,6 +140,7 @@ public class AskController {
 		}
 
 		Mode mode = Mode.from(request.mode());
+		Language language = Language.parse(request.language());
 		List<String> previousHints = request.previousHints() == null ? List.of() : request.previousHints();
 		if (mode == Mode.HINT) {
 			if (previousHints.size() >= maxHints) {
@@ -145,7 +151,9 @@ public class AskController {
 				throw new ApiException(HttpStatus.BAD_REQUEST, "Previous hints are invalid. Start the hints again.");
 			}
 		}
-		return mode.prompt(problem, previousHints, maxHints);
+		List<PromptInput.Turn> conversation = request.conversation() == null ? List.of() : request.conversation();
+		return mode.prompt(new PromptInput(problem, previousHints, maxHints, language, conversation,
+				request.question(), Boolean.TRUE.equals(request.solutionRevealed())));
 	}
 
 }
