@@ -57,6 +57,9 @@ export interface SessionState {
 export const MAX_HINTS = 4
 export const MAX_FOLLOWUP_TURNS = 10
 const COOLDOWN_MS = 30_000
+// Follow-up payload budget: the server caps entries at 6,000 chars and request bodies at 64 KB.
+const MAX_TURN_CHARS = 6000
+const MAX_CONVERSATION_CHARS = 30_000
 const NETWORK_MESSAGE = 'Could not reach AlgoMentor. Check your connection and try again.'
 
 const fresh = {
@@ -95,6 +98,19 @@ function fromText(text: string): ProblemContext {
   return { key: historyKey({ statement }), source: 'custom', title: 'Custom: ' + statement.slice(0, 40), statement, tags: [] }
 }
 
+/** Keeps a follow-up conversation inside the server's limits: long answers are shortened, oldest exchanges dropped. */
+export function budgetConversation(turns: Turn[]): Turn[] {
+  const capped = turns.map((t) => (t.text.length > MAX_TURN_CHARS ? { ...t, text: t.text.slice(0, MAX_TURN_CHARS - 1) + '…' } : t))
+  let total = capped.reduce((n, t) => n + t.text.length, 0)
+  let start = 0
+  while (total > MAX_CONVERSATION_CHARS && start < capped.length) {
+    // Drop a whole question-and-answer pair so the thread still starts with the student.
+    total -= capped[start].text.length + (capped[start + 1]?.text.length ?? 0)
+    start += 2
+  }
+  return capped.slice(start)
+}
+
 type Request = { tab: Tab; payload: AskPayload; onDone: (text: string) => void; followup?: boolean }
 
 /** All workspace state for one problem at a time: hints, explanation, solutions, follow-ups. */
@@ -103,7 +119,10 @@ export function useMentorSession() {
   const [history, setHistory] = useState<HistoryEntry[] | null>(() => loadHistory())
   // Refs, not state: they must be current even within one batch of clicks.
   const controller = useRef<AbortController | null>(null)
+  const loadController = useRef<AbortController | null>(null)
   const busy = useRef(false)
+  /** A problem is being fetched: no requests until it arrives (they'd target the old one). */
+  const loading = useRef(false)
   const lastRequest = useRef<Request | null>(null)
   const stateRef = useRef(state)
   stateRef.current = state
@@ -124,7 +143,7 @@ export function useMentorSession() {
   }, [])
 
   const run = useCallback((request: Request) => {
-    if (busy.current) return
+    if (busy.current || loading.current) return
     busy.current = true
     lastRequest.current = request
     const ac = new AbortController()
@@ -160,24 +179,28 @@ export function useMentorSession() {
   }, [])
 
   const start = useCallback((problem: ProblemContext, restore?: HistoryEntry) => {
+    cancel()
+    lastRequest.current = null
     const hints = restore?.hints.slice(0, MAX_HINTS) ?? []
     dispatch({ ...fresh, problem, hints, solved: restore?.status === 'solved', status: 'ready', tab: 'hints' })
     record(problem, 'started', hints)
-  }, [record])
+  }, [cancel, record])
 
   const load = useCallback(async (ref: string, restore?: HistoryEntry) => {
     cancel()
+    loadController.current?.abort()
     const ac = new AbortController()
-    controller.current = ac
+    loadController.current = ac
+    loading.current = true
     dispatch({ status: 'loadingProblem', error: undefined })
     try {
       const problem = fromLeetCode(await fetchProblem(ref, ac.signal))
       if (ac.signal.aborted) return
-      controller.current = null
+      loading.current = false
       start(problem, restore)
     } catch (err) {
       if (ac.signal.aborted) return
-      controller.current = null
+      loading.current = false
       const network = !(err instanceof ApiError)
       dispatch({
         status: stateRef.current.problem ? 'ready' : 'idle',
@@ -190,7 +213,8 @@ export function useMentorSession() {
     const text = input.trim()
     if (!text) return
     if (looksLikeProblemRef(text)) return load(text)
-    cancel()
+    loadController.current?.abort()
+    loading.current = false
     start(fromText(text))
   }, [cancel, load, start])
 
@@ -256,6 +280,7 @@ export function useMentorSession() {
   }, [requestSolution])
 
   const setLanguage = useCallback((language: Language) => {
+    if (busy.current) return
     dispatch({ language })
     const { solutionRevealed, solution } = stateRef.current
     if (solutionRevealed && !solution[language]) requestSolution(language)
@@ -268,10 +293,13 @@ export function useMentorSession() {
     run({
       tab,
       followup: true,
-      payload: { problem: promptText(p), mode: 'followup', previousHints: hints, conversation: followups, question: q, solutionRevealed },
+      payload: { problem: promptText(p), mode: 'followup', previousHints: hints, conversation: budgetConversation(followups), question: q, solutionRevealed },
       onDone: (text) => dispatch((s) => ({ followups: [...s.followups, { role: 'user', text: q }, { role: 'mentor', text }] })),
     })
   }, [run])
+
+  /** Asks for the solution in the current language (e.g. after a failed language switch). */
+  const fetchCurrentSolution = useCallback(() => requestSolution(stateRef.current.language), [requestSolution])
 
   const markSolved = useCallback(() => {
     const p = stateRef.current.problem
@@ -289,6 +317,8 @@ export function useMentorSession() {
   /** Back to the empty state ("New problem"); history and language are kept. */
   const reset = useCallback(() => {
     cancel()
+    loadController.current?.abort()
+    loading.current = false
     lastRequest.current = null
     dispatch({ ...fresh, problem: null, status: 'idle', tab: 'hints', cooldownUntil: undefined })
   }, [cancel])
@@ -298,7 +328,7 @@ export function useMentorSession() {
     history,
     hintsRemaining: MAX_HINTS - state.hints.length,
     openProblem, openEntry, editStatement, setTab, explainProblem, nextHint, revealSolution, setLanguage,
-    askFollowUp, markSolved, retry, reset,
+    askFollowUp, markSolved, retry, reset, requestSolution: fetchCurrentSolution,
   }
 }
 

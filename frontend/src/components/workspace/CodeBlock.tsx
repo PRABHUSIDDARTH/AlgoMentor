@@ -14,9 +14,10 @@ interface Props {
   languages?: Language[]
   activeLanguage?: Language
   onLanguage?: (l: Language) => void
+  languagesDisabled?: boolean
 }
 
-export function CodeBlock({ code, lang, languages, activeLanguage, onLanguage }: Props) {
+export function CodeBlock({ code, lang, languages, activeLanguage, onLanguage, languagesDisabled }: Props) {
   const [wrap, setWrap] = useState(false)
   const [copied, setCopied] = useState(false)
   const html = useMemo(() => highlight(code, lang), [code, lang])
@@ -40,7 +41,7 @@ export function CodeBlock({ code, lang, languages, activeLanguage, onLanguage }:
         <span>{lang || 'code'}</span>
         <span className="flex-1" />
         {languages?.map((l) => (
-          <button key={l} type="button" className={ctl} aria-pressed={l === activeLanguage} onClick={() => onLanguage?.(l)}>{NAMES[l]}</button>
+          <button key={l} type="button" className={cn(ctl, 'disabled:opacity-50')} disabled={languagesDisabled} aria-pressed={l === activeLanguage} onClick={() => onLanguage?.(l)}>{NAMES[l]}</button>
         ))}
         <button type="button" className={cn(ctl, 'inline-flex items-center gap-1')} aria-pressed={wrap} aria-label="Wrap lines" onClick={() => setWrap((w) => !w)}>
           <WrapText className="size-3" aria-hidden="true" />Wrap

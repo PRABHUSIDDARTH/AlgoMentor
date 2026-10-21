@@ -23,10 +23,20 @@ const MAX_HINTS = 4
 
 const RANK: Record<HistoryStatus, number> = { started: 0, hints: 1, explained: 2, solution: 3, solved: 4 }
 
+const optionalString = (v: unknown) => v === undefined || typeof v === 'string'
+
+/** Storage is user-editable and may come from older versions, so every field is checked. */
 function isEntry(value: unknown): value is HistoryEntry {
-  const e = value as HistoryEntry
-  return !!e && typeof e.key === 'string' && typeof e.title === 'string' && e.status in RANK
-    && typeof e.hintsUsed === 'number' && Array.isArray(e.hints) && typeof e.updatedAt === 'number'
+  if (!value || typeof value !== 'object') return false
+  const e = value as Record<string, unknown>
+  return typeof e.key === 'string' && e.key.length > 0
+    && typeof e.title === 'string' && e.title.length > 0
+    && (e.source === 'leetcode' || e.source === 'custom')
+    && typeof e.status === 'string' && Object.hasOwn(RANK, e.status)
+    && typeof e.hintsUsed === 'number' && Number.isFinite(e.hintsUsed)
+    && Array.isArray(e.hints) && e.hints.every((h) => typeof h === 'string')
+    && typeof e.updatedAt === 'number'
+    && optionalString(e.number) && optionalString(e.slug) && optionalString(e.difficulty) && optionalString(e.statement)
 }
 
 function parse(raw: string | null): HistoryEntry[] {

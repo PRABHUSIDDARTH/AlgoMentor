@@ -42,6 +42,20 @@ describe('history', () => {
     expect(loadHistory()).toEqual([entry()])
   })
 
+  it('dropsEntriesWithWrongFieldTypes', () => {
+    const good = entry()
+    localStorage.setItem(HISTORY_KEY, JSON.stringify([
+      { ...good, key: 'a', difficulty: 5 },
+      { ...good, key: 'b', hints: [42] },
+      { ...good, key: 'c', source: 'elsewhere' },
+      { ...good, key: 'd', status: 'toString' },
+      { ...good, key: 'e', statement: 7 },
+      { ...good, key: 'f', title: '' },
+      good,
+    ]))
+    expect(loadHistory()?.map((e) => e.key)).toEqual(['two-sum'])
+  })
+
   it('survivesQuotaError', () => {
     upsertHistory(entry({ key: 'a', updatedAt: 1 }))
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {

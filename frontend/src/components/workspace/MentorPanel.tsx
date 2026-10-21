@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCountdown } from '@/hooks/useCountdown'
+import type { Language } from '@/lib/api'
 import { MAX_HINTS, type MentorSession, type Tab } from '@/state/useMentorSession'
 import { AnswerView } from './AnswerView'
 import { FollowUp } from './FollowUp'
@@ -12,6 +13,7 @@ import { InlineError } from './InlineError'
 import { RevealDialog } from './RevealDialog'
 
 const primary = 'bg-sage font-semibold text-on-sage hover:bg-sage/90'
+const LANGUAGE_NAMES: Record<Language, string> = { python: 'Python', java: 'Java', cpp: 'C++' }
 const READY: Record<Tab, string> = { explain: 'Explanation ready', hints: 'Hint ready', solution: 'Solution ready' }
 
 /** Live-region text: empty while streaming, a short "ready" note when an answer finishes. */
@@ -33,7 +35,8 @@ export function MentorPanel({ session: s }: { session: MentorSession }) {
   const [confirming, setConfirming] = useState(false)
   const secondsLeft = useCountdown(s.cooldownUntil)
   const announcement = useAnnouncement(s)
-  const busy = s.status === 'streaming'
+  // Also blocked while the next problem loads: a request now would target the old one.
+  const busy = s.status === 'streaming' || s.status === 'loadingProblem'
   const blocked = busy || secondsLeft > 0
   const tabStream = s.streaming && !s.streaming.followup ? s.streaming : null
   const followStream = s.streaming?.followup ? s.streaming.text : undefined
@@ -138,8 +141,19 @@ export function MentorPanel({ session: s }: { session: MentorSession }) {
               streaming={tabStream?.tab === 'solution'}
               language={s.language}
               onLanguage={s.setLanguage}
+              languagesDisabled={busy}
             />
-          ) : null}
+          ) : (
+            // No answer in this language yet (e.g. the request failed): offer it, or the cached one.
+            <div className="flex flex-wrap items-center gap-2">
+              <Button className={primary} disabled={blocked} onClick={s.requestSolution}>Get the {LANGUAGE_NAMES[s.language]} solution</Button>
+              {(Object.keys(s.solution) as Language[]).map((l) => (
+                <Button key={l} variant="outline" className="border-ink bg-transparent" disabled={busy} onClick={() => s.setLanguage(l)}>
+                  Back to {LANGUAGE_NAMES[l]}
+                </Button>
+              ))}
+            </div>
+          )}
           {tabError && errorBox(tabError)}
         </TabsContent>
       </Tabs>

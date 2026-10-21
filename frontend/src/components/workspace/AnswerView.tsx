@@ -11,10 +11,12 @@ interface Props {
   /** Solution code: show language switches on code blocks. */
   language?: Language
   onLanguage?: (l: Language) => void
+  /** Language switches can't be used while an answer is streaming. */
+  languagesDisabled?: boolean
   className?: string
 }
 
-export function AnswerView({ markdown, streaming, language, onLanguage, className }: Props) {
+export function AnswerView({ markdown, streaming, language, onLanguage, languagesDisabled, className }: Props) {
   const { segments, complexity } = useMemo(() => splitMarkdown(markdown), [markdown])
   return (
     <div className={cn('prose-am', streaming && 'streaming-am', className)} aria-busy={streaming || undefined}>
@@ -29,6 +31,7 @@ export function AnswerView({ markdown, streaming, language, onLanguage, classNam
             languages={onLanguage ? ['python', 'java', 'cpp'] : undefined}
             activeLanguage={language}
             onLanguage={onLanguage}
+            languagesDisabled={languagesDisabled || streaming}
           />
         ),
       )}

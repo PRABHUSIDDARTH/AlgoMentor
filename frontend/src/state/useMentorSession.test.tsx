@@ -159,6 +159,59 @@ describe('useMentorSession', () => {
     expect(result.current.error).toMatchObject({ followup: true, message: expect.stringContaining('1000') })
   })
 
+  it('ignoresRequestsWhileTheNextProblemLoads', async () => {
+    const { result } = await openTwoSum()
+    let resolveLoad!: (p: Problem) => void
+    api.fetchProblem.mockReturnValueOnce(new Promise<Problem>((r) => (resolveLoad = r)))
+    let loading!: Promise<void>
+    act(() => { loading = result.current.openProblem('146') })
+    expect(result.current.status).toBe('loadingProblem')
+    act(() => result.current.nextHint())
+    expect(api.askStream).not.toHaveBeenCalled()
+    await act(async () => {
+      resolveLoad({ ...TWO_SUM, number: '146', title: 'LRU Cache', slug: 'lru-cache' })
+      await loading
+    })
+    expect(result.current.problem?.key).toBe('lru-cache')
+    expect(result.current.hints).toEqual([])
+    act(() => result.current.nextHint())
+    expect(api.askStream).toHaveBeenCalledTimes(1)
+    expect(calls[0].payload.problem).toContain('LRU Cache')
+  })
+
+  it('setLanguageIgnoredWhileStreaming', async () => {
+    const { result } = await openTwoSum()
+    act(() => result.current.revealSolution())
+    act(() => result.current.setLanguage('java'))
+    expect(result.current.language).toBe('python')
+    await finish(calls[0], 'python answer')
+    expect(result.current.solution).toEqual({ python: 'python answer' })
+  })
+
+  it('requestSolutionFetchesTheCurrentLanguage', async () => {
+    const { result } = await openTwoSum()
+    act(() => result.current.revealSolution())
+    await finish(calls[0], 'python answer')
+    act(() => result.current.setLanguage('java'))
+    await act(async () => calls[1].fail(new ApiError(502, 'down')))
+    act(() => result.current.requestSolution())
+    expect(calls[2].payload).toMatchObject({ mode: 'solution', language: 'java' })
+  })
+
+  it('followUpTrimsLongHistoryToFitTheRequest', async () => {
+    const { result } = await openTwoSum()
+    for (let i = 0; i < 8; i++) {
+      act(() => result.current.askFollowUp(`question ${i}`))
+      await finish(calls[i], 'x'.repeat(7000))
+    }
+    act(() => result.current.askFollowUp('one more'))
+    const sent = calls[8].payload.conversation!
+    expect(sent.every((t) => t.text.length <= 6000)).toBe(true)
+    expect(sent.reduce((n, t) => n + t.text.length, 0)).toBeLessThanOrEqual(30_000)
+    expect(sent[sent.length - 1].role).toBe('mentor')
+    expect(sent[0].role).toBe('user')
+  })
+
   it('networkFailureIsFlagged', async () => {
     const { result } = await openTwoSum()
     act(() => result.current.nextHint())

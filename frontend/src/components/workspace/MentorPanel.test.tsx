@@ -21,7 +21,7 @@ function session(overrides: Partial<MentorSession> = {}): MentorSession {
     history: [], hintsRemaining: 4,
     openProblem: vi.fn(), openEntry: vi.fn(), editStatement: vi.fn(), setTab: vi.fn(), explainProblem: vi.fn(),
     nextHint: vi.fn(), revealSolution: vi.fn(), setLanguage: vi.fn(), askFollowUp: vi.fn(), markSolved: vi.fn(),
-    retry: vi.fn(), reset: vi.fn(),
+    retry: vi.fn(), reset: vi.fn(), requestSolution: vi.fn(),
   }
   const merged = { ...base, ...overrides } as MentorSession
   return { ...merged, hintsRemaining: overrides.hintsRemaining ?? 4 - merged.hints.length }
@@ -161,6 +161,27 @@ describe('MentorPanel', () => {
     expect(screen.getByRole('button', { name: 'Retry' })).toBeDisabled()
     act(() => vi.advanceTimersByTime(30_000))
     expect(screen.getByRole('button', { name: 'Next hint' })).toBeEnabled()
+  })
+
+  it('actionsBlockedWhileTheNextProblemLoads', () => {
+    renderPanel(session({ status: 'loadingProblem' }))
+    expect(screen.getByRole('button', { name: 'Next hint' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Reveal solution' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Ask' })).toBeDisabled()
+  })
+
+  it('languageSwitchesDisabledWhileStreaming', () => {
+    renderPanel(session({ tab: 'solution', solutionRevealed: true, status: 'streaming', streaming: { tab: 'solution', text: '```python\nx = 1\n```' } }))
+    expect(screen.getByRole('button', { name: 'Java' })).toBeDisabled()
+  })
+
+  it('missingLanguageSolutionOffersToFetchIt', async () => {
+    const s = session({ tab: 'solution', solutionRevealed: true, language: 'java', solution: { python: '```python\nx\n```' } })
+    renderPanel(s)
+    await userEvent.click(screen.getByRole('button', { name: 'Get the Java solution' }))
+    expect(s.requestSolution).toHaveBeenCalledOnce()
+    await userEvent.click(screen.getByRole('button', { name: 'Back to Python' }))
+    expect(s.setLanguage).toHaveBeenCalledWith('python')
   })
 
   it('iSolvedItMarksSolved', async () => {
