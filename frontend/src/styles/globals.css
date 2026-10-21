@@ -1,0 +1,162 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Palette v4 (spec section 4). Components use these tokens only, never raw hex. */
+:root {
+  --cream: #f7f2eb;
+  --sand: #eae2d6;
+  --grey: #eeeeee;
+  --ink: #262c1e;
+  --ink-muted: #56613f;
+  --sage: #8b9a6e;
+  --sage-soft: #8b9a6e;
+  --on-sage: #262c1e;
+  --line: rgb(38 44 30 / 0.12);
+  --line-strong: rgb(38 44 30 / 0.32);
+  --band: #262c1e;
+  --on-band: #f7f2eb;
+  --band-accent: #b9c49f;
+  --code-bg: #1e2318;
+  --code-fg: #eae2d6;
+  --code-keyword: #b9c49f;
+  --code-string: #d9cdb8;
+  --code-comment: rgb(247 242 235 / 0.5);
+  --danger: #8a3b2e;
+
+  /* shadcn/ui variable names, mapped onto the palette */
+  --background: var(--cream);
+  --foreground: var(--ink);
+  --card: var(--sand);
+  --card-foreground: var(--ink);
+  --popover: var(--cream);
+  --popover-foreground: var(--ink);
+  --primary: var(--sage);
+  --primary-foreground: var(--on-sage);
+  --secondary: var(--sand);
+  --secondary-foreground: var(--ink);
+  --muted: var(--sand);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--grey);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--ink);
+  --radius: 6px;
+}
+
+/* Dark: the palette inverted, with black added (spec section 4). */
+.dark {
+  --cream: #0e100b;
+  --sand: #181c13;
+  --grey: #22271b;
+  --ink: #f7f2eb;
+  --ink-muted: #c9c0b1;
+  --sage: #8b9a6e;
+  --sage-soft: #a8b68a;
+  --on-sage: #0e100b;
+  --line: rgb(247 242 235 / 0.12);
+  --line-strong: rgb(247 242 235 / 0.32);
+  --band: #000000;
+  --on-band: #f7f2eb;
+  --band-accent: #a8b68a;
+  --code-bg: #080906;
+  --danger: #e0a091;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-sand: var(--sand);
+  --color-grey: var(--grey);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-sage: var(--sage);
+  --color-sage-soft: var(--sage-soft);
+  --color-on-sage: var(--on-sage);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-band: var(--band);
+  --color-on-band: var(--on-band);
+  --color-band-accent: var(--band-accent);
+  --color-code: var(--code-bg);
+  --color-danger: var(--danger);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+  html {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100vh;
+    background: var(--cream);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--sage);
+    color: var(--on-sage);
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -58,7 +58,7 @@ class AskControllerTests {
 		mvc.perform(get("/")).andExpect(status().isOk()).andExpect(forwardedUrl("index.html"));
 		mvc.perform(get("/index.html"))
 			.andExpect(status().isOk())
-			.andExpect(content().string(containsString("AlgoMentor")));
+			.andExpect(content().string(containsString("<title>AlgoMentor</title>")));
 	}
 
 	@Test
