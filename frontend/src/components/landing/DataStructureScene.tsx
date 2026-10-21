@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { useOnScreen, usePrefersReducedMotion } from '@/hooks/useMotionPrefs'
 
 /** Spec section 5: a swaying pseudo-3D stage with four data structures on their own depth layers. */
@@ -32,22 +32,22 @@ function TreeNode({ i, animate }: { i: number; animate: boolean }) {
   return (
     <div className="absolute size-10 -translate-x-1/2 -translate-y-1/2" style={{ left: n.x, top: n.y }}>
       <div className={`${base} bg-ink text-cream shadow-[0_10px_24px_-10px_rgb(0_0_0/0.55)]`}>{n.v}</div>
-      <motion.div
+      <m.div
         className={`${base} bg-ink-muted text-cream`}
         data-animating={animate || undefined}
         animate={animate ? { opacity: [0, 0, 1, 1, 0, 0] } : { opacity: staticVisited ? 1 : 0 }}
         transition={animate ? { ...loop, times: [0, d + 0.08, d + 0.1, 0.92, 0.96, 1] } : { duration: 0 }}
       >
         {n.v}
-      </motion.div>
-      <motion.div
+      </m.div>
+      <m.div
         className={`${base} bg-sage text-on-sage`}
         data-animating={animate || undefined}
         animate={animate ? { opacity: [0, 0, 1, 1, 0, 0], scale: [1, 1, 1.14, 1.14, 1, 1] } : { opacity: staticCurrent ? 1 : 0, scale: staticCurrent ? 1.14 : 1 }}
         transition={animate ? { ...loop, times: [0, d, d + 0.02, d + 0.08, d + 0.1, 1] } : { duration: 0 }}
       >
         {n.v}
-      </motion.div>
+      </m.div>
     </div>
   )
 }
@@ -64,7 +64,7 @@ export function DataStructureScene() {
         pushed onto a stack, and a linked list.
       </p>
       <div ref={ref} data-testid="ds-scene" aria-hidden="true" className="relative h-[330px] origin-top scale-[0.82] [perspective:1100px] sm:h-[380px] sm:scale-100">
-        <motion.div
+        <m.div
           className="absolute inset-0 [transform-style:preserve-3d]"
           data-animating={animate || undefined}
           animate={animate ? { rotateX: [14, 8], rotateY: [-22, 22] } : { rotateX: 11, rotateY: 0 }}
@@ -77,28 +77,28 @@ export function DataStructureScene() {
                 <div key={v} className="-ml-px grid size-[30px] place-items-center border border-ink/60 bg-grey font-mono text-[12px] first:ml-0">{v}</div>
               ))}
             </div>
-            <motion.span
+            <m.span
               className="absolute top-9 left-1.5 font-mono text-[11px]"
               data-animating={animate || undefined}
               animate={animate ? { x: [0, 60, 0] } : { x: 30 }}
               transition={animate ? { ...loop, ease: 'easeInOut' } : { duration: 0 }}
-            >▲ l</motion.span>
-            <motion.span
+            >▲ l</m.span>
+            <m.span
               className="absolute top-9 left-[156px] font-mono text-[11px]"
               data-animating={animate || undefined}
               animate={animate ? { x: [0, -60, 0] } : { x: -30 }}
               transition={animate ? { ...loop, ease: 'easeInOut' } : { duration: 0 }}
-            >▲ r</motion.span>
+            >▲ r</m.span>
           </div>
 
           {/* stack, right */}
           <div className="absolute right-0 top-0 w-[70px] [transform:translateZ(-110px)_rotateY(-16deg)]">
-            <motion.div
+            <m.div
               className="grid h-6 place-items-center border border-b-0 border-ink/60 bg-grey font-mono text-[11px]"
               data-animating={animate || undefined}
               animate={animate ? { opacity: [0, 0, 1, 1, 0], y: [-14, -14, 0, 0, 0] } : { opacity: 1, y: 0 }}
               transition={animate ? { ...loop, times: [0, 0.3, 0.38, 0.92, 1] } : { duration: 0 }}
-            >push 9</motion.div>
+            >push 9</m.div>
             {STACK.map((v, i) => (
               <div key={v} className={`grid h-6 place-items-center border border-ink/60 bg-grey font-mono text-[11px] ${i === STACK.length - 1 ? 'border-b-2 border-b-ink' : 'border-b-0'}`}>{v}</div>
             ))}
@@ -116,14 +116,14 @@ export function DataStructureScene() {
 
           {/* linked list, below */}
           <div className="absolute left-1/2 top-[268px] -ml-[190px] flex items-center [transform:translateZ(-60px)_rotateX(8deg)]">
-            <motion.div
+            <m.div
               className="flex h-[34px] w-[54px] rounded-[5px] border-[1.5px] border-ink bg-grey font-mono text-[12px]"
               data-animating={animate || undefined}
               animate={animate ? { boxShadow: ['0 0 0 0px var(--sage)', '0 0 0 0px var(--sage)', '0 0 0 3px var(--sage)', '0 0 0 3px var(--sage)', '0 0 0 0px var(--sage)'] } : { boxShadow: '0 0 0 0px var(--sage)' }}
               transition={animate ? { ...loop, times: [0, 0.6, 0.7, 0.9, 1] } : { duration: 0 }}
             >
               <b className="grid flex-1 place-items-center font-medium">head</b><i className="w-3.5 border-l-[1.5px] border-ink bg-sand" />
-            </motion.div>
+            </m.div>
             {LIST.map((v) => (
               <div key={v} className="flex items-center">
                 <span className="relative h-[1.5px] w-[22px] bg-ink after:absolute after:-right-px after:-top-[3.5px] after:border-y-4 after:border-l-[6px] after:border-y-transparent after:border-l-ink" />
@@ -135,7 +135,7 @@ export function DataStructureScene() {
             <span className="relative h-[1.5px] w-[22px] bg-ink" />
             <div className="grid h-[34px] w-[54px] place-items-center rounded-[5px] border-[1.5px] border-dashed border-ink font-mono text-[12px]">null</div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
       <p aria-hidden="true" className="mt-1 text-center font-mono text-[11px] text-ink-muted">
         breadth-first traversal · two pointers · stack push · linked list

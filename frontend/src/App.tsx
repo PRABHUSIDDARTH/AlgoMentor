@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
+import { MotionProvider } from '@/components/MotionProvider'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Landing from '@/pages/Landing'
@@ -9,6 +10,7 @@ const Workspace = lazy(() => import('@/pages/Workspace'))
 
 export default function App() {
   return (
+    <MotionProvider>
     <TooltipProvider delayDuration={300}>
       <Suspense fallback={null}>
         <Routes>
@@ -19,5 +21,6 @@ export default function App() {
       </Suspense>
       <Toaster position="bottom-right" />
     </TooltipProvider>
+    </MotionProvider>
   )
 }

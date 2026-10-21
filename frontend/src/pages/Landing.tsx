@@ -1,11 +1,8 @@
-import { Faq } from '@/components/landing/Faq'
-import { FinalCta } from '@/components/landing/FinalCta'
-import { Footer } from '@/components/landing/Footer'
+import { lazy, Suspense } from 'react'
 import { Hero } from '@/components/landing/Hero'
-import { HowItWorks } from '@/components/landing/HowItWorks'
-import { Integrations } from '@/components/landing/Integrations'
 import { Nav } from '@/components/landing/Nav'
-import { WorkspaceFeatures } from '@/components/landing/WorkspaceFeatures'
+
+const BelowFold = lazy(() => import('@/components/landing/BelowFold'))
 
 export default function Landing() {
   return (
@@ -16,13 +13,10 @@ export default function Landing() {
       <Nav />
       <main id="main">
         <Hero />
-        <HowItWorks />
-        <WorkspaceFeatures />
-        <Integrations />
-        <Faq />
-        <FinalCta />
+        <Suspense fallback={<div className="min-h-[60vh]" />}>
+          <BelowFold />
+        </Suspense>
       </main>
-      <Footer />
     </>
   )
 }

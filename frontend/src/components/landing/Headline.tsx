@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { Fragment } from 'react'
 import { usePrefersReducedMotion } from '@/hooks/useMotionPrefs'
 
@@ -18,14 +18,14 @@ export function Headline({ text, highlight }: { text: string; highlight: string 
         {words.map((word, i) => {
           const marked = word === highlight
           const node = (
-            <motion.span
+            <m.span
               className="inline-block"
               initial={reduce ? false : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: 'easeOut', delay: i * STAGGER }}
             >
               {word}
-            </motion.span>
+            </m.span>
           )
           return (
             <Fragment key={i}>
