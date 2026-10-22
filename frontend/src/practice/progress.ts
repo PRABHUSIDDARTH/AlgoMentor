@@ -18,6 +18,28 @@ export const UNLOCKS_KEY = 'algomentor.unlocks.v1'
 /** Fired on window after every change, with `detail: { ids }` of the problems that changed. */
 export const PROGRESS_EVENT = 'algomentor:progress'
 export const UNLOCK_THRESHOLD = 0.7
+export const REVIEW_LOG_KEY = 'algomentor.reviews.v1'
+const MAX_LOG = 500
+
+export type ReviewOutcome = { id: string; at: number; passed: boolean }
+
+/** Outcomes of due reviews (newest last), for the retention score. */
+export function loadReviewLog(): ReviewOutcome[] {
+  try {
+    const raw = JSON.parse(localStorage.getItem(REVIEW_LOG_KEY) ?? '[]')
+    return Array.isArray(raw) ? raw.filter((r) => r && typeof r.id === 'string' && typeof r.at === 'number' && typeof r.passed === 'boolean') : []
+  } catch {
+    return []
+  }
+}
+
+function logReview(outcome: ReviewOutcome): void {
+  try {
+    localStorage.setItem(REVIEW_LOG_KEY, JSON.stringify([...loadReviewLog(), outcome].slice(-MAX_LOG)))
+  } catch {
+    // Storage full or blocked.
+  }
+}
 
 function valid(p: unknown): p is ProblemProgress {
   const v = p as ProblemProgress
@@ -59,6 +81,7 @@ export function recordSolve(id: string, { hintsUsed, now = Date.now() }: { hints
   if (!current || current.status !== 'solved') {
     progress[id] = { status: 'solved', firstSolvedAt: now, lastReviewedAt: now, reviewStep: 0, nextReviewAt: nextReviewAt(0, now) }
   } else if (isDue(current.nextReviewAt, now)) {
+    logReview({ id, at: now, passed: hintsUsed === 0 })
     const step = hintsUsed === 0 ? current.reviewStep + 1 : 0
     progress[id] = { ...current, lastReviewedAt: now, reviewStep: step, nextReviewAt: nextReviewAt(step, now) }
   } else {
@@ -90,6 +113,7 @@ export function recordReviewFailed(id: string, now = Date.now()): void {
   const progress = loadProgress()
   const current = progress[id]
   if (!current || current.status !== 'solved') return
+  logReview({ id, at: now, passed: false })
   progress[id] = { ...current, lastReviewedAt: now, reviewStep: 0, nextReviewAt: nextReviewAt(0, now), known: undefined }
   save(progress, [id])
 }

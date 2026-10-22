@@ -8,7 +8,10 @@ import { PROBLEMS, STAGES } from '@/content/roadmap'
 import { buildPlan, getDay, last14, loadDays, localDateKey, markItem, streak, type Day, type DailyItem } from '@/practice/daily'
 import { loadProgress, loadUnlocks, PROGRESS_EVENT, recordReviewFailed, recordSolve } from '@/practice/progress'
 import { solveHref } from '@/practice/roadmapView'
+import { useLevel } from '@/practice/useLevel'
 import { useSettings } from '@/practice/useSettings'
+import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
+import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
 
 const PATTERNS = new Map(STAGES.flatMap((s) => s.patterns.map((p) => [p.id, { p, s }] as const)))
 
@@ -26,6 +29,7 @@ export default function Today() {
   const todayKey = useTodayKey()
   const [settings] = useSettings()
   const navigate = useNavigate()
+  const level = useLevel()
   const [day, setDay] = useState<Day>(() => getDay(todayKey, () => buildPlan(todayKey, settings, loadProgress(), loadUnlocks(), Date.now())))
   const [days, setDays] = useState(loadDays)
 
@@ -130,6 +134,11 @@ export default function Today() {
 
         <aside aria-label="Progress" className="grid content-start gap-5">
           <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
+            <p className="text-[15px] font-semibold">Level {level.level}</p>
+            <ReadinessMeter value={level.readiness} label={`Readiness for ${COMPANY_LABEL[settings.target.company]} ${ROLE_LABEL[settings.target.role]}`} />
+            <Link to="/level" className="text-[13px] underline underline-offset-[3px]">See what to improve</Link>
+          </div>
+          <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
             <p className="text-[15px] font-semibold">Streak: {currentStreak} {currentStreak === 1 ? 'day' : 'days'}</p>
             <StreakStrip days={last14(days, todayKey)} />
             <p className="text-[12px] text-ink-muted">A day counts when all its new problems are done.</p>
@@ -137,7 +146,7 @@ export default function Today() {
           <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
             <p className="text-[15px] font-semibold">Test yourself</p>
             <p className="text-[13px] leading-relaxed text-ink-muted">10 problems mixed across the stages you've opened: some you've solved, most you haven't. 60 minutes.</p>
-            <Button className="bg-sage font-semibold text-on-sage hover:bg-sage/90" onClick={() => navigate('/test/new')}>Generate test</Button>
+            <Button className="bg-sage font-semibold text-on-sage hover:bg-sage/90" onClick={() => navigate(`/test/new?level=${level.level}`)}>Generate test</Button>
           </div>
         </aside>
       </div>

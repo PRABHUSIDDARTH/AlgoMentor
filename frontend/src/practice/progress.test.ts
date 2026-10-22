@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { STAGES } from '@/content/roadmap'
 import { DAY_MS, nextReviewAt } from './schedule'
 import {
-  isUnlocked, loadProgress, loadUnlocks, markStageKnown, PROGRESS_EVENT, PROGRESS_KEY, recordSolve, stageCompletion,
+  isUnlocked, loadProgress, loadReviewLog, loadUnlocks, markStageKnown, PROGRESS_EVENT, PROGRESS_KEY, recordSolve, stageCompletion,
   syncFromLeetCode, unlockStage,
 } from './progress'
 
@@ -87,6 +87,16 @@ describe('progress', () => {
     expect(count).toBe(1)
     expect(loadProgress()['two-sum']).toMatchObject({ status: 'solved', firstSolvedAt: 1_790_000_000_000 })
     expect(syncFromLeetCode([{ slug: 'two-sum', title: 'Two Sum', solvedAt: 1_790_000_000 }])).toBe(0)
+  })
+
+  it('dueReviewsAreLogged', () => {
+    recordSolve('two-sum', { hintsUsed: 0, now: NOON })
+    recordSolve('two-sum', { hintsUsed: 0, now: NOON + DAY_MS })
+    recordSolve('two-sum', { hintsUsed: 1, now: NOON + 5 * DAY_MS })
+    expect(loadReviewLog()).toEqual([
+      { id: 'two-sum', at: NOON + DAY_MS, passed: true },
+      { id: 'two-sum', at: NOON + 5 * DAY_MS, passed: false },
+    ])
   })
 
   it('emitsProgressEvent', () => {
