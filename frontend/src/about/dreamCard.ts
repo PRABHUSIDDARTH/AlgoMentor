@@ -393,9 +393,10 @@ async function fonts() {
 
 /** Data URLs for the card's front, back and strap, or null where canvas drawing is unavailable. */
 export async function cardImages(d: DreamCard, photo?: string | null): Promise<{ front: string; back: string; strap: string } | null> {
+  const front = document.createElement('canvas')
+  if (!front.getContext('2d')) return null
   await fonts()
   const assets = await loadAssets(d, photo)
-  const front = document.createElement('canvas')
   const back = document.createElement('canvas')
   const strap = document.createElement('canvas')
   try {
@@ -408,8 +409,10 @@ export async function cardImages(d: DreamCard, photo?: string | null): Promise<{
 
 /** A 1200 by 627 PNG for a LinkedIn post: the card on the left, the headline number beside it (never on the card). */
 export async function shareImage(d: DreamCard, photo?: string | null): Promise<Blob | null> {
-  await fonts()
   const face = document.createElement('canvas')
+  // No canvas means no card image; say so now instead of waiting for pictures that cannot be drawn.
+  if (!face.getContext('2d')) return null
+  await fonts()
   if (!drawFront(face, d, await loadAssets(d, photo))) return null
   const out = document.createElement('canvas')
   out.width = 1200
