@@ -8,7 +8,7 @@ import { linkRepo, loadGit } from '@/learn/repos'
 import { ApiError } from '@/lib/api'
 import Resume from './Resume'
 
-const api = vi.hoisted(() => ({ repoHealth: vi.fn(), askStream: vi.fn() }))
+const api = vi.hoisted(() => ({ repoHealth: vi.fn(), askStream: vi.fn(), fetchSharedProjects: vi.fn() }))
 vi.mock('@/lib/api', async (importOriginal) => ({ ...(await importOriginal<typeof import('@/lib/api')>()), ...api }))
 
 const HEALTH = {
@@ -34,6 +34,7 @@ const cards = () => Array.from(screen.getByRole('list', { name: 'Resume projects
 
 beforeEach(() => {
   api.repoHealth.mockResolvedValue(HEALTH)
+  api.fetchSharedProjects.mockResolvedValue([])
 })
 
 afterEach(() => {
@@ -41,6 +42,7 @@ afterEach(() => {
   vi.restoreAllMocks()
   api.repoHealth.mockReset()
   api.askStream.mockReset()
+  api.fetchSharedProjects.mockReset()
 })
 
 describe('Resume page', () => {
@@ -72,6 +74,66 @@ describe('Resume page', () => {
     const mobile = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'mobile'))
     expect(cards()).toHaveLength(mobile.length)
     for (const p of mobile) expect(screen.getByRole('heading', { name: p.title })).toBeInTheDocument()
+  })
+
+  it('filtersByAnyCompanyThroughItsTier', async () => {
+    renderResume()
+    const select = screen.getByRole('combobox', { name: 'Company' })
+    expect(within(select).getAllByRole('option').length).toBeGreaterThan(200)
+    await userEvent.selectOptions(select, 'meta')
+    const shown = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'all', 'meta'))
+    expect(cards()).toHaveLength(shown.length)
+    expect(shown.length).toBeLessThan(RESUME_PROJECTS.length)
+    expect(screen.getByRole('status')).toHaveTextContent(`${shown.length} projects for Meta`)
+  })
+
+  it('theCompanyListFollowsTheTierAndChangingTierClearsAMismatchedCompany', async () => {
+    renderResume()
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'service')
+    const options = within(screen.getByRole('combobox', { name: 'Company' })).getAllByRole('option').map((o) => o.textContent)
+    expect(options).toContain('TCS')
+    expect(options).not.toContain('Meta')
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Company' }), 'tcs')
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'maang')
+    expect(screen.getByRole('combobox', { name: 'Company' })).toHaveValue('all')
+  })
+
+  it('startsOnYourDreamCompanyWhenYouHaveOne', () => {
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ dailyGoal: 3, target: { company: 'maang', role: 'sde1', employer: 'google' } }))
+    renderResume()
+    expect(screen.getByRole('combobox', { name: 'Company' })).toHaveValue('google')
+  })
+
+  it('everyCardHasABuildItLikeProductionSection', async () => {
+    renderResume()
+    const p = RESUME_PROJECTS[0]
+    const card = cards()[0]
+    await userEvent.click(within(card).getByRole('button', { name: /Build it like production/ }))
+    expect(within(card).getByText(p.production.architecture)).toBeInTheDocument()
+    for (const m of p.production.milestones) expect(within(card).getByText(m)).toBeInTheDocument()
+    for (const c of p.production.shipIt) expect(within(card).getByText(c)).toBeInTheDocument()
+  })
+
+  it('offersToShareTheProjectThatGotYouIn', async () => {
+    renderResume()
+    await userEvent.click(screen.getByRole('button', { name: 'Share the project that got you in' }))
+    expect(screen.getByRole('dialog', { name: 'Share the project that got you in' })).toBeInTheDocument()
+  })
+
+  it('showsReviewedProjectsFromPeopleWhoGotInWithoutAnEmail', async () => {
+    api.fetchSharedProjects.mockResolvedValue([{ id: '1', company: 'Atlassian', level: 'sde1', roleTitle: 'Software Engineer, Backend', projectTitle: 'Seat reservation system', summary: 'A booking API where one seat is never sold twice.', whyItHelped: 'It was the centre of my system design round.', stack: 'Spring Boot', repoUrl: 'https://github.com/ana/seats', name: 'Ana G.', linkedin: 'ana-gomez', year: 2026, approvedAt: '2026-10-01T00:00:00Z' }])
+    renderResume()
+    const region = await screen.findByRole('region', { name: 'From people who got in' })
+    expect(within(region).getByText('Seat reservation system')).toBeInTheDocument()
+    expect(within(region).getByText(/Atlassian/)).toBeInTheDocument()
+    expect(within(region).getByRole('link', { name: /github.com\/ana\/seats/ })).toHaveAttribute('href', 'https://github.com/ana/seats')
+    expect(region).toHaveTextContent(/shared by users, reviewed by AlgoMentor, not verified/i)
+  })
+
+  it('hidesTheCommunitySectionWhenThereIsNothingToShow', async () => {
+    renderResume()
+    await vi.waitFor(() => expect(api.fetchSharedProjects).toHaveBeenCalled())
+    expect(screen.queryByRole('region', { name: 'From people who got in' })).toBeNull()
   })
 
   it('creditsTheRepositoryOrRoadmapAProjectCameFrom', () => {

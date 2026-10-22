@@ -32,6 +32,12 @@ public class WebConfig implements WebMvcConfigurer {
 		return new RequestGuardInterceptor(properties.problemRateLimit(), properties.maxRequestBytes());
 	}
 
+	// A few shares a day per person is plenty for "the project that got me in".
+	@Bean
+	RequestGuardInterceptor contributionGuard() {
+		return new RequestGuardInterceptor(new AlgoMentorProperties.RateLimit(3, 10), 16 * 1024);
+	}
+
 	/** Runs streaming answers off the request thread; one cheap virtual thread per stream. */
 	@Bean(destroyMethod = "close")
 	ExecutorService streamExecutor() {
@@ -49,6 +55,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(askGuard()).addPathPatterns("/ask", "/ask/stream");
+		registry.addInterceptor(contributionGuard()).addPathPatterns("/api/contributions");
 		registry.addInterceptor(problemGuard()).addPathPatterns("/problem", "/profiles/**", "/git/check/**", "/git/repo-health/**");
 	}
 

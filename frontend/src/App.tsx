@@ -29,6 +29,7 @@ const Companies = lazy(() => import('@/pages/Companies'))
 const Company = lazy(() => import('@/pages/Company'))
 const About = lazy(() => import('@/pages/About'))
 const Settings = lazy(() => import('@/pages/Settings'))
+const AdminReview = lazy(() => import('@/pages/AdminReview'))
 
 export default function App() {
   return (
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/companies/:companyId" element={<Company />} />
           <Route path="/about" element={<About />} />
           <Route path="/about/settings" element={<Settings />} />
+          <Route path="/admin/review" element={<AdminReview />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

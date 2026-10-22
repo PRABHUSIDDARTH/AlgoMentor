@@ -31,6 +31,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Pull a layered image from a registry and merge the layers with overlayfs', 'Run as an unprivileged user with user namespaces', 'A seccomp profile that blocks a chosen system call'],
     stack: 'Go or Rust on Linux (a Linux VM is fine on macOS or Windows). The Linux man pages namespaces(7) and cgroups(7) are the reference.',
+    production: {
+      architecture:
+        'The runtime forks a child with clone flags for new PID, mount, UTS and network namespaces, assigns it to a cgroup with limits, makes a mount namespace private and pivots into an unpacked root filesystem, then execs the target program. The decision to defend is namespaces plus cgroups on the shared host kernel rather than a virtual machine: start-up is milliseconds and overhead small, at the cost of weaker isolation because a kernel bug affects every container.',
+      milestones: [
+        'A command that runs a shell in new PID and UTS namespaces, showing it as PID 1 with its own hostname',
+        'A root filesystem from a tarball entered with pivot_root, with /proc mounted and the host filesystem not visible',
+        'A cgroup v2 memory and CPU limit, demonstrated by a memory-hogging program killed at the limit',
+        'A bridge and veth pair giving two containers a ping between them and outbound access through NAT',
+        'ps, stop and rm commands with a test that no mounts or cgroups remain afterwards',
+        'Layered images merged with overlayfs, with a run of an image whose lower layers are shared',
+      ],
+      shipIt: [
+        'Integration tests run in CI on a Linux runner covering isolation, limits, networking and cleanup, using a privileged job with a documented reason',
+        'A cleanup check after every test lists leftover mounts, cgroups, veth interfaces and processes and fails if any remain',
+        'The runtime drops capabilities, sets no_new_privs and applies a seccomp profile, with a test that a blocked syscall fails',
+        'Image extraction rejects tar entries with absolute paths or .. so an image cannot write outside the root directory',
+        'Failures during setup roll back what was created, shown by forcing a failure halfway and checking cleanup',
+        'Container state and exit codes are recorded and logged, and stop sends SIGTERM then SIGKILL after a timeout',
+        'The README has a diagram of namespaces, cgroup and rootfs layers, and states that the runtime is for learning, not production use',
+      ],
+    },
     bullet: {
       template: 'Built a container runtime in <language> using <namespaces, cgroups and a union filesystem>, with <resource limits and networking>; verified by <tests>.',
       example: 'Built a container runtime in Go using PID, mount and network namespaces, cgroup v2 limits and overlayfs; verified with 14 integration tests including an out-of-memory kill and container-to-container ping.',
@@ -53,6 +74,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Range scans with iterators', 'Snapshot reads using sequence numbers', 'Compare write and read throughput against SQLite or RocksDB on the same workload'],
     stack: 'Rust, Go, Java or C++. Start from the LSM-tree chapter of "Designing Data-Intensive Applications" or the tutorials under Database in build-your-own-x.',
+    production: {
+      architecture:
+        'Writes go to a write-ahead log and an in-memory sorted memtable; when full, the memtable is flushed as an immutable sorted file with an index and Bloom filter, and background compaction merges files. The decision to defend is the LSM design over a B-tree: writes are sequential appends so write throughput is high, at the cost of read amplification across files and write amplification from compaction, which Bloom filters and a compaction policy trade off.',
+      milestones: [
+        'An in-memory memtable with put, get and delete (tombstones), tested against a plain map as an oracle',
+        'A write-ahead log with fsync policy and replay on start-up, shown by killing the process and recovering all acknowledged writes',
+        'Flush to sorted immutable files with a sparse index, and reads that search newest to oldest',
+        'Bloom filters per file, with a counter showing files skipped on lookups for missing keys',
+        'Background compaction that merges files and drops shadowed and deleted keys, with disk usage before and after',
+        'A random crash-recovery test harness and a benchmark of writes and reads per second',
+      ],
+      shipIt: [
+        'A model-based test applies random operations to the store and a reference map, restarting at random points, and asserts identical contents',
+        'A crash test kills the process, including during a flush and a compaction, and asserts no acknowledged write is lost and no half-written file is read',
+        'Files are checksummed per block, and corruption is detected and reported instead of returning wrong data',
+        'Files are written to a temp name, fsynced and renamed, with the manifest updated atomically',
+        'Compaction runs in the background with a rate limit and does not block writes, and the write stall behaviour when too many files exist is documented and tested',
+        'Metrics for memtable size, file count, compaction time, Bloom filter hit rate and write amplification',
+        'The README states the durability guarantee per fsync setting and includes a comparison benchmark against SQLite or RocksDB with the workload described',
+      ],
+    },
     bullet: {
       template: 'Built a persistent key-value store in <language> using <an LSM tree, write-ahead log and Bloom filters>; sustains <N> writes per second and recovers from <crash tests>.',
       example: 'Built a persistent key-value store in Rust using an LSM tree, write-ahead log and Bloom filters; sustains 90,000 writes per second and passed 500 randomised crash-recovery runs with no lost writes.',
@@ -75,6 +117,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Blue-green or canary releases', 'Infrastructure defined with Terraform', 'A dashboard of deploy frequency and change failure rate'],
     stack: 'GitHub Actions or GitLab CI, Docker, and a free-tier cloud VM or a local Kubernetes cluster such as kind.',
+    production: {
+      architecture:
+        'Pull requests trigger lint, tests and an image build; merging to main pushes an image tagged with the commit SHA and a deploy job updates the running service to that tag, then polls a health endpoint. The decision to defend is deploying immutable SHA-tagged images and rolling back by redeploying the previous tag: the exact previous artifact is known and reversible, at the cost of needing a registry and a health check that really reflects readiness.',
+      milestones: [
+        'A workflow that runs lint and unit tests on every pull request and blocks merge on failure, shown on a deliberately broken pull request',
+        'A Dockerfile and a build job that pushes an image tagged with the commit SHA to a registry',
+        'A deploy job to a VM or kind cluster that pulls the SHA tag and starts the new version, with the version shown on a /version endpoint',
+        'A post-deploy health check that rolls back to the previous tag, demonstrated by deploying a version that fails to start',
+        'Secrets moved to the CI secret store with a secret-scanning step',
+        'A deploy-frequency and failure-rate summary from the pipeline history',
+      ],
+      shipIt: [
+        'The pipeline is tested with a deliberately bad commit: the broken tests block the merge and the failing health check triggers rollback, both recorded in the README',
+        'Deploys use a concurrency group so two deploys cannot run at once, and are one command or one button to re-run',
+        'Secrets live in the CI store with minimum scope, are masked in logs, and a secret scanner runs on every pull request',
+        'Images are built from a pinned base, scanned for known vulnerabilities, and dependencies are cached to keep the pipeline fast',
+        'The health check verifies a real dependency such as the database, not just that the process is up, and the rollback leaves the service serving the old version',
+        'Deploy events are logged with SHA, author and result, and failures notify a channel',
+        'The README shows the pipeline diagram, rollback demo and measured pipeline time',
+      ],
+    },
     bullet: {
       template: 'Built a CI/CD pipeline with <tool> that runs <checks>, builds <artifact> and deploys to <target> with <rollback or release strategy>; cut <metric> from <before> to <after>.',
       example: 'Built a CI/CD pipeline with GitHub Actions that runs lint and 220 tests, builds a Docker image and deploys to a cloud VM with automatic rollback; cut release time from 40 minutes of manual steps to 6.',
@@ -97,6 +160,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Contract tests between two services', 'A load test with a pass or fail threshold', 'Mutation testing to measure how good the tests really are'],
     stack: 'Java with REST Assured and Selenium, or TypeScript or Python with Playwright and pytest. GitHub Actions for CI.',
+    production: {
+      architecture:
+        'A layered framework: API clients and page objects at the bottom, test fixtures that create and delete their own data above them, tests on top, and a runner that parallelises and publishes reports. The decision to defend is isolated per-test data with independent tests over shared seeded state: tests run in any order and in parallel with no hidden coupling, at the cost of the setup time you save back through API-level setup instead of UI steps.',
+      milestones: [
+        'A client wrapper and ten API tests covering success, validation errors and auth failures, with a first HTML report',
+        'Three browser journeys written with page objects and stable locators, passing locally',
+        'Fixtures that create and clean up their own data through the API, with a check that tests pass when run in random order',
+        'Reports with screenshots, request logs and traces for failures, shown on a deliberately failing test',
+        'A CI workflow that runs the suite in parallel on every pull request and uploads the report',
+        'A flaky-test quarantine with a tracked list and retry data',
+      ],
+      shipIt: [
+        'The suite passes when run twice in random order and in parallel, which CI enforces so hidden dependencies fail the build',
+        'Waits are condition-based, never fixed sleeps, and a lint rule forbids sleep calls in tests',
+        'Flaky tests are quarantined with an issue link and an owner, and the suite reports flake rate per test over the last runs',
+        'Test credentials come from the CI secret store, test accounts are isolated, and tokens are not printed in reports',
+        'CI runs on every pull request with a time budget, and the report artifact is linked in the pull request',
+        'One command runs the suite locally, and a tagged smoke subset runs against a deployed environment after release',
+        'The README shows the layer diagram, a report screenshot and the number of regressions it caught',
+      ],
+    },
     bullet: {
       template: 'Built a test automation framework in <language> covering <APIs and journeys> with <reporting>; runs in <CI> in <time> and caught <N> regressions.',
       example: 'Built a test automation framework in Python and Playwright covering 60 API checks and 12 browser journeys with HTML reports; runs in GitHub Actions in 7 minutes and caught 9 regressions before release.',
@@ -119,6 +203,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Dark and light themes from the same tokens', 'Integration with a form library', 'Bundle size budgets enforced in CI'],
     stack: 'React or Vue with TypeScript, Storybook, Vitest or Jest, Playwright for visual tests and axe for accessibility checks.',
+    production: {
+      architecture:
+        'Design tokens define colour, spacing and type, components consume them and follow WAI-ARIA authoring patterns, and a docs site renders live examples from the same source; CI runs unit, accessibility and visual tests. The decision to defend is building headless behaviour and ARIA logic separately from styling: keyboard and screen reader support is tested once and themes are cheap, at the cost of more API surface and slower initial development than hard-coded styles.',
+      milestones: [
+        'Design tokens and three simple components with a Storybook site showing each state',
+        'A modal with focus trap and focus return, and a combobox with arrow-key navigation, each with a keyboard test',
+        'A data table with sorting and accessible row selection, tested with a screen reader pass noted in the docs',
+        'axe checks in the test suite and a visual regression suite that fails a pull request on an unintended pixel change',
+        'Package build, type definitions and a changelog generated from commits',
+        'A published version installed in a sample app to prove it works from outside the repo',
+      ],
+      shipIt: [
+        'Keyboard tests cover Tab, Escape, arrow keys and focus return for every interactive component, and axe runs in CI on every story',
+        'Visual snapshots are taken in a fixed browser container so results are stable, and updates need review in the pull request',
+        'The package exports types, tree-shakes, and has a bundle-size budget that fails CI if exceeded',
+        'Semantic versioning is enforced with changesets and a check that breaking changes bump the major version',
+        'Components make no assumptions about global CSS and respect prefers-reduced-motion and prefers-color-scheme',
+        'A sample app consumes the built package in CI, catching missing exports and bad type definitions',
+        'The docs site is deployed automatically from main, with usage, accessibility notes and a live playground per component',
+      ],
+    },
     bullet: {
       template: 'Built an accessible component library in <framework> with <N> components, <testing approach> and <docs>; used by <N> apps and meets <standard>.',
       example: 'Built an accessible component library in React and TypeScript with 24 components, axe and visual regression tests and a Storybook site; adopted by 3 apps and meets WCAG 2.1 AA in automated checks.',
@@ -141,6 +246,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Push notifications that trigger a sync', 'End-to-end encryption of the notes', 'Start-up time and battery use measured and improved'],
     stack: 'Kotlin with Room and WorkManager, Swift with Core Data, or Flutter with drift. Any REST or GraphQL backend.',
+    production: {
+      architecture:
+        'The UI reads and writes only the local database; every write also appends an operation to an outbox, and a background worker sends outbox entries to the server and pulls changes since a stored cursor. The decision to defend is local-first with a stated conflict rule such as per-field last-write-wins using server-assigned versions: the app is always responsive and the merge is predictable, at the cost of possibly discarding a concurrent edit unless you add a richer merge.',
+      milestones: [
+        'A notes or tasks app with a local database and screens that read only from it, working in airplane mode',
+        'An outbox table recording each change, and a mock server that receives operations when the network returns',
+        'A background sync worker with retries and backoff that survives the app being killed, shown by force-stopping mid-sync',
+        'A backend with change cursors and versioning, and a pull step that applies remote changes',
+        'A written conflict rule with an automated test running two simulated devices through a conflicting edit',
+        'Measurements for cold start and sync time on a large local dataset',
+      ],
+      shipIt: [
+        'Sync is idempotent: each operation has a client-generated id, and a test replays the same batch twice and asserts one effect',
+        'A two-device conflict test runs in CI and asserts both devices converge to the documented result',
+        'Interrupted-sync tests kill the app mid-request and verify nothing is lost or duplicated after restart',
+        'Deletes use tombstones, so a deleted item does not reappear when a stale device syncs, with a test',
+        'Auth tokens are stored in the platform keystore, the local database is excluded from backups if it holds sensitive data, and the server checks ownership on every item',
+        'Sync status, last sync time and failures are visible in the app, with logs for each sync attempt',
+        'CI runs unit and instrumented tests on every pull request, and the README has a sync sequence diagram and a demo GIF of offline edits syncing',
+      ],
+    },
     bullet: {
       template: 'Built an offline-first <platform> app in <language> with <local database> and <sync approach>; resolves <conflicts> and works with no network for <duration>.',
       example: 'Built an offline-first Android app in Kotlin with Room and WorkManager sync; resolves edit conflicts per field and passed 30 automated two-device conflict tests.',
@@ -163,6 +289,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Import from a health platform', 'Weekly summary notifications', 'Export your own data as CSV'],
     stack: 'Kotlin, Swift, Flutter or React Native for the client, and any REST backend with PostgreSQL.',
+    production: {
+      architecture:
+        'A mobile client calls a REST API that authenticates with short-lived tokens, stores users, exercises, workouts and sets in PostgreSQL, and computes progress aggregates with SQL queries. The decision to defend is computing charts on the server: one query shape gives the same numbers on every client and keeps the app light, at the cost of a network round trip, which a cached last result covers when offline.',
+      milestones: [
+        'A schema and API for exercises, workouts and sets, with token login and curl examples',
+        'Server-side validation and an integration test suite against a real database',
+        'A mobile screen that logs a workout in under 30 seconds, timed with a stopwatch',
+        'A progress endpoint returning best set and volume per exercise per week, and a chart screen using it',
+        'Cached last results for use with no connection, and a clear error state when offline',
+        'An installable build on a device and a recorded demo in the README',
+      ],
+      shipIt: [
+        'API tests cover authentication failures, another user\'s workout returning 404, and validation of negative or absurd reps and weights',
+        'A SQL test on a small seeded dataset checks the progress aggregates against hand-computed numbers',
+        'CI runs API tests on every pull request and builds the app, with unit tests for the client view models',
+        'Passwords are hashed with a modern algorithm, tokens expire and refresh, and the client stores tokens in the platform keystore, not in plain preferences',
+        'Endpoints are paginated and rate limited, and migrations are versioned and run on deploy',
+        'The API is deployed with one command, exposes a health endpoint and logs request ids and latency',
+        'The README shows the data model diagram, a screenshot of the progress chart and links to the installable build',
+      ],
+    },
     bullet: {
       template: 'Built a workout tracking app with a <platform> client and a <stack> API, with <auth>, <charts> and <N> tests; logging a workout takes <time>.',
       example: 'Built a workout tracking app with a Flutter client and a Spring Boot API, with JWT authentication and server-side progress charts covered by 85 tests; logging a workout takes under 25 seconds.',
@@ -185,6 +332,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Incremental loads instead of full reloads', 'Lineage documentation', 'A cost and run-time report per step'],
     stack: 'Python, SQL, Airflow or Dagster, dbt, and DuckDB or PostgreSQL locally, or BigQuery on a free tier.',
+    production: {
+      architecture:
+        'A scheduler runs extract, load and transform tasks per date partition: raw data lands unchanged, SQL models build staging, fact and dimension tables, and tests run before downstream tables are published. The decision to defend is idempotent date-partitioned loads that delete and rewrite a partition (or merge on a key): reruns and backfills give the same result, at the cost of rewriting data you could have appended.',
+      milestones: [
+        'An extract task that downloads one day of data into a raw table with load metadata, rerunnable for any date',
+        'dbt or SQL models building staging, fact and dimension tables, with a lineage graph generated',
+        'Data quality tests for nulls, uniqueness, accepted values, row counts and freshness that fail the run',
+        'An orchestrated DAG with retries and alerts, shown rerunning a failed day',
+        'A dashboard answering three questions from the final tables',
+        'A backfill of 30 days with a before and after comparison proving rerun results are identical',
+      ],
+      shipIt: [
+        'A rerun test loads the same date twice and asserts table contents and row counts are unchanged',
+        'Quality checks gate publication: a seeded bad file makes the run fail and the last good tables stay in place',
+        'Schema changes in the source are detected and fail clearly instead of silently dropping columns',
+        'Credentials and API keys come from a secrets store or environment, not from the repository, and the warehouse role for the pipeline is least-privilege',
+        'CI runs model compilation and tests against a small fixture dataset on every pull request',
+        'Each run logs rows read and written, duration and test results, and failed runs send an alert',
+        'docker compose up runs scheduler, warehouse and dashboard, and the README shows the DAG, lineage and run-time table',
+      ],
+    },
     bullet: {
       template: 'Built a batch data pipeline in <tools> loading <sources> into <warehouse> with <N> quality checks and <scheduler>; processes <volume> in <time> and is idempotent.',
       example: 'Built a batch data pipeline in Python, dbt and Airflow loading 2 million rows a day into PostgreSQL with 35 data quality checks; reruns are idempotent and the full run takes 11 minutes.',
@@ -207,6 +375,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['A waiting list that offers freed seats', 'Idempotent payment webhooks', 'A load test of the booking path with the bottleneck identified'],
     stack: 'Spring Boot, Node or Django with PostgreSQL. Use a unique constraint or row-level locking, not an application-level check.',
+    production: {
+      architecture:
+        'The booking API treats the database as the arbiter: holds and bookings are rows with a unique constraint on (show, seat), and a hold is created by an insert or conditional update inside a transaction with an expiry timestamp. The decision to defend is a database constraint plus short transactions over application-level locking or checks: it stays correct with many app instances, at the cost of retries on conflict and a background job or query filter to clear expired holds.',
+      milestones: [
+        'A schema for movies, screens, shows and seats with a browse API and seeded data',
+        'A hold endpoint that atomically takes a seat for five minutes, with an expired-hold filter or sweeper',
+        'A booking endpoint that converts a valid hold to a booking after a payment stub, protected by a unique constraint',
+        'A concurrency test where 100 clients race for one seat and exactly one gets it, run 50 times',
+        'Authentication and an admin view of revenue and occupancy per show',
+        'A load test of the booking path with the slowest query identified from the database',
+      ],
+      shipIt: [
+        'The race test runs in CI on every pull request against real PostgreSQL, and also with several app instances, asserting exactly one booking',
+        'An expiry test with an injected clock proves a seat is bookable again after a hold lapses and cannot be booked with an expired hold',
+        'Payment callbacks are idempotent by transaction id, so a replayed webhook does not create a second booking',
+        'Users can only see and cancel their own bookings, and admin routes check roles, both covered by tests',
+        'Inputs are validated, and seat ids and show ids are checked against the show so a seat from another screen is rejected',
+        'Metrics and logs for holds created, expired, conflicts and bookings per show, with p99 booking latency',
+        'The README has the schema diagram, the constraint explained, and the load test result with the bottleneck found',
+      ],
+    },
     bullet: {
       template: 'Built a seat reservation API in <stack> with <hold expiry> and <database-level guarantees>; handled <N> concurrent bookings with <zero double-sales>.',
       example: 'Built a seat reservation API in Spring Boot and PostgreSQL with expiring holds and a unique-seat constraint; 200 concurrent clients racing for one seat produced exactly one booking in every run.',
@@ -229,6 +418,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Stale-while-revalidate', 'Several edge nodes using consistent hashing', 'Range requests for large files'],
     stack: 'Go, Rust, Node or Java. Read RFC 9111 (HTTP caching) first.',
+    production: {
+      architecture:
+        'A reverse proxy checks a cache keyed by method, URL and Vary headers, serves fresh entries, revalidates stale ones with If-None-Match, and on a miss uses a single in-flight request per key shared by all waiters before storing the response. The decision to defend is request coalescing: it prevents a thundering herd on the origin when a popular entry expires, at the cost of making every waiter depend on one request, so you need a timeout and a rule for sharing errors.',
+      milestones: [
+        'A pass-through reverse proxy that forwards GET requests to an origin, shown with a test origin',
+        'A cache that honours Cache-Control max-age, no-store and private, with a hit and miss header and a test table of directives',
+        'Conditional revalidation with ETag and 304, shown by bytes transferred dropping on a stale hit',
+        'Request coalescing, demonstrated by 1,000 concurrent misses producing one origin request',
+        'Purge by URL and tag over an authenticated admin endpoint',
+        'A load test comparing origin requests, latency and hit ratio with and without the proxy',
+      ],
+      shipIt: [
+        'Cache rules are covered by table-driven tests derived from RFC 9111 examples, including Vary, no-store and authorisation headers, run in CI',
+        'The coalescing test counts origin requests under 1,000 concurrent misses, and covers origin error and timeout behaviour so waiters do not hang',
+        'Responses with Set-Cookie or Authorization are not shared between users unless explicitly allowed, tested to prevent cache leaks',
+        'A maximum cache size with eviction and a maximum object size keep memory bounded, with a test filling the cache',
+        'The purge API requires a token, and origin timeouts, connection limits and a serve-stale-on-error option are configured and tested',
+        'Metrics for hit ratio, origin requests, revalidations and latency histograms, and logs include the cache status',
+        'The README includes the request flow diagram and the load-test table, with the origin and hardware described',
+      ],
+    },
     bullet: {
       template: 'Built a caching reverse proxy in <language> implementing <HTTP cache rules> with <coalescing and purge>; cut origin requests by <X>% at <load>.',
       example: 'Built a caching reverse proxy in Go implementing RFC 9111 rules with request coalescing and tag purge; cut origin requests by 94% and p95 latency from 180 ms to 12 ms in a 5,000 requests-per-second test.',
@@ -251,6 +461,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Trace-based sampling', 'Log lines correlated with trace ids', 'Automatic rollback when the SLO burns too fast'],
     stack: 'OpenTelemetry, Prometheus, Grafana with Loki or Tempo, and Docker Compose. Any language for the app.',
+    production: {
+      architecture:
+        'Each service emits traces, metrics and structured logs through OpenTelemetry to a collector, which forwards to Prometheus, Tempo and Loki, and Grafana dashboards and Alertmanager rules sit on top, tied to an SLO. The decision to defend is alerting on error-budget burn rate rather than on raw error thresholds: alerts fire when users are really at risk and stay quiet for blips, at the cost of defining a good SLI and a longer time to detect very small incidents.',
+      milestones: [
+        'A four-service demo app with a load generator, running under docker compose',
+        'OpenTelemetry traces propagated across all services, shown as one end-to-end trace in Tempo',
+        'Request metrics and a dashboard for latency, traffic, errors and saturation',
+        'An SLO of 99.5% availability with multi-window burn-rate alert rules and a test that fires them',
+        'A fault injection of added latency or failures in one dependency, diagnosed from the dashboards alone',
+        'A runbook and a post-incident write-up with a timeline and follow-ups',
+      ],
+      shipIt: [
+        'Alert rules have unit tests using promtool, and CI validates the rules and dashboards as code on every pull request',
+        'The fault-injection drill is repeatable with one command and the README records time to detect and time to diagnose',
+        'Log lines carry trace ids so a trace links to its logs, and logs avoid personal data and tokens',
+        'Metric label cardinality is bounded, with a note on what is excluded, so Prometheus memory does not grow without limit',
+        'Every alert links to a runbook entry stating the first three checks and a likely cause',
+        'The telemetry pipeline has its own health checks and sampling settings, and survives a collector restart without crashing services',
+        'The README shows the architecture diagram, a dashboard screenshot and the SLO definition with its calculation',
+      ],
+    },
     bullet: {
       template: 'Instrumented <system> with <OpenTelemetry, Prometheus and Grafana>, defined <SLOs> and <alerting>; cut time to detect <failure> from <before> to <after>.',
       example: 'Instrumented a 4-service app with OpenTelemetry, Prometheus and Grafana and defined a 99.5% availability SLO with burn-rate alerts; an injected dependency slowdown was detected in under 2 minutes.',
@@ -273,6 +504,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Usage-based billing', 'Single sign-on with OIDC', 'Row-level security in PostgreSQL'],
     stack: 'Next.js or React with a Node, Spring or Django API and PostgreSQL. Stripe\'s test mode is free.',
+    production: {
+      architecture:
+        'One PostgreSQL database holds all tenants with an organisation id on every table, and row-level security policies bound to a per-request session variable enforce isolation below the application code. The decision to defend is shared schema with row-level security over a database per tenant: cheaper to run and migrate across many customers, at the cost of noisy-neighbour risk and a single bug in a policy or a missing session setting exposing data, which tests must cover.',
+      milestones: [
+        'Sign-up, login and organisation creation with owner, admin and member roles',
+        'A tenant-scoped data model with organisation id on every row and RLS policies, plus a migration set',
+        'A test harness that creates two organisations and proves each cannot read or write the other\'s rows through the API and directly in SQL',
+        'A Stripe test-mode subscription with a webhook handler that is signature-checked and idempotent',
+        'An audit log of changes shown in an admin page',
+        'A deployed public URL with CI running tests and migrations before release',
+      ],
+      shipIt: [
+        'Isolation tests run in CI for every endpoint: reads, updates, deletes and list calls with another tenant\'s ids all fail, and a missing tenant context fails closed',
+        'The database role used by the app is not a superuser and cannot bypass RLS, which is verified by a test',
+        'Webhook signatures are verified, event ids are stored to make replays harmless, and API secrets live in the host\'s secret store',
+        'Passwords use a modern hash, sessions expire, role changes are authorised and invitation tokens are single-use and time-limited',
+        'Migrations run automatically and are backward compatible with the previous app version, so a rolling deploy does not break',
+        'Logs and traces include tenant id and request id, with error tracking and a health endpoint',
+        'The README has the tenancy diagram, an explanation of the RLS policy and a link to the live demo with test credentials',
+      ],
+    },
     bullet: {
       template: 'Built a multi-tenant SaaS in <stack> with <roles>, <tenant isolation> and <billing>; deployed on <platform> with <CI and tests>.',
       example: 'Built a multi-tenant SaaS in Next.js and PostgreSQL with role-based access, row-level security and Stripe test-mode billing; 41 isolation tests confirm no cross-tenant reads, deployed with CI on every commit.',
@@ -295,6 +547,27 @@ export const SOURCED_PROJECTS: ResumeProject[] = [
     ],
     stretch: ['Content hashing to skip near-duplicate pages', 'Distribute the frontier across machines by host', 'A simple ranking of pages by in-links'],
     stack: 'Go, Python (asyncio) or Java. Crawl only sites that allow it, such as your own or a test site.',
+    production: {
+      architecture:
+        'A scheduler owns a frontier of URLs partitioned by host, and fetch workers pull the next URL whose host delay has elapsed, fetch it, parse links, normalise and de-duplicate them, and write pages and the frontier state to storage. The decision to defend is a per-host queue with a politeness delay over one global queue: it respects robots.txt and rate limits without head-of-line blocking on a slow site, at the cost of more scheduling logic and memory for many hosts.',
+      milestones: [
+        'A single-threaded breadth-first crawler for one test site that stops at a depth limit and prints the pages found',
+        'robots.txt parsing with caching and a per-host delay, shown by logs of timestamps per host',
+        'URL normalisation and a seen set, then a Bloom filter variant with measured memory and false positive rate',
+        'A worker pool with timeouts and retries with backoff, crawling a local test site with injected slow pages and errors',
+        'Persistent frontier and results so a stopped crawl resumes where it left off, shown by killing and restarting',
+        'A crawl report of pages per second, errors and hosts',
+      ],
+      shipIt: [
+        'Tests against a local test server check robots.txt disallow, crawl-delay, redirect loops, relative links and normalisation edge cases, in CI',
+        'A resume test kills the crawler mid-run and asserts no page is fetched twice and no queued URL is lost',
+        'Limits on response size, content type, redirects and crawl depth stop crawler traps such as infinite calendars',
+        'A user agent string with a contact URL is sent, and the per-host delay cannot be set below a documented minimum',
+        'Timeouts on connect, read and total request time prevent stuck workers, and retries obey a maximum',
+        'Metrics for queue size, fetch rate, errors by type and per-host latency, with logs of skipped URLs and the reason',
+        'The README has a diagram of frontier, workers and storage, with a note that only permitted sites were crawled',
+      ],
+    },
     bullet: {
       template: 'Built a web crawler in <language> with <politeness rules>, <de-duplication> and <resumable state>; crawled <N> pages in <time> without breaching robots.txt.',
       example: 'Built a web crawler in Go with robots.txt and per-host rate limits, Bloom-filter de-duplication and resumable state; crawled 1.2 million pages in 6 hours without breaching a robots.txt rule.',

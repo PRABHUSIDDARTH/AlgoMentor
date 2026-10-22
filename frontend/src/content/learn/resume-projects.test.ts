@@ -6,9 +6,25 @@ const ROLES = ['intern', 'sde1', 'sde2', 'sde3'] as const
 const FOCUSES = ['backend', 'frontend', 'fullstack', 'mobile', 'data', 'devops', 'sdet'] as const
 
 describe('resume projects content', () => {
-  it('twentyFiveProjectsWithUniqueIds', () => {
-    expect(RESUME_PROJECTS).toHaveLength(25)
-    expect(new Set(RESUME_PROJECTS.map((p) => p.id)).size).toBe(25)
+  it('hasAtLeastFiftyProjectsWithUniqueUrlSafeIds', () => {
+    expect(RESUME_PROJECTS.length).toBeGreaterThanOrEqual(50)
+    expect(new Set(RESUME_PROJECTS.map((p) => p.id)).size).toBe(RESUME_PROJECTS.length)
+    for (const p of RESUME_PROJECTS) expect(p.id, p.id).toMatch(/^[a-z0-9-]{3,50}$/)
+  })
+
+  it('everyLevelHasAtLeastTwentyProjects', () => {
+    for (const r of ROLES) expect(RESUME_PROJECTS.filter((p) => p.roles.includes(r)).length, r).toBeGreaterThanOrEqual(20)
+  })
+
+  it('everyProjectSaysHowToBuildItLikeProduction', () => {
+    for (const p of RESUME_PROJECTS) {
+      expect(p.production.architecture.length, `${p.id} architecture`).toBeGreaterThanOrEqual(80)
+      expect(p.production.milestones.length, `${p.id} milestones`).toBeGreaterThanOrEqual(4)
+      expect(p.production.milestones.length, `${p.id} milestones`).toBeLessThanOrEqual(6)
+      expect(p.production.shipIt.length, `${p.id} shipIt`).toBeGreaterThanOrEqual(5)
+      expect(p.production.shipIt.length, `${p.id} shipIt`).toBeLessThanOrEqual(7)
+      for (const t of [...p.production.milestones, ...p.production.shipIt]) expect(t.length, `${p.id}: ${t}`).toBeGreaterThanOrEqual(15)
+    }
   })
 
   it('specExamplesAreThere', () => {
@@ -36,11 +52,11 @@ describe('resume projects content', () => {
     }
   })
 
-  it('everyTargetAndRoleHasAtLeastTwoProjects', () => {
+  it('everyTierAndLevelHasAtLeastThreeProjects', () => {
     for (const c of COMPANIES) {
       for (const r of ROLES) {
         const n = RESUME_PROJECTS.filter((p) => matchesFilter(p, c, r)).length
-        expect(n, `${c} / ${r}`).toBeGreaterThanOrEqual(2)
+        expect(n, `${c} / ${r}`).toBeGreaterThanOrEqual(3)
       }
     }
   })
@@ -56,8 +72,8 @@ describe('resume projects content', () => {
     for (const p of RESUME_PROJECTS) expect(p.focus.length, p.id).toBeGreaterThanOrEqual(1)
   })
 
-  it('everyFocusHasAtLeastTwoProjects', () => {
-    for (const f of FOCUSES) expect(RESUME_PROJECTS.filter((p) => p.focus.includes(f)).length, f).toBeGreaterThanOrEqual(2)
+  it('everyFocusHasAtLeastTenProjects', () => {
+    for (const f of FOCUSES) expect(RESUME_PROJECTS.filter((p) => p.focus.includes(f)).length, f).toBeGreaterThanOrEqual(10)
   })
 
   it('theFocusFilterNarrowsTheList', () => {
@@ -67,9 +83,23 @@ describe('resume projects content', () => {
     expect(mobile.every((p) => p.focus.includes('mobile'))).toBe(true)
   })
 
+  it('filtersByAnyCompanyInTheDirectoryThroughItsTier', () => {
+    const meta = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'all', 'meta'))
+    expect(meta.length).toBeGreaterThan(0)
+    expect(meta.every((p) => p.targets.includes('maang'))).toBe(true)
+    const tcs = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'all', 'tcs'))
+    expect(tcs.every((p) => p.targets.includes('service'))).toBe(true)
+    expect(tcs.length).not.toBe(meta.length)
+    expect(RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'all', 'not-a-company'))).toHaveLength(0)
+  })
+
+  it('aCompanyAndATierMustAgree', () => {
+    expect(RESUME_PROJECTS.filter((p) => matchesFilter(p, 'service', 'all', 'all', 'meta'))).toHaveLength(0)
+  })
+
   it('projectsTakenFromPublicRepositoriesAndRoadmapsSaySo', () => {
     const credited = RESUME_PROJECTS.filter((p) => p.inspiredBy)
-    expect(credited.length).toBeGreaterThanOrEqual(12)
+    expect(credited.length).toBeGreaterThanOrEqual(25)
     for (const p of credited) {
       expect(p.inspiredBy!.url, p.id).toMatch(/^https:\/\/(github\.com|roadmap\.sh)\//)
       expect(p.inspiredBy!.label.length, p.id).toBeGreaterThan(8)

@@ -57,6 +57,25 @@ export function ResumeCard({ project }: { project: ResumeProject }) {
             </div>
           </AccordionContent>
         </AccordionItem>
+        <AccordionItem value="production">
+          <AccordionTrigger className="text-[14px]">Build it like production</AccordionTrigger>
+          <AccordionContent className="grid gap-4">
+            <div className="grid gap-1">
+              <p className="eyebrow">How it fits together</p>
+              <p className="max-w-[72ch] text-[13.5px] leading-relaxed">{project.production.architecture}</p>
+            </div>
+            <div className="grid gap-1.5">
+              <p className="eyebrow">Build order</p>
+              <ol className="grid max-w-[72ch] gap-1.5 pl-5 text-[13.5px] leading-relaxed [&>li]:list-decimal [&>li]:marker:text-ink-muted">
+                {project.production.milestones.map((t) => <li key={t}>{t}</li>)}
+              </ol>
+            </div>
+            <div className="grid gap-1.5">
+              <p className="eyebrow">Before you call it done</p>
+              <Bullets items={project.production.shipIt} />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="shine" className="border-b-0">
           <AccordionTrigger className="text-[14px]">Make your GitHub shine</AccordionTrigger>
           <AccordionContent>

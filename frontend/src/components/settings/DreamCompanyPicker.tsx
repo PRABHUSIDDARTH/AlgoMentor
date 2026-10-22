@@ -43,10 +43,12 @@ export function DreamCompanyPicker({ target, onChange }: { target: Target; onCha
       )}
       <Command label="Dream company" shouldFilter={false} className="rounded-md border border-line-strong bg-cream">
         <CommandInput aria-label="Dream company" placeholder="Search 220+ companies, e.g. Google, Flipkart, TCS" value={query} onValueChange={setQuery} />
-        {query.trim() && (
-          <CommandList aria-label="Matching companies">
-            <CommandEmpty className="px-3 py-2 text-[12.5px] text-ink-muted">No company by that name yet.</CommandEmpty>
-            {results.map((c) => (
+        {/* Always present, so the input's aria-controls points at something that exists. */}
+        <CommandList aria-label="Matching companies" className={query.trim() ? undefined : 'hidden'}>
+          {query.trim() && (
+            <>
+              <CommandEmpty className="px-3 py-2 text-[12.5px] text-ink-muted">No company by that name yet.</CommandEmpty>
+              {results.map((c) => (
               <CommandItem
                 key={c.id}
                 value={c.id}
@@ -57,9 +59,10 @@ export function DreamCompanyPicker({ target, onChange }: { target: Target; onCha
                 <span className="flex-1 text-[13px]">{c.name}</span>
                 <span className="font-mono text-[11px] text-ink-muted">{COUNTRIES[c.country]} · {TIER_LABEL[c.tier]}</span>
               </CommandItem>
-            ))}
-          </CommandList>
-        )}
+              ))}
+            </>
+          )}
+        </CommandList>
       </Command>
     </div>
   )

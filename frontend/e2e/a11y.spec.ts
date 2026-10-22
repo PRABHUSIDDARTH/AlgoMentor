@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test'
 const ROUTES = [
   '/', '/app', '/app?q=1', '/roadmap', '/roadmap/arrays', '/today', '/level',
   '/learn', '/learn/oop', '/learn/oop/classes-objects', '/learn/cn/tcp-udp', '/learn/dbms/indexing',
-  '/projects/library-manager', '/git', '/git/merge-conflict', '/resume', '/companies', '/companies/meta', '/companies/apple',
+  '/projects/library-manager', '/git', '/git/merge-conflict', '/resume', '/companies', '/companies/meta', '/companies/apple', '/about', '/about/settings', '/admin/review',
   '/learn/os', '/learn/os/virtual-memory', '/learn/os/deadlocks', '/learn/os/cpu-scheduling', '/learn/os/file-systems', '/learn/os/processes', '/projects/mini-shell', '/tests', '/projects', '/git/health', '/level/core',
 ]
 
