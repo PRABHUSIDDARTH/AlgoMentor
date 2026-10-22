@@ -35,9 +35,11 @@ describe.each(TRACKS.map((t) => [t.id, t] as const))('%s content', (id, track) =
     }
   })
 
-  it('answersAreNotAlwaysTheSamePosition', () => {
-    const positions = new Set(track.modules.flatMap((m) => m.quiz.map((q) => q.answer)))
-    expect(positions.size).toBeGreaterThanOrEqual(3)
+  it('answersAreSpreadAcrossPositions', () => {
+    const answers = track.modules.flatMap((m) => m.quiz.map((q) => q.answer))
+    const counts = [0, 1, 2, 3].map((i) => answers.filter((a) => a === i).length)
+    // Guessing one letter must not pay: no position may hold more than 40% of a track's answers.
+    for (const c of counts) expect(c / answers.length, `answer positions ${counts.join('/')}`).toBeLessThanOrEqual(0.4)
   })
 
   it('whyExplainsEveryAnswer', () => {

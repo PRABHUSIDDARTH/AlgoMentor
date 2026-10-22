@@ -223,11 +223,11 @@ private:
 };`,
   },
   quiz: [
-    { id: 'dp-1', prompt: 'Which pattern lets you swap a pricing rule at run time without if/else chains?', options: ['Singleton', 'Strategy', 'Decorator', 'Builder'], answer: 1, why: 'Strategy puts each variant behind a shared interface; the host delegates to whichever one it holds.' },
+    { id: 'dp-1', prompt: 'Which pattern lets you swap a pricing rule at run time without if/else chains?', options: ['Singleton', 'Builder', 'Decorator', 'Strategy'], answer: 3, why: 'Strategy puts each variant behind a shared interface; the host delegates to whichever one it holds.' },
     { id: 'dp-2', prompt: 'new BufferedReader(new InputStreamReader(stream)) is an example of:', options: ['Observer', 'Factory', 'Decorator', 'Singleton'], answer: 2, why: 'Each wrapper implements the same reader interface and adds behaviour around the one it wraps.' },
     { id: 'dp-3', prompt: 'What is the main criticism of the Singleton pattern?', options: ['It uses too much memory', 'It is global state that hides dependencies and complicates testing', 'It cannot be made thread-safe', 'It requires inheritance'], answer: 1, why: 'Any code can reach a singleton, so dependencies are invisible and tests share state.' },
     { id: 'dp-4', prompt: 'When a book is returned, the waiting list and the fines service must both react. Which pattern fits?', options: ['Observer', 'Factory', 'Strategy', 'Decorator'], answer: 0, why: 'The subject notifies registered observers without knowing who they are.' },
-    { id: 'dp-5', prompt: 'What problem does a Factory solve?', options: ['Ensuring one instance exists', 'Hiding which concrete class is created and keeping construction in one place', 'Notifying listeners', 'Adding behaviour to an object at run time'], answer: 1, why: 'Callers ask for an interface; the factory decides the concrete type, so new types change only the factory.' },
+    { id: 'dp-5', prompt: 'What problem does a Factory solve?', options: ['Ensuring one instance exists', 'Adding behaviour to an object at run time', 'Notifying listeners', 'Hiding which concrete class is created and keeping construction in one place'], answer: 3, why: 'Callers ask for an interface; the factory decides the concrete type, so new types change only the factory.' },
   ],
   interview: [
     { q: 'How would you make a Singleton thread-safe in Java?', a: 'Use an enum with a single value, or a static holder class whose static field is initialised by the class loader on first access. Both are lazily initialised and thread-safe without explicit locking. Often better: create one instance at start-up and inject it.' },

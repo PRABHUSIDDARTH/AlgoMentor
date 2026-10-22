@@ -177,10 +177,10 @@ private:
   },
   quiz: [
     { id: 'um-1', prompt: 'In a UML class box, what does - in front of an attribute mean?', options: ['Public', 'Private', 'Protected', 'Static'], answer: 1, why: '+ public, - private, # protected, ~ package; static members are underlined.' },
-    { id: 'um-2', prompt: 'A dashed line with a hollow triangle pointing at Channel means:', options: ['Inheritance from a class', 'Realisation: the class implements the Channel interface', 'Composition', 'Dependency'], answer: 1, why: 'Solid line + hollow triangle is inheritance; dashed line + hollow triangle is realisation of an interface.' },
-    { id: 'um-3', prompt: 'A House and its Rooms (rooms cannot exist without the house) are drawn with:', options: ['A hollow diamond at House', 'A filled diamond at House', 'A dashed arrow', 'A hollow triangle'], answer: 1, why: 'Composition, the strong ownership relationship, uses a filled diamond at the whole.' },
+    { id: 'um-2', prompt: 'A dashed line with a hollow triangle pointing at Channel means:', options: ['Realisation: the class implements the Channel interface', 'Inheritance from a class', 'Composition', 'Dependency'], answer: 0, why: 'Solid line + hollow triangle is inheritance; dashed line + hollow triangle is realisation of an interface.' },
+    { id: 'um-3', prompt: 'A House and its Rooms (rooms cannot exist without the house) are drawn with:', options: ['A hollow diamond at House', 'A hollow triangle', 'A dashed arrow', 'A filled diamond at House'], answer: 3, why: 'Composition, the strong ownership relationship, uses a filled diamond at the whole.' },
     { id: 'um-4', prompt: 'Multiplicity 1..* at one end of an association means:', options: ['Exactly one', 'Zero or one', 'At least one', 'Zero or more'], answer: 2, why: '1..* is one or more; * alone means zero or more.' },
-    { id: 'um-5', prompt: 'A class uses another only as a method parameter. Which relationship is that?', options: ['Composition', 'Aggregation', 'Dependency', 'Inheritance'], answer: 2, why: 'Dependency (dashed arrow) is a short-lived "uses" relationship, not a field.' },
+    { id: 'um-5', prompt: 'A class uses another only as a method parameter. Which relationship is that?', options: ['Composition', 'Dependency', 'Aggregation', 'Inheritance'], answer: 1, why: 'Dependency (dashed arrow) is a short-lived "uses" relationship, not a field.' },
   ],
   interview: [
     { q: 'What is the difference between association, aggregation and composition?', a: 'Association: objects know about each other. Aggregation: a whole holds parts that can exist independently (hollow diamond). Composition: the whole owns parts whose lifetime it controls (filled diamond).' },
