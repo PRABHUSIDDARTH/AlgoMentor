@@ -49,7 +49,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(askGuard()).addPathPatterns("/ask", "/ask/stream");
-		registry.addInterceptor(problemGuard()).addPathPatterns("/problem");
+		registry.addInterceptor(problemGuard()).addPathPatterns("/problem", "/profiles/**");
 	}
 
 }
