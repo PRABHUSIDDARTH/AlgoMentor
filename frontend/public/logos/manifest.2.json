@@ -1,0 +1,154 @@
+{
+  "entries": [
+    {
+      "id": "shopify",
+      "file": "shopify.svg",
+      "source": "https://cdn.shopify.com/b/shopify-brochure2-assets/d9340911ca8c679b148dd4a205ad2ffa.svg",
+      "page": "https://www.shopify.com/",
+      "brandName": "Shopify",
+      "primary": "#010624",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "flipkart",
+      "file": "flipkart.png",
+      "source": "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/logo_lite-cbb357.png",
+      "page": "https://www.flipkart.com/",
+      "brandName": "Flipkart",
+      "primary": "#2A55E5",
+      "kind": "symbol",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "zoho",
+      "file": "zoho.svg",
+      "source": "https://www.zohowebstatic.com/sites/zweb/images/commonroot/zoho-logo-web.svg",
+      "page": "https://www.zoho.com/",
+      "brandName": "Zoho",
+      "primary": "#EE0014",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "paytm",
+      "file": "paytm.svg",
+      "source": "https://pwebassets.paytm.com/commonwebassets/paytmweb/header/images/logo_new.svg",
+      "page": "https://paytm.com/",
+      "brandName": "Paytm",
+      "primary": "#00BAF2",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "zomato",
+      "file": "zomato.png",
+      "source": "https://b.zmtcdn.com/data/o2_assets/31e648cbaa2ca2fb5fbec1e76710f3821785325659.png",
+      "page": "https://www.zomato.com/",
+      "brandName": "Zomato",
+      "primary": "#EF4F5F",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "zerodha",
+      "file": "zerodha.svg",
+      "source": "https://zerodha.com/static/images/logo.svg",
+      "page": "https://zerodha.com/",
+      "brandName": "Zerodha",
+      "primary": "#387ED1",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "groww",
+      "file": "groww.png",
+      "source": "https://groww.in/groww-logo-270.png",
+      "page": "https://groww.in/",
+      "brandName": "Groww",
+      "primary": "#04B488",
+      "kind": "symbol",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "meesho",
+      "file": "meesho.png",
+      "source": "https://www.meesho.io/img/meesho-logo.png",
+      "page": "https://www.meesho.io/",
+      "brandName": "Meesho",
+      "primary": "#580A46",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "wipro",
+      "file": "wipro.svg",
+      "source": "https://www.wipro.com/content/dam/wipro/social-icons/wipro_new_logo.svg",
+      "page": "https://www.wipro.com/",
+      "brandName": "Wipro",
+      "primary": "#351A55",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "ltimindtree",
+      "file": "ltimindtree.svg",
+      "source": "https://www.ltm.com/content/dam/ltimcorporatewebsite/refresh-images/LTM-Logo.svg",
+      "page": "https://www.ltimindtree.com/ (redirects to https://www.ltm.com/)",
+      "brandName": "LTM (formerly LTIMindtree)",
+      "primary": "#FF5E4F",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    }
+  ],
+  "failed": [
+    {
+      "id": "spotify",
+      "reason": "logo is an inline data: URI in the page, no https file to download (also white-filled, 24x24 viewBox)"
+    },
+    {
+      "id": "stripe",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "phonepe",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "swiggy",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "cred",
+      "reason": "logo is an inline data: URI in the page, no https file to download (white-filled)"
+    },
+    {
+      "id": "ola",
+      "reason": "only logo offered is ola-white-logo.svg (white fill, invisible on light backgrounds); removed"
+    },
+    {
+      "id": "hcltech",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "tech-mahindra",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "openai",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "anthropic",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "databricks",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    },
+    {
+      "id": "samsung",
+      "reason": "logo is an inline data: URI in the page, no https file to download"
+    }
+  ]
+}

@@ -1,24 +1,77 @@
 import { employerFor } from '@/content/companies'
-import { LOGOS } from '@/content/logos'
+import { OFFICIAL_LOGOS } from '@/content/logos'
 import { FOCUS_LABEL, ROLE_LABEL, targetName } from '@/content/targets'
-import type { ProfileSettings } from '@/practice/store'
+import type { ProfileSettings, Role } from '@/practice/store'
 
 /**
- * The dream ID card: a goal card for the company a learner wants to join. It deliberately says "Dream ID" and "aspiring",
- * carries AlgoMentor's name and a not-affiliated line, and has no employee number or barcode, so it cannot pass as a
- * real company badge.
+ * The dream ID card: a goal card styled like a company badge (official logo, brand colour, photo, name, role) for the
+ * company a learner wants to join. It carries no employee number or barcode, and a small line on the card says it is a
+ * goal card and not affiliated with the company, so it cannot pass as a real badge. The readiness figure is never drawn
+ * on the card; the page shows it beside the card.
  */
 export type DreamCard = {
   name: string
   company: string
   companyId?: string
+  /** The company's own logo file in /logos, when AlgoMentor has fetched one from its site. */
+  logoFile?: string
+  /** Brand colour from the company's own site, or ink. */
+  accent: string
+  level: Role
+  /** "SDE-1" and the like, for the page and the share text. */
   role: string
+  /** What the card prints under the name, such as "Software Engineer, Backend". */
+  title: string
   focus?: string
   /** The lower of DSA and Core CS readiness, as on Today. */
   readiness: number
   dsa: number
   core: number
   handles: { leetcode?: string; github?: string; linkedin?: string }
+}
+
+const TITLES: Record<Role, string> = { intern: 'Software Engineering Intern', sde1: 'Software Engineer', sde2: 'Software Engineer II', sde3: 'Senior Software Engineer' }
+
+/** What a badge for this level and focus would print under the name. */
+export function roleTitle(level: Role, focus?: string): string {
+  return focus ? `${TITLES[level]}, ${focus}` : TITLES[level]
+}
+
+/** First name (printed bold) and the rest (printed light), as company badges often do. */
+export function splitName(name: string): { first: string; last: string } {
+  const [first = '', ...rest] = name.trim().split(/\s+/)
+  return { first, last: rest.join(' ') }
+}
+
+const INK = '#1C2116'
+
+/** A brand colour for the card edge, and legible text to put on it. A missing or malformed colour becomes ink. */
+export function accentFor(hex?: string | null): { color: string; on: string } {
+  let h = (hex ?? '').trim().replace(/^#/, '')
+  if (/^[0-9a-f]{3}$/i.test(h)) h = [...h].map((c) => c + c).join('')
+  if (!/^[0-9a-f]{6}$/i.test(h)) return { color: INK, on: '#FFFFFF' }
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+  return { color: `#${h.toUpperCase()}`, on: luminance > 0.4 ? '#111111' : '#FFFFFF' }
+}
+
+/** Average brightness (0 to 1) of the painted pixels in RGBA data; transparent pixels do not count. Used to spot white logos. */
+export function inkLuminance(rgba: Uint8ClampedArray): number {
+  let sum = 0
+  let weight = 0
+  for (let i = 0; i < rgba.length; i += 4) {
+    const a = rgba[i + 3] / 255
+    if (a === 0) continue
+    sum += a * (0.2126 * rgba[i] + 0.7152 * rgba[i + 1] + 0.0722 * rgba[i + 2]) / 255
+    weight += a
+  }
+  return weight ? sum / weight : 0
+}
+
+/** The largest size that fits inside maxW by maxH and keeps the shape of w by h. */
+export function containBox(w: number, h: number, maxW: number, maxH: number): { w: number; h: number } {
+  const k = Math.min(maxW / w, maxH / h)
+  return { w: Math.round(w * k), h: Math.round(h * k) }
 }
 
 const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)))
@@ -30,11 +83,16 @@ export function cardData(settings: ProfileSettings, parts: { dsa: number; core: 
   if (settings.leetcode) handles.leetcode = settings.leetcode
   if (settings.github) handles.github = settings.github
   if (settings.linkedin) handles.linkedin = settings.linkedin
+  const logo = employer ? OFFICIAL_LOGOS[employer.id] : undefined
   return {
     name: settings.name ?? 'Your name',
     company: targetName(settings.target),
     companyId: employer?.id,
+    logoFile: logo?.file,
+    accent: accentFor(logo?.primary).color,
+    level: settings.target.role,
     role: ROLE_LABEL[settings.target.role],
+    title: roleTitle(settings.target.role, focus),
     focus,
     readiness: clamp(Math.min(parts.dsa, parts.core)),
     dsa: clamp(parts.dsa),
@@ -79,19 +137,36 @@ export function linkedInShareUrl(text: string): string {
 /** The Lanyard draws faces at 1024 wide; its portrait card is 1.6 by 2.25. */
 export const FACE = { width: 1024, height: 1440 }
 
-const C = { cream: '#F7F2EB', sand: '#EAE2D6', sage: '#8B9A6E', sageDeep: '#56613F', ink: '#1C2116', muted: '#5B6152', night: '#151A10' }
 const SERIF = 'Fraunces, Georgia, serif'
 const MONO = '"JetBrains Mono", ui-monospace, monospace'
 const SANS = 'Inter, system-ui, sans-serif'
+const MUTED = '#5B6152'
 
-function fit(ctx: CanvasRenderingContext2D, text: string, weight: string, size: number, family: string, max: number): number {
+/** Images the card needs, loaded before drawing. Either may be missing. */
+export type CardAssets = { logo?: HTMLImageElement | null; photo?: HTMLImageElement | null }
+
+export function loadImage(src: string, timeoutMs = 5000): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    const timer = setTimeout(() => resolve(null), timeoutMs)
+    img.onload = () => { clearTimeout(timer); resolve(img) }
+    img.onerror = () => { clearTimeout(timer); resolve(null) }
+    img.src = src
+  })
+}
+
+export async function loadAssets(d: DreamCard, photo?: string | null): Promise<CardAssets> {
+  const [logo, photoImg] = await Promise.all([d.logoFile ? loadImage(`/logos/${d.logoFile}`) : null, photo ? loadImage(photo) : null])
+  return { logo, photo: photoImg }
+}
+
+function fitText(ctx: CanvasRenderingContext2D, text: string, weight: number, size: number, family: string, max: number) {
   let s = size
   ctx.font = `${weight} ${s}px ${family}`
-  while (s > 20 && ctx.measureText(text).width > max) {
+  while (s > 18 && ctx.measureText(text).width > max) {
     s -= 2
     ctx.font = `${weight} ${s}px ${family}`
   }
-  return s
 }
 
 function spaced(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, spacing: number, align: 'left' | 'center') {
@@ -124,161 +199,168 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, max: number): string[
   return lines
 }
 
-function drawMark(ctx: CanvasRenderingContext2D, d: DreamCard, cx: number, top: number, size: number) {
-  const logo = d.companyId ? LOGOS[d.companyId] : undefined
-  ctx.fillStyle = logo ? '#FFFFFF' : C.ink
-  roundRect(ctx, cx - size / 2, top, size, size, 34)
-  ctx.fill()
-  ctx.strokeStyle = 'rgba(28,33,22,0.12)'
-  ctx.lineWidth = 2
-  ctx.stroke()
-  if (logo && typeof Path2D !== 'undefined') {
-    const inner = size * 0.62
-    ctx.save()
-    ctx.translate(cx - inner / 2, top + (size - inner) / 2)
-    ctx.scale(inner / 24, inner / 24)
-    ctx.fillStyle = `#${logo.hex}`
-    ctx.fill(new Path2D(logo.path))
-    ctx.restore()
-    return
+function isLightLogo(img: HTMLImageElement, w: number, h: number): boolean {
+  try {
+    const probe = document.createElement('canvas')
+    probe.width = w
+    probe.height = h
+    const pctx = probe.getContext('2d', { willReadFrequently: true })
+    if (!pctx) return false
+    pctx.drawImage(img, 0, 0, w, h)
+    return inkLuminance(pctx.getImageData(0, 0, w, h).data) > 0.85
+  } catch {
+    return false
   }
-  const initials = d.company.replace(/[^A-Za-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('')
-  ctx.fillStyle = C.cream
-  ctx.font = `600 ${size * 0.42}px ${SERIF}`
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText(initials, cx, top + size / 2 + 4)
-  ctx.textBaseline = 'alphabetic'
 }
 
-export function drawFront(canvas: HTMLCanvasElement, d: DreamCard): boolean {
+function initials(name: string): string {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('') || '?'
+}
+
+function bands(ctx: CanvasRenderingContext2D, d: DreamCard, top: boolean) {
+  const { color } = accentFor(d.accent)
+  ctx.fillStyle = '#FFFFFF'
+  ctx.fillRect(0, 0, FACE.width, FACE.height)
+  ctx.fillStyle = color
+  if (top) ctx.fillRect(0, 0, FACE.width, 176)
+  else ctx.fillRect(0, 0, FACE.width, 40)
+  ctx.fillRect(0, FACE.height - 112, FACE.width, 112)
+}
+
+export function drawFront(canvas: HTMLCanvasElement, d: DreamCard, assets: CardAssets = {}): boolean {
   canvas.width = FACE.width
   canvas.height = FACE.height
   const ctx = canvas.getContext('2d')
   if (!ctx) return false
   const W = FACE.width
   const cx = W / 2
+  const { color, on } = accentFor(d.accent)
+  bands(ctx, d, true)
 
-  ctx.fillStyle = C.cream
-  ctx.fillRect(0, 0, W, FACE.height)
-  // Top band: the strap clip punches through here, so it stays free of text.
-  ctx.fillStyle = C.sand
-  ctx.fillRect(0, 0, W, 190)
-  ctx.fillStyle = C.sage
-  ctx.fillRect(0, 186, W, 8)
+  // Company mark: the company's own logo when we have one, otherwise just its name in plain type.
+  if (assets.logo) {
+    const box = containBox(assets.logo.naturalWidth || assets.logo.width || 1, assets.logo.naturalHeight || assets.logo.height || 1, 620, 130)
+    const lx = cx - box.w / 2
+    const ly = 246 - box.h / 2 + 20
+    // A white logo is invisible on a white card, so it goes on a plate in the brand colour.
+    if (isLightLogo(assets.logo, box.w, box.h)) {
+      ctx.fillStyle = color
+      roundRect(ctx, lx - 36, ly - 22, box.w + 72, box.h + 44, 24)
+      ctx.fill()
+    }
+    ctx.drawImage(assets.logo, lx, ly, box.w, box.h)
+  } else {
+    ctx.fillStyle = INK
+    ctx.textAlign = 'center'
+    fitText(ctx, d.company, 700, 84, SANS, W - 200)
+    ctx.fillText(d.company, cx, 276)
+  }
 
-  ctx.fillStyle = C.sageDeep
-  ctx.font = `600 26px ${MONO}`
-  spaced(ctx, 'DREAM ID', cx, 160, 10, 'center')
-
-  drawMark(ctx, d, cx, 236, 220)
-
-  ctx.fillStyle = C.ink
-  ctx.textAlign = 'center'
-  fit(ctx, d.company, '600', 86, SERIF, W - 140)
-  ctx.fillText(d.company, cx, 560)
-
-  ctx.fillStyle = C.sageDeep
-  ctx.font = `600 28px ${MONO}`
-  spaced(ctx, `ASPIRING ${d.role.toUpperCase()}${d.focus ? ` · ${d.focus.toUpperCase()}` : ''}`, cx, 616, 4, 'center')
-
-  ctx.strokeStyle = 'rgba(28,33,22,0.18)'
-  ctx.lineWidth = 2
-  ctx.beginPath()
-  ctx.moveTo(96, 668)
-  ctx.lineTo(W - 96, 668)
+  // Photo
+  const size = 400
+  const px = cx - size / 2
+  const py = 380
+  ctx.save()
+  roundRect(ctx, px, py, size, size, 36)
+  ctx.clip()
+  if (assets.photo) {
+    const iw = assets.photo.naturalWidth || assets.photo.width
+    const ih = assets.photo.naturalHeight || assets.photo.height
+    const k = Math.max(size / iw, size / ih)
+    ctx.drawImage(assets.photo, px + (size - iw * k) / 2, py + (size - ih * k) / 2, iw * k, ih * k)
+  } else {
+    ctx.fillStyle = '#ECE8E0'
+    ctx.fillRect(px, py, size, size)
+    ctx.fillStyle = '#9A9588'
+    ctx.font = `600 170px ${SANS}`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(initials(d.name), cx, py + size / 2 + 8)
+    ctx.textBaseline = 'alphabetic'
+  }
+  ctx.restore()
+  ctx.strokeStyle = color
+  ctx.lineWidth = 8
+  roundRect(ctx, px, py, size, size, 36)
   ctx.stroke()
 
-  ctx.fillStyle = C.ink
-  ctx.textAlign = 'left'
-  fit(ctx, d.name, '500', 74, SERIF, W - 192)
-  ctx.fillText(d.name, 96, 770)
-
-  ctx.fillStyle = C.muted
-  ctx.font = `600 24px ${MONO}`
-  spaced(ctx, 'READY FOR THIS ROLE', 96, 850, 4, 'left')
-  ctx.fillStyle = C.ink
-  ctx.font = `600 150px ${SERIF}`
-  ctx.textAlign = 'left'
-  ctx.fillText(`${d.readiness}%`, 90, 1000)
-
-  const barY = 1036
-  ctx.fillStyle = C.sand
-  roundRect(ctx, 96, barY, W - 192, 24, 12)
-  ctx.fill()
-  if (d.readiness > 0) {
-    ctx.fillStyle = C.sage
-    roundRect(ctx, 96, barY, Math.max(24, ((W - 192) * d.readiness) / 100), 24, 12)
-    ctx.fill()
-  }
-  ctx.fillStyle = C.muted
-  ctx.font = `500 26px ${MONO}`
-  ctx.fillText(`DSA ${d.dsa}%  ·  CORE CS ${d.core}%`, 96, 1110)
-
-  const handles = [
-    d.handles.leetcode && `leetcode.com/u/${d.handles.leetcode}`,
-    d.handles.github && `github.com/${d.handles.github}`,
-    d.handles.linkedin && `linkedin.com/in/${d.handles.linkedin}`,
-  ].filter(Boolean) as string[]
-  ctx.fillStyle = C.ink
-  ctx.font = `500 26px ${MONO}`
-  handles.forEach((h, i) => {
-    fit(ctx, h, '500', 26, MONO, W - 192)
-    ctx.fillText(h, 96, 1190 + i * 44)
-  })
-
-  ctx.fillStyle = C.muted
+  // Name: first name heavy, the rest light.
+  const { first, last } = splitName(d.name)
+  ctx.fillStyle = INK
   ctx.textAlign = 'center'
-  ctx.font = `400 20px ${SANS}`
-  ctx.fillText(`A goal card from AlgoMentor, not an employee ID. Not affiliated with ${d.company}.`, cx, 1400)
+  fitText(ctx, first, 700, 92, SANS, W - 140)
+  ctx.fillText(first, cx, 920)
+  if (last) {
+    fitText(ctx, last, 300, 92, SANS, W - 140)
+    ctx.fillText(last, cx, 1022)
+  }
+
+  // Role, then a short rule in the brand colour.
+  ctx.fillStyle = MUTED
+  fitText(ctx, d.title, 500, 38, SANS, W - 140)
+  ctx.fillText(d.title, cx, 1100)
+  ctx.fillStyle = color
+  ctx.fillRect(cx - 60, 1140, 120, 8)
+  if (assets.logo) {
+    ctx.fillStyle = MUTED
+    fitText(ctx, d.company, 500, 30, SANS, W - 200)
+    ctx.fillText(d.company, cx, 1204)
+  }
+
+  ctx.fillStyle = '#7A7F72'
+  ctx.font = `400 21px ${SANS}`
+  ctx.fillText(`Not affiliated with ${d.company}`, cx, 1318)
+  ctx.fillStyle = on
+  ctx.font = `600 22px ${MONO}`
+  spaced(ctx, 'GOAL CARD · NOT AN EMPLOYEE ID', cx, 1396, 3, 'center')
   return true
 }
 
-export function drawBack(canvas: HTMLCanvasElement, d: DreamCard, steps: string[]): boolean {
+export function drawBack(canvas: HTMLCanvasElement, d: DreamCard, issued = new Date()): boolean {
   canvas.width = FACE.width
   canvas.height = FACE.height
   const ctx = canvas.getContext('2d')
   if (!ctx) return false
   const W = FACE.width
-  ctx.fillStyle = C.night
-  ctx.fillRect(0, 0, W, FACE.height)
-  ctx.fillStyle = C.sage
-  ctx.fillRect(0, 186, W, 8)
+  const { color, on } = accentFor(d.accent)
+  bands(ctx, d, true)
 
-  ctx.fillStyle = '#A8B68A'
-  ctx.font = `600 26px ${MONO}`
-  spaced(ctx, `${d.readiness}% THERE`, 96, 300, 6, 'left')
-
-  ctx.fillStyle = C.cream
-  ctx.font = `500 72px ${SERIF}`
-  ctx.textAlign = 'left'
-  wrap(ctx, 'Every problem you solve moves this number.', W - 192).forEach((line, i) => ctx.fillText(line, 96, 400 + i * 88))
-
-  ctx.fillStyle = '#A8B68A'
+  ctx.fillStyle = on
   ctx.font = `600 24px ${MONO}`
-  spaced(ctx, 'NEXT', 96, 760, 6, 'left')
-  ctx.fillStyle = C.cream
-  ctx.font = `400 34px ${SANS}`
-  let y = 820
-  for (const step of steps.slice(0, 3)) {
-    for (const [i, line] of wrap(ctx, step, W - 240).entries()) {
-      if (i === 0) {
-        ctx.fillStyle = C.sage
-        ctx.beginPath()
-        ctx.arc(108, y - 11, 8, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.fillStyle = C.cream
-      }
-      ctx.fillText(line, 140, y)
-      y += 46
-    }
-    y += 22
-  }
+  spaced(ctx, 'GOAL CARD', W / 2, 108, 8, 'center')
 
-  ctx.fillStyle = '#9DA393'
-  ctx.textAlign = 'center'
+  ctx.fillStyle = INK
+  ctx.textAlign = 'left'
+  fitText(ctx, d.name, 700, 64, SANS, W - 192)
+  ctx.fillText(d.name, 96, 330)
+  ctx.fillStyle = MUTED
+  fitText(ctx, d.title, 500, 34, SANS, W - 192)
+  ctx.fillText(d.title, 96, 384)
+  ctx.fillStyle = color
+  ctx.fillRect(96, 420, 96, 8)
+
+  const lines = [
+    d.handles.leetcode && `leetcode.com/u/${d.handles.leetcode}`,
+    d.handles.github && `github.com/${d.handles.github}`,
+    d.handles.linkedin && `linkedin.com/in/${d.handles.linkedin}`,
+  ].filter(Boolean) as string[]
+  ctx.fillStyle = INK
+  lines.forEach((h, i) => {
+    fitText(ctx, h, 500, 30, MONO, W - 192)
+    ctx.fillText(h, 96, 500 + i * 56)
+  })
+
+  ctx.fillStyle = MUTED
+  ctx.font = `400 28px ${SANS}`
+  const note = `This is a personal goal card made in AlgoMentor to keep ${d.company} in sight. It is not an employee ID, and AlgoMentor is not affiliated with ${d.company}.`
+  wrap(ctx, note, W - 192).forEach((line, i) => ctx.fillText(line, 96, 800 + i * 42))
+  ctx.fillStyle = '#7A7F72'
   ctx.font = `500 24px ${MONO}`
-  spaced(ctx, 'ALGOMENTOR', W / 2, 1390, 8, 'center')
+  ctx.fillText(`Set ${issued.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`, 96, 1100)
+
+  ctx.fillStyle = on
+  ctx.font = `600 22px ${MONO}`
+  spaced(ctx, 'ALGOMENTOR', W / 2, 1396, 8, 'center')
   return true
 }
 
@@ -287,51 +369,54 @@ export function drawStrap(canvas: HTMLCanvasElement, d: DreamCard): boolean {
   canvas.height = 112
   const ctx = canvas.getContext('2d')
   if (!ctx) return false
-  ctx.fillStyle = C.ink
+  const { color, on } = accentFor(d.accent)
+  ctx.fillStyle = color
   ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = C.sage
-  ctx.fillRect(0, 8, canvas.width, 4)
-  ctx.fillRect(0, canvas.height - 12, canvas.width, 4)
-  ctx.fillStyle = C.cream
-  ctx.font = `600 40px ${MONO}`
+  ctx.fillStyle = on
+  ctx.globalAlpha = 0.35
+  ctx.fillRect(0, 10, canvas.width, 3)
+  ctx.fillRect(0, canvas.height - 13, canvas.width, 3)
+  ctx.globalAlpha = 1
+  ctx.font = `600 40px ${SANS}`
   ctx.textBaseline = 'middle'
-  spaced(ctx, `ALGOMENTOR · DREAM ${d.company.toUpperCase()} · `, 24, canvas.height / 2 + 2, 6, 'left')
+  spaced(ctx, `${d.company.toUpperCase()}   ·   `, 24, canvas.height / 2 + 2, 8, 'left')
   return true
 }
 
-/** Data URLs for the card's front, back and strap, or null where canvas drawing is unavailable. */
-export async function cardImages(d: DreamCard, steps: string[]): Promise<{ front: string; back: string; strap: string } | null> {
+async function fonts() {
   try {
-    await Promise.all([document.fonts?.load(`600 86px ${SERIF}`), document.fonts?.load(`600 26px ${MONO}`), document.fonts?.load(`400 20px ${SANS}`)])
+    await Promise.all([document.fonts?.load(`700 92px ${SANS}`), document.fonts?.load(`300 92px ${SANS}`), document.fonts?.load(`600 22px ${MONO}`)])
   } catch {
     // Fall back to the next font in each stack.
   }
+}
+
+/** Data URLs for the card's front, back and strap, or null where canvas drawing is unavailable. */
+export async function cardImages(d: DreamCard, photo?: string | null): Promise<{ front: string; back: string; strap: string } | null> {
+  await fonts()
+  const assets = await loadAssets(d, photo)
   const front = document.createElement('canvas')
   const back = document.createElement('canvas')
   const strap = document.createElement('canvas')
   try {
-    if (!drawFront(front, d) || !drawBack(back, d, steps) || !drawStrap(strap, d)) return null
+    if (!drawFront(front, d, assets) || !drawBack(back, d) || !drawStrap(strap, d)) return null
     return { front: front.toDataURL('image/png'), back: back.toDataURL('image/png'), strap: strap.toDataURL('image/png') }
   } catch {
     return null
   }
 }
 
-/** A 1200 by 627 PNG for a LinkedIn post: the card on the left, the headline number on the right. */
-export async function shareImage(d: DreamCard): Promise<Blob | null> {
-  try {
-    await Promise.all([document.fonts?.load(`600 86px ${SERIF}`), document.fonts?.load(`600 26px ${MONO}`)])
-  } catch {
-    // Fall back to the next font in each stack.
-  }
+/** A 1200 by 627 PNG for a LinkedIn post: the card on the left, the headline number beside it (never on the card). */
+export async function shareImage(d: DreamCard, photo?: string | null): Promise<Blob | null> {
+  await fonts()
   const face = document.createElement('canvas')
-  if (!drawFront(face, d)) return null
+  if (!drawFront(face, d, await loadAssets(d, photo))) return null
   const out = document.createElement('canvas')
   out.width = 1200
   out.height = 627
   const ctx = out.getContext('2d')
   if (!ctx) return null
-  ctx.fillStyle = C.night
+  ctx.fillStyle = '#151A10'
   ctx.fillRect(0, 0, 1200, 627)
   const h = 567
   const w = Math.round((h * FACE.width) / FACE.height)
@@ -345,13 +430,13 @@ export async function shareImage(d: DreamCard): Promise<Blob | null> {
   ctx.fillStyle = '#A8B68A'
   ctx.font = `600 22px ${MONO}`
   spaced(ctx, 'WORKING TOWARD', x, 150, 6, 'left')
-  ctx.fillStyle = C.cream
-  fit(ctx, d.company, '600', 76, SERIF, 1200 - x - 48)
+  ctx.fillStyle = '#F7F2EB'
+  fitText(ctx, d.company, 600, 76, SANS, 1200 - x - 48)
   ctx.fillText(d.company, x, 240)
   ctx.fillStyle = '#A8B68A'
   ctx.font = `600 22px ${MONO}`
   spaced(ctx, `${d.role.toUpperCase()}${d.focus ? ` · ${d.focus.toUpperCase()}` : ''}`, x, 284, 4, 'left')
-  ctx.fillStyle = C.cream
+  ctx.fillStyle = '#F7F2EB'
   ctx.font = `600 150px ${SERIF}`
   ctx.fillText(`${d.readiness}%`, x - 6, 450)
   ctx.fillStyle = '#9DA393'

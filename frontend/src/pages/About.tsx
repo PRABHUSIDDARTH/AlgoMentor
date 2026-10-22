@@ -14,6 +14,7 @@ import { ROLE_LABEL, targetName } from '@/content/targets'
 import { useCore } from '@/learn/useCore'
 import { useLiveProfiles } from '@/practice/liveProfiles'
 import { SITE_NAMES, type Site } from '@/practice/profileUrls'
+import { usePhoto } from '@/practice/photo'
 import { useLevel } from '@/practice/useLevel'
 import { useSettings, useStats } from '@/practice/useSettings'
 
@@ -41,6 +42,7 @@ export default function About() {
   const level = useLevel()
   const core = useCore()
   const { refreshing, refreshAll } = useLiveProfiles()
+  const photo = usePhoto()
   const [note, setNote] = useState<string | null>(null)
 
   const dream = employerFor(settings.target)
@@ -51,7 +53,7 @@ export default function About() {
   async function share() {
     // Opened first, inside the click, so a popup blocker allows it; the image is drawn while LinkedIn loads.
     window.open(linkedInShareUrl(shareText(card)), '_blank', 'noopener,noreferrer')
-    const image = await shareImage(card)
+    const image = await shareImage(card, photo)
     if (image) download(image, 'my-dream-id.png')
     setNote(image
       ? 'LinkedIn is open with your post filled in. Attach my-dream-id.png, which just downloaded, then post.'
@@ -68,7 +70,7 @@ export default function About() {
   }
 
   async function save() {
-    const image = await shareImage(card)
+    const image = await shareImage(card, photo)
     if (image) download(image, 'my-dream-id.png')
     else setNote('Your browser could not draw the card image.')
   }
@@ -95,8 +97,8 @@ export default function About() {
         {dream && (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
             <section aria-label="Your dream ID" className="grid content-start gap-3">
-              <DreamLanyard card={card} steps={steps} />
-              <p className="text-[12px] leading-relaxed text-ink-muted">A goal card made by AlgoMentor, not an employee ID. AlgoMentor is not affiliated with {dream.name}, and its logo belongs to its owner.</p>
+              <DreamLanyard card={card} />
+              <p className="text-[12px] leading-relaxed text-ink-muted">A goal card made by AlgoMentor, not an employee ID. AlgoMentor is not affiliated with {dream.name}; the logo is {dream.name}'s own, taken from its website.</p>
             </section>
 
             <div className="grid content-start gap-6">

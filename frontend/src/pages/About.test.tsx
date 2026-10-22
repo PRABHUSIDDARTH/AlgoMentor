@@ -39,7 +39,7 @@ describe('About page', () => {
   it('showsTheDreamIdForTheChosenCompanyWithReadiness', () => {
     saveSettings({ ...DEFAULT_SETTINGS, name: 'Ana Gomez', target: { company: 'maang', role: 'sde2', employer: 'meta' } })
     renderAbout()
-    const card = screen.getByRole('img', { name: /Dream ID for Ana Gomez: aspiring SDE-2 at Meta, 0% ready/ })
+    const card = screen.getByRole('img', { name: 'Dream ID for Ana Gomez: aspiring SDE-2 at Meta' })
     expect(card).toBeInTheDocument()
     expect(screen.getByRole('meter', { name: 'Readiness for Meta SDE-2' })).toBeInTheDocument()
     expect(screen.getByText(/DSA 0%/)).toBeInTheDocument()

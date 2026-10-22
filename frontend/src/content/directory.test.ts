@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { COMPANIES } from './companies'
 import { COUNTRIES, DIRECTORY, directoryEntry } from './directory'
-import { LOGOS } from './logos'
+import { OFFICIAL_LOGOS } from './logos'
 
 describe('company directory', () => {
   it('coversIndiaAndTheMainMarkets', () => {
@@ -30,11 +30,16 @@ describe('company directory', () => {
     for (const c of COMPANIES) expect(directoryEntry(c.id)?.tier, c.id).toBe(c.tier)
   })
 
-  it('logosOnlyExistForDirectoryCompaniesAndAreWellFormed', () => {
-    for (const [id, logo] of Object.entries(LOGOS)) {
+  it('logosOnlyExistForDirectoryCompaniesAndComeFromTheirOwnSites', () => {
+    for (const [id, logo] of Object.entries(OFFICIAL_LOGOS)) {
       expect(directoryEntry(id), id).toBeDefined()
-      expect(logo.hex).toMatch(/^[0-9A-F]{6}$/i)
-      expect(logo.path.length).toBeGreaterThan(10)
+      expect(logo.file, id).toBe(`${id}.${logo.file.split('.').pop()}`)
+      expect(logo.file, id).toMatch(/\.(svg|png|webp)$/)
+      expect(logo.source, id).toMatch(/^https:\/\//)
+      expect(logo.page, id).toMatch(/^https:\/\//)
+      expect(logo.fetched, id).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      // Never an icon library or a stock site.
+      expect(logo.source, id).not.toMatch(/simpleicons|cdn\.jsdelivr|unpkg|iconify|wikimedia|logo\.dev|clearbit/i)
     }
   })
 })

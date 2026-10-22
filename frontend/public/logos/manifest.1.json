@@ -1,0 +1,154 @@
+{
+  "entries": [
+    {
+      "id": "google",
+      "file": "google.svg",
+      "source": "https://www.gstatic.com/marketing-cms/assets/images/f5/d3/a7f9db7045429cb6dc6be56bdcbe/google-logo-about.svg",
+      "page": "https://about.google/",
+      "brandName": "About Google",
+      "primary": "#1A73E8",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "meta",
+      "file": "meta.svg",
+      "source": "https://static.xx.fbcdn.net/rsrc.php/y9/r/tL_v571NdZ0.svg",
+      "page": "https://about.meta.com/",
+      "brandName": "Meta",
+      "primary": "#0064E0",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "netflix",
+      "file": "netflix.png",
+      "source": "https://about.netflix.com/images/logo.png",
+      "page": "https://about.netflix.com/",
+      "brandName": "About Netflix",
+      "primary": "#E50814",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "microsoft",
+      "file": "microsoft.png",
+      "source": "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png",
+      "page": "https://www.microsoft.com/en-us/",
+      "brandName": "Microsoft",
+      "primary": "#0078D4",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "atlassian",
+      "file": "atlassian.svg",
+      "source": "https://wac-cdn.atlassian.com/misc-assets/adg4-nav/AtlassianHeaderLogo.svg",
+      "page": "https://www.atlassian.com/company",
+      "brandName": "Atlassian",
+      "primary": "#1868DB",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "cognizant",
+      "file": "cognizant.svg",
+      "source": "https://www.cognizant.com/us/media_1808da395be9f77c0124de824530b0338915414a8.svg?width=750&format=svg&optimize=medium",
+      "page": "https://www.cognizant.com/",
+      "brandName": "Cognizant",
+      "primary": "#262663",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "capgemini",
+      "file": "capgemini.svg",
+      "source": "https://www.capgemini.com/wp-content/themes/capgemini2025/assets/images/capgeminiBlue.svg",
+      "page": "https://www.capgemini.com/",
+      "brandName": "Capgemini",
+      "primary": "#0058AB",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "salesforce",
+      "file": "salesforce.svg",
+      "source": "https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2024/11/logo-salesforce.svg?w=1024",
+      "page": "https://www.salesforce.com/",
+      "brandName": "Salesforce",
+      "primary": "#00B3FF",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "uber",
+      "file": "uber.png",
+      "source": "https://www.uber.com/_static/de0e97ed977ad313.png",
+      "page": "https://www.uber.com/",
+      "brandName": "Uber",
+      "primary": "#000000",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "airbnb",
+      "file": "airbnb.svg",
+      "source": "https://news.airbnb.com/images/belo.svg",
+      "page": "https://news.airbnb.com/about-us/",
+      "brandName": "About us",
+      "primary": "#FF385C",
+      "kind": "symbol",
+      "fetched": "2026-10-22"
+    }
+  ],
+  "failed": [
+    {
+      "id": "amazon",
+      "reason": "aboutamazon.com logo is an inline data-URI SVG reading Amazon News; amazon.jobs logo is a white Amazon jobs lockup; no suitable https logo"
+    },
+    {
+      "id": "apple",
+      "reason": "branding logo is an inline data-URI SVG (nav Home text); only own-domain image is open_graph_logo.png, a grey apple on 1200x630 canvas, rejected"
+    },
+    {
+      "id": "adobe",
+      "reason": "logo URLs (adobe-logo-white.svg, adobe-logo-black.svg) return an HTML page to curl, not an image"
+    },
+    {
+      "id": "razorpay",
+      "reason": "branding logo is an inline data-URI SVG on both razorpay.com and /about/; no https image URL"
+    },
+    {
+      "id": "tcs",
+      "reason": "logo URL tcs-logo-1.svg returns Akamai Access Denied HTML to curl (bot-blocked)"
+    },
+    {
+      "id": "infosys",
+      "reason": "branding logo is an inline white data-URI SVG on both homepage and /about.html; no https image URL"
+    },
+    {
+      "id": "accenture",
+      "reason": "branding logo is an inline white data-URI SVG on homepage and /about/company-index; no https image URL"
+    },
+    {
+      "id": "nvidia",
+      "reason": "branding logo is an inline data-URI SVG on homepage and /en-us/about-nvidia/; no https image URL"
+    },
+    {
+      "id": "intel",
+      "reason": "branding logo is an inline white data-URI SVG; own-domain PNG fallbacks (logo-energyblue-1x1.png, printlogo.png) return Access Denied HTML to curl"
+    },
+    {
+      "id": "oracle",
+      "reason": "branding logo is an inline data-URI SVG; only own-domain fallback is a 1200x1200 JPEG social image (not svg/png/webp)"
+    },
+    {
+      "id": "ibm",
+      "reason": "logo URL 01_8-bar-positive.svg returns an HTML page to curl (blocked); only other own-domain image is a JPEG"
+    },
+    {
+      "id": "cisco",
+      "reason": "branding logo is an inline data-URI SVG on homepage and /c/en/us/about.html; og logo is a GIF"
+    }
+  ]
+}

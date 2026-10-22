@@ -1,0 +1,159 @@
+{
+  "entries": [
+    {
+      "id": "deloitte",
+      "file": "deloitte.svg",
+      "source": "https://www.deloitte.com/content/dam/assets-shared/logos/svg/a-d/deloitte.svg",
+      "page": "https://www.deloitte.com/",
+      "brandName": "Deloitte",
+      "primary": "#007CB0",
+      "kind": "wordmark",
+      "fetched": "2026-10-22",
+      "note": "light/white artwork, intended for dark backgrounds (white lettering, green dot)"
+    },
+    {
+      "id": "jpmorgan",
+      "file": "jpmorgan.svg",
+      "source": "https://www.jpmorganchase.com/content/dam/jpmorganchase/images/logos/jpmc-logo.svg",
+      "page": "https://www.jpmorganchase.com/",
+      "brandName": "JPMorganChase",
+      "primary": "#8F5A39",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "walmart",
+      "file": "walmart.svg",
+      "source": "https://tech.walmart.com/content/dam/walmart-global-tech/images/global-tech/LogoEXT_White.svg",
+      "page": "https://tech.walmart.com/",
+      "brandName": "Walmart Global Tech",
+      "primary": "#06F27B",
+      "kind": "wordmark",
+      "fetched": "2026-10-22",
+      "note": "light/white artwork, intended for dark backgrounds"
+    },
+    {
+      "id": "canva",
+      "file": "canva.svg",
+      "source": "https://static.canva.com/web/images/856bac30504ecac8dbd38dbee61de1f1.svg",
+      "page": "https://www.canva.com/",
+      "brandName": "Canva",
+      "primary": "#8B3DFF",
+      "kind": "wordmark",
+      "fetched": "2026-10-22",
+      "note": "light/white artwork, intended for dark backgrounds (white fill)"
+    },
+    {
+      "id": "amd",
+      "file": "amd.svg",
+      "source": "https://www.amd.com/content/dam/code/images/header/amd-header-logo.svg",
+      "page": "https://www.amd.com/",
+      "brandName": "AMD",
+      "primary": "#00C2DE",
+      "kind": "wordmark",
+      "fetched": "2026-10-22",
+      "note": "light/white artwork, intended for dark backgrounds (white fill)"
+    },
+    {
+      "id": "paypal",
+      "file": "paypal.svg",
+      "source": "https://www.paypalobjects.com/marketing/web/logos/paypal-mark-color_new.svg",
+      "page": "https://www.paypal.com/",
+      "brandName": "PayPal",
+      "primary": "#002991",
+      "kind": "symbol",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "visa",
+      "file": "visa.png",
+      "source": "https://www.visa.com/vcom-assets/content/dam/visa/header/Vector.png",
+      "page": "https://www.visa.com/",
+      "brandName": "Visa",
+      "primary": "#3152EB",
+      "kind": "wordmark",
+      "fetched": "2026-10-22",
+      "note": "light/white artwork, intended for dark backgrounds (all-white PNG, 1336x430)"
+    },
+    {
+      "id": "mphasis",
+      "file": "mphasis.png",
+      "source": "https://www.mphasis.com/content/dam/mphasis-com/global/logo/mphasis-logo.png",
+      "page": "https://www.mphasis.com/",
+      "brandName": "Mphasis",
+      "primary": "#1287B2",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "coforge",
+      "file": "coforge.svg",
+      "source": "https://www.coforge.com/hubfs/website-assets/coforge-logo.svg",
+      "page": "https://www.coforge.com/",
+      "brandName": "Coforge",
+      "primary": "#5074A8",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    },
+    {
+      "id": "persistent",
+      "file": "persistent.png",
+      "source": "https://www.persistent.com/wp-content/uploads/2020/09/persistent-systems-header-logo.png",
+      "page": "https://www.persistent.com/",
+      "brandName": "Persistent Systems",
+      "primary": "#FD5F07",
+      "kind": "wordmark",
+      "fetched": "2026-10-22"
+    }
+  ],
+  "failed": [
+    {
+      "id": "goldman-sachs",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "linkedin",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "github",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "figma",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "notion",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "snowflake",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "dell",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "qualcomm",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "tesla",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "bytedance",
+      "reason": "branding logo is an inline data: URI (no https URL to download)"
+    },
+    {
+      "id": "sap",
+      "reason": "logo URL https://www.sap.com/dam/application/shared/logos/sap-logo-svg.svg/sap-logo-svg.svg returns 403 Access Denied (Akamai) to curl"
+    },
+    {
+      "id": "mastercard",
+      "reason": "logo URL https://www.mastercard.com/content/dam/mccom/shared/header/ma_symbol.svg returned an HTML 445-byte block page, not an image (also a symbol-only mark)"
+    }
+  ]
+}

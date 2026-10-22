@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
+import { clearPhoto, readPhoto, savePhoto, usePhoto } from '@/practice/photo'
 import { parseLinkedIn } from '@/practice/profileUrls'
 import type { ProfileSettings } from '@/practice/store'
 
@@ -13,6 +14,23 @@ export function IdentityForm({ settings, onSave }: { settings: ProfileSettings; 
   const [linkedin, setLinkedin] = useState(settings.linkedin ? `linkedin.com/in/${settings.linkedin}` : '')
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
+  const photo = usePhoto()
+  const [photoNote, setPhotoNote] = useState<string | null>(null)
+  const [photoError, setPhotoError] = useState<string | null>(null)
+
+  async function pickPhoto(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setPhotoError(null)
+    try {
+      savePhoto(await readPhoto(file))
+      setPhotoNote('Photo added. It stays in this browser.')
+    } catch (err) {
+      setPhotoNote(null)
+      setPhotoError(err instanceof Error ? err.message : "That image couldn't be used.")
+    }
+  }
 
   function save(e: FormEvent) {
     e.preventDefault()
@@ -41,6 +59,16 @@ export function IdentityForm({ settings, onSave }: { settings: ProfileSettings; 
 
   return (
     <form onSubmit={save} className="grid gap-3 rounded-lg border border-line bg-cream px-4 py-4">
+      <div className="grid gap-1.5 text-[12px] text-ink-muted">
+        <label htmlFor="card-photo">Photo for your card</label>
+        <div className="flex items-center gap-3">
+          {photo && <img src={photo} alt="Your card photo" className="size-14 rounded-lg border border-line object-cover" />}
+          <input id="card-photo" type="file" accept="image/*" onChange={(e) => void pickPhoto(e)} className="text-[12.5px] text-ink file:mr-3 file:rounded-md file:border file:border-line-strong file:bg-cream file:px-3 file:py-1.5 file:text-[12.5px]" />
+          {photo && <Button type="button" size="sm" variant="ghost" onClick={() => { clearPhoto(); setPhotoNote(null) }}>Remove photo</Button>}
+        </div>
+        {photoNote && <p role="status" className="text-[12px]">{photoNote}</p>}
+        {photoError && <p role="alert" className="text-[12px] text-danger">{photoError}</p>}
+      </div>
       <label className="grid gap-1 text-[12px] text-ink-muted">
         Name on your card
         <input value={name} onChange={(e) => { setName(e.target.value); setSaved(false) }} maxLength={60} autoComplete="name" placeholder="Your name" className={FIELD} />
@@ -54,7 +82,7 @@ export function IdentityForm({ settings, onSave }: { settings: ProfileSettings; 
         <input value={linkedin} onChange={(e) => { setLinkedin(e.target.value); setSaved(false) }} placeholder="https://www.linkedin.com/in/yourname" className={FIELD} />
       </label>
       <p className="text-[11.5px] leading-relaxed text-ink-muted">
-        Kept in this browser. Your email is only sent anywhere if you add it to a project you contribute. LinkedIn does not let other sites read profiles, so AlgoMentor only links to yours.
+        Your photo is resized here and kept in this browser. Name, email and LinkedIn are kept in this browser too. Your email is only sent anywhere if you add it to a project you contribute. LinkedIn does not let other sites read profiles, so AlgoMentor only links to yours.
       </p>
       <div className="flex items-center gap-3">
         <Button type="submit" size="sm" className="bg-ink text-cream hover:bg-ink/90">Save details</Button>

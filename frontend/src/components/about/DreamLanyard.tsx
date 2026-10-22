@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { cardImages, type DreamCard } from '@/about/dreamCard'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { usePhoto } from '@/practice/photo'
 
 // The React Bits Lanyard pulls in three.js, so it only loads on the page that shows it.
 const Lanyard = lazy(() => import('@/components/bits/Lanyard'))
@@ -15,24 +16,27 @@ function hasWebGL(): boolean {
 }
 
 export function describeCard(d: DreamCard): string {
-  return `Dream ID for ${d.name}: aspiring ${d.role} at ${d.company}, ${d.readiness}% ready`
+  return `Dream ID for ${d.name}: aspiring ${d.role} at ${d.company}`
 }
 
 /**
  * The dream ID card hanging from a React Bits Lanyard: drag it, throw it, click to flip it. With reduced motion, or where
  * WebGL or canvas drawing is unavailable, the same card is shown as a still picture.
  */
-export function DreamLanyard({ card, steps }: { card: DreamCard; steps: string[] }) {
+export function DreamLanyard({ card }: { card: DreamCard }) {
+  const photo = usePhoto()
   const [images, setImages] = useState<{ front: string; back: string; strap: string } | null>(null)
   const reduced = useMediaQuery('(prefers-reduced-motion: reduce)')
   const [webgl] = useState(hasWebGL)
-  const key = JSON.stringify([card, steps])
+  // Readiness is not printed on the card, so it must not redraw it.
+  const { readiness: _r, dsa: _d, core: _c, ...printed } = card
+  const key = JSON.stringify([printed, photo])
 
   useEffect(() => {
     let live = true
-    void cardImages(card, steps).then((i) => { if (live) setImages(i) })
+    void cardImages(card, photo).then((i) => { if (live) setImages(i) })
     return () => { live = false }
-    // card and steps are covered by key
+    // card and photo are covered by key
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key])
 

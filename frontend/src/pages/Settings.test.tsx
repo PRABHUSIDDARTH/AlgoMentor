@@ -4,10 +4,13 @@ import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { loadProgress } from '@/practice/progress'
+import { loadPhoto } from '@/practice/photo'
 import { loadSettings, saveStats } from '@/practice/store'
 import Settings from './Settings'
 
 const api = vi.hoisted(() => ({ fetchProfile: vi.fn() }))
+const photo = vi.hoisted(() => ({ readPhoto: vi.fn() }))
+vi.mock('@/practice/photo', async (orig) => ({ ...(await orig<typeof import('@/practice/photo')>()), ...photo }))
 vi.mock('@/lib/api', async (importOriginal) => ({ ...(await importOriginal<typeof import('@/lib/api')>()), ...api }))
 const { ApiError } = await import('@/lib/api')
 
@@ -168,6 +171,24 @@ describe('Settings', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save details' }))
     expect(screen.getByRole('alert')).toHaveTextContent('linkedin.com/in/yourname')
     expect(loadSettings().linkedin).toBeUndefined()
+  })
+
+  it('addsAPhotoForTheCardAndRemovesIt', async () => {
+    photo.readPhoto.mockResolvedValue('data:image/jpeg;base64,/9j/4AAQ')
+    await open()
+    await userEvent.upload(screen.getByLabelText('Photo for your card'), new File(['x'], 'me.png', { type: 'image/png' }))
+    expect(loadPhoto()).toBe('data:image/jpeg;base64,/9j/4AAQ')
+    expect(await screen.findByText('Photo added. It stays in this browser.')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Remove photo' }))
+    expect(loadPhoto()).toBeNull()
+  })
+
+  it('explainsWhyAPhotoWasRefused', async () => {
+    photo.readPhoto.mockRejectedValue(new Error('Choose an image file.'))
+    await open()
+    await userEvent.upload(screen.getByLabelText('Photo for your card'), new File(['x'], 'notes.txt', { type: 'text/plain' }), { applyAccept: false })
+    expect(await screen.findByRole('alert')).toHaveTextContent('Choose an image file.')
+    expect(loadPhoto()).toBeNull()
   })
 
   it('hasAGitHubProfileCard', async () => {

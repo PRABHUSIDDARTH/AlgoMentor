@@ -1,0 +1,307 @@
+[
+  {
+    "id": "airbnb",
+    "file": "airbnb.svg",
+    "source": "https://news.airbnb.com/images/belo.svg",
+    "page": "https://news.airbnb.com/about-us/",
+    "brandName": "About us",
+    "primary": "#FF385C",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "amd",
+    "file": "amd.svg",
+    "source": "https://www.amd.com/content/dam/code/images/header/amd-header-logo.svg",
+    "page": "https://www.amd.com/",
+    "brandName": "AMD",
+    "primary": "#00C2DE",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "light/white artwork, intended for dark backgrounds (white fill)"
+  },
+  {
+    "id": "atlassian",
+    "file": "atlassian.svg",
+    "source": "https://wac-cdn.atlassian.com/misc-assets/adg4-nav/AtlassianHeaderLogo.svg",
+    "page": "https://www.atlassian.com/company",
+    "brandName": "Atlassian",
+    "primary": "#1868DB",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "canva",
+    "file": "canva.svg",
+    "source": "https://static.canva.com/web/images/856bac30504ecac8dbd38dbee61de1f1.svg",
+    "page": "https://www.canva.com/",
+    "brandName": "Canva",
+    "primary": "#8B3DFF",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "light/white artwork, intended for dark backgrounds (white fill)"
+  },
+  {
+    "id": "capgemini",
+    "file": "capgemini.svg",
+    "source": "https://www.capgemini.com/wp-content/themes/capgemini2025/assets/images/capgeminiBlue.svg",
+    "page": "https://www.capgemini.com/",
+    "brandName": "Capgemini",
+    "primary": "#0058AB",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "coforge",
+    "file": "coforge.svg",
+    "source": "https://www.coforge.com/hubfs/website-assets/coforge-logo.svg",
+    "page": "https://www.coforge.com/",
+    "brandName": "Coforge",
+    "primary": "#5074A8",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "cognizant",
+    "file": "cognizant.svg",
+    "source": "https://www.cognizant.com/us/media_1808da395be9f77c0124de824530b0338915414a8.svg?width=750&format=svg&optimize=medium",
+    "page": "https://www.cognizant.com/",
+    "brandName": "Cognizant",
+    "primary": "#262663",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "deloitte",
+    "file": "deloitte.svg",
+    "source": "https://www.deloitte.com/content/dam/assets-shared/logos/svg/a-d/deloitte.svg",
+    "page": "https://www.deloitte.com/",
+    "brandName": "Deloitte",
+    "primary": "#007CB0",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "light/white artwork, intended for dark backgrounds (white lettering, green dot)"
+  },
+  {
+    "id": "flipkart",
+    "file": "flipkart.png",
+    "source": "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/logo_lite-cbb357.png",
+    "page": "https://www.flipkart.com/",
+    "brandName": "Flipkart",
+    "primary": "#2A55E5",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "google",
+    "file": "google.svg",
+    "source": "https://www.gstatic.com/marketing-cms/assets/images/f5/d3/a7f9db7045429cb6dc6be56bdcbe/google-logo-about.svg",
+    "page": "https://about.google/",
+    "brandName": "About Google",
+    "primary": "#1A73E8",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "groww",
+    "file": "groww.png",
+    "source": "https://groww.in/groww-logo-270.png",
+    "page": "https://groww.in/",
+    "brandName": "Groww",
+    "primary": "#04B488",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "jpmorgan",
+    "file": "jpmorgan.svg",
+    "source": "https://www.jpmorganchase.com/content/dam/jpmorganchase/images/logos/jpmc-logo.svg",
+    "page": "https://www.jpmorganchase.com/",
+    "brandName": "JPMorganChase",
+    "primary": "#8F5A39",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "ltimindtree",
+    "file": "ltimindtree.svg",
+    "source": "https://www.ltm.com/content/dam/ltimcorporatewebsite/refresh-images/LTM-Logo.svg",
+    "page": "https://www.ltimindtree.com/ (redirects to https://www.ltm.com/)",
+    "brandName": "LTM (formerly LTIMindtree)",
+    "primary": "#FF5E4F",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "meesho",
+    "file": "meesho.png",
+    "source": "https://www.meesho.io/img/meesho-logo.png",
+    "page": "https://www.meesho.io/",
+    "brandName": "Meesho",
+    "primary": "#580A46",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "meta",
+    "file": "meta.svg",
+    "source": "https://static.xx.fbcdn.net/rsrc.php/y9/r/tL_v571NdZ0.svg",
+    "page": "https://about.meta.com/",
+    "brandName": "Meta",
+    "primary": "#0064E0",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "microsoft",
+    "file": "microsoft.png",
+    "source": "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png",
+    "page": "https://www.microsoft.com/en-us/",
+    "brandName": "Microsoft",
+    "primary": "#0078D4",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "mphasis",
+    "file": "mphasis.png",
+    "source": "https://www.mphasis.com/content/dam/mphasis-com/global/logo/mphasis-logo.png",
+    "page": "https://www.mphasis.com/",
+    "brandName": "Mphasis",
+    "primary": "#1287B2",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "netflix",
+    "file": "netflix.png",
+    "source": "https://about.netflix.com/images/logo.png",
+    "page": "https://about.netflix.com/",
+    "brandName": "About Netflix",
+    "primary": "#E50814",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "paypal",
+    "file": "paypal.svg",
+    "source": "https://www.paypalobjects.com/marketing/web/logos/paypal-mark-color_new.svg",
+    "page": "https://www.paypal.com/",
+    "brandName": "PayPal",
+    "primary": "#002991",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "paytm",
+    "file": "paytm.svg",
+    "source": "https://pwebassets.paytm.com/commonwebassets/paytmweb/header/images/logo_new.svg",
+    "page": "https://paytm.com/",
+    "brandName": "Paytm",
+    "primary": "#00BAF2",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "persistent",
+    "file": "persistent.png",
+    "source": "https://www.persistent.com/wp-content/uploads/2020/09/persistent-systems-header-logo.png",
+    "page": "https://www.persistent.com/",
+    "brandName": "Persistent Systems",
+    "primary": "#FD5F07",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "salesforce",
+    "file": "salesforce.svg",
+    "source": "https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2024/11/logo-salesforce.svg?w=1024",
+    "page": "https://www.salesforce.com/",
+    "brandName": "Salesforce",
+    "primary": "#00B3FF",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "shopify",
+    "file": "shopify.svg",
+    "source": "https://cdn.shopify.com/b/shopify-brochure2-assets/d9340911ca8c679b148dd4a205ad2ffa.svg",
+    "page": "https://www.shopify.com/",
+    "brandName": "Shopify",
+    "primary": "#010624",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "uber",
+    "file": "uber.png",
+    "source": "https://www.uber.com/_static/de0e97ed977ad313.png",
+    "page": "https://www.uber.com/",
+    "brandName": "Uber",
+    "primary": "#000000",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "visa",
+    "file": "visa.png",
+    "source": "https://www.visa.com/vcom-assets/content/dam/visa/header/Vector.png",
+    "page": "https://www.visa.com/",
+    "brandName": "Visa",
+    "primary": "#3152EB",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "light/white artwork, intended for dark backgrounds (all-white PNG, 1336x430)"
+  },
+  {
+    "id": "walmart",
+    "file": "walmart.svg",
+    "source": "https://tech.walmart.com/content/dam/walmart-global-tech/images/global-tech/LogoEXT_White.svg",
+    "page": "https://tech.walmart.com/",
+    "brandName": "Walmart Global Tech",
+    "primary": "#06F27B",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "light/white artwork, intended for dark backgrounds"
+  },
+  {
+    "id": "wipro",
+    "file": "wipro.svg",
+    "source": "https://www.wipro.com/content/dam/wipro/social-icons/wipro_new_logo.svg",
+    "page": "https://www.wipro.com/",
+    "brandName": "Wipro",
+    "primary": "#351A55",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "zerodha",
+    "file": "zerodha.svg",
+    "source": "https://zerodha.com/static/images/logo.svg",
+    "page": "https://zerodha.com/",
+    "brandName": "Zerodha",
+    "primary": "#387ED1",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "zoho",
+    "file": "zoho.svg",
+    "source": "https://www.zohowebstatic.com/sites/zweb/images/commonroot/zoho-logo-web.svg",
+    "page": "https://www.zoho.com/",
+    "brandName": "Zoho",
+    "primary": "#EE0014",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "zomato",
+    "file": "zomato.png",
+    "source": "https://b.zmtcdn.com/data/o2_assets/31e648cbaa2ca2fb5fbec1e76710f3821785325659.png",
+    "page": "https://www.zomato.com/",
+    "brandName": "Zomato",
+    "primary": "#EF4F5F",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  }
+]
