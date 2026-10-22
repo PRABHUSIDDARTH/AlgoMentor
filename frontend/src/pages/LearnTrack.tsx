@@ -41,7 +41,7 @@ export default function LearnTrack() {
               </ul>
             </section>
           </div>
-          <aside aria-label="Track progress" className="grid content-start gap-3 rounded-lg border border-line bg-sand px-5 py-5">
+          <aside aria-label="Track progress" className="grid content-start gap-3 self-start rounded-lg border border-line bg-sand px-5 py-5">
             <p className="text-[15px] font-semibold">{done} of {track.modules.length} complete</p>
             <ProgressBar value={done / track.modules.length} label={`${track.title} progress`} />
             <p className="text-[12.5px] leading-relaxed text-ink-muted">A module completes when you score 4 of 5 on its quiz and mark it complete.</p>

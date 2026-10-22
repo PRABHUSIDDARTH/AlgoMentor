@@ -115,4 +115,16 @@ describe('Today page', () => {
     expect(screen.getByText(/^DSA 0% · Core CS \d+%$/)).toBeInTheDocument()
     expect(screen.getByRole('meter', { name: 'Readiness for FAANG / product SDE-1' })).toHaveAttribute('aria-valuenow', '0')
   })
+
+  it('planIsATimelineWithADayProgressBar', async () => {
+    renderToday()
+    expect(screen.getByRole('progressbar', { name: "Today's progress" })).toHaveAttribute('aria-valuenow', '0')
+    const nodes = () => [...document.querySelectorAll('[data-node]')]
+    expect(nodes().length).toBeGreaterThanOrEqual(2)
+    expect(nodes()[0]).toHaveAttribute('data-node', 'todo')
+    const list = screen.getByRole('list', { name: 'New problems' })
+    for (const box of within(list).getAllByRole('checkbox')) await userEvent.click(box)
+    expect(nodes()[0]).toHaveAttribute('data-node', 'done')
+    expect(screen.getByRole('progressbar', { name: "Today's progress" })).toHaveAttribute('aria-valuenow', '100')
+  })
 })

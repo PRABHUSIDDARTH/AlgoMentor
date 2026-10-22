@@ -73,4 +73,12 @@ test.describe('on a phone', () => {
     await expect(page).toHaveURL(/\/git\/health$/)
     await expect(page.getByRole('dialog')).toHaveCount(0)
   })
+
+  for (const path of ['/', '/learn', '/learn/os/processes', '/today']) {
+    test(`${path} does not scroll sideways`, async ({ page }) => {
+      await page.goto(path)
+      await page.waitForLoadState('networkidle')
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    })
+  }
 })
