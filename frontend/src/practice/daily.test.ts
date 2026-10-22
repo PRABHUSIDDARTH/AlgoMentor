@@ -116,4 +116,12 @@ describe('daily plan', () => {
     localStorage.setItem('algomentor.daily.v1', '{"2026-10-22": {"items": "nope"}}')
     expect(loadDays()).toEqual({})
   })
+
+describe('module refresher', () => {
+  it('todayRefresherCanBeADueModule', () => {
+    const plan = buildPlan(KEY, DEFAULT_SETTINGS, {}, [], NOON, ['classes-objects'])
+    const refreshers = plan.filter((i) => i.kind === 'refresher')
+    expect(refreshers).toEqual([{ id: 'refresher:module:classes-objects', kind: 'refresher', moduleId: 'classes-objects' }])
+  })
+})
 })

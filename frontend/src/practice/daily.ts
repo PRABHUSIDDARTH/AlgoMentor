@@ -4,7 +4,7 @@ import { isUnlocked, stageCompletion, type Progress } from './progress'
 import { isDue } from './schedule'
 import type { ProfileSettings } from './store'
 
-export type DailyItem = { id: string; kind: 'new' | 'review' | 'refresher'; problemId?: string; stageId?: string; patternId?: string }
+export type DailyItem = { id: string; kind: 'new' | 'review' | 'refresher'; problemId?: string; stageId?: string; patternId?: string; moduleId?: string }
 export type Day = { items: DailyItem[]; completedIds: string[] }
 
 export const DAILY_KEY = 'algomentor.daily.v1'
@@ -24,9 +24,10 @@ function hash(s: string): number {
 
 /**
  * Today's checklist: `dailyGoal` new problems (current stage first, then other open stages by
- * target weight), up to 5 due reviews (oldest first), and one refresher from a finished stage.
+ * target weight), up to 5 due reviews (oldest first), and one refresher: a Learn module whose
+ * re-quiz is due, otherwise a pattern from a finished stage.
  */
-export function buildPlan(dateKey: string, settings: ProfileSettings, progress: Progress, unlocks: string[], now: number): DailyItem[] {
+export function buildPlan(dateKey: string, settings: ProfileSettings, progress: Progress, unlocks: string[], now: number, dueModuleIds: string[] = []): DailyItem[] {
   const weights = TARGET_WEIGHTS[settings.target.company]
   const open = STAGES.filter((s) => isUnlocked(s.id, progress, unlocks) && stageCompletion(s.id, progress).ratio < 1)
   const [current, ...rest] = open
@@ -42,6 +43,11 @@ export function buildPlan(dateKey: string, settings: ProfileSettings, progress: 
     .sort(([, a], [, b]) => (a.nextReviewAt ?? 0) - (b.nextReviewAt ?? 0))
     .slice(0, MAX_REVIEWS)
     .map(([id]): DailyItem => ({ id: `review:${id}`, kind: 'review', problemId: id }))
+
+  if (dueModuleIds.length) {
+    const id = dueModuleIds[0]
+    return [...fresh, ...reviews, { id: `refresher:module:${id}`, kind: 'refresher', moduleId: id }]
+  }
 
   const finished = STAGES.filter((s) => stageCompletion(s.id, progress).ratio === 1).flatMap((s) => s.patterns.map((p) => ({ p, s })))
   const pick = finished.length ? finished[hash(dateKey) % finished.length] : null

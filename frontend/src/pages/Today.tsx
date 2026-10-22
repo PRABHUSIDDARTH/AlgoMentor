@@ -10,6 +10,8 @@ import { loadProgress, loadUnlocks, PROGRESS_EVENT, recordReviewFailed, recordSo
 import { solveHref } from '@/practice/roadmapView'
 import { useLevel } from '@/practice/useLevel'
 import { useSettings } from '@/practice/useSettings'
+import { ModuleRefresher } from '@/components/learn/ModuleRefresher'
+import { dueModules } from '@/learn/progress'
 import type { ProfileSettings } from '@/practice/store'
 import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
 import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
@@ -42,7 +44,7 @@ function reconcile(todayKey: string, day: Day): Day {
 }
 
 const planFor = (todayKey: string, settings: ProfileSettings) =>
-  reconcile(todayKey, getDay(todayKey, () => buildPlan(todayKey, settings, loadProgress(), loadUnlocks(), Date.now())))
+  reconcile(todayKey, getDay(todayKey, () => buildPlan(todayKey, settings, loadProgress(), loadUnlocks(), Date.now(), dueModules())))
 
 export default function Today() {
   const todayKey = useTodayKey()
@@ -134,6 +136,15 @@ export default function Today() {
               <p className="text-[13.5px] text-ink-muted">No reviews due today. Solved problems come back after 1, 3, 7, 21 and 60 days.</p>
             )}
           </section>
+
+          {groups.refresher?.moduleId && (
+            <ModuleRefresher
+              moduleId={groups.refresher.moduleId}
+              dateKey={todayKey}
+              done={day.completedIds.includes(groups.refresher.id)}
+              onDone={() => { const next = markItem(todayKey, groups.refresher!.id, true); if (next) setDay(next); setDays(loadDays()) }}
+            />
+          )}
 
           {refresher && groups.refresher && (
             <section aria-labelledby="t-refresh" className="grid gap-2.5 rounded-lg border border-line bg-sand px-5 py-4">

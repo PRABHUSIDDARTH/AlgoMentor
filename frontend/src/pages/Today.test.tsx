@@ -5,6 +5,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { STAGES } from '@/content/roadmap'
 import { loadProgress, recordSolve } from '@/practice/progress'
+import { TRACKS } from '@/content/learn'
+import { loadLearn } from '@/learn/progress'
 import Today from './Today'
 
 function Probe() {
@@ -70,5 +72,23 @@ describe('Today page', () => {
   it('generateTestButtonPresent', () => {
     renderToday()
     expect(screen.getByRole('button', { name: 'Generate test' })).toBeInTheDocument()
+  })
+
+  it('dueModuleShowsAThreeQuestionRequiz', async () => {
+    const m = TRACKS[0].modules[0]
+    localStorage.setItem('algomentor.learn.v1', JSON.stringify({ [m.id]: { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: 1 } }))
+    renderToday()
+    const box = screen.getByRole('region', { name: `Concept refresher · ${TRACKS[0].title}` })
+    expect(within(box).getByText(m.title)).toBeInTheDocument()
+    const groups = within(box).getAllByRole('radiogroup')
+    expect(groups).toHaveLength(3)
+    for (const g of groups) {
+      const q = m.quiz.find((x) => x.prompt === g.getAttribute('aria-label') || within(g).queryByText(x.prompt))!
+      await userEvent.click(within(g).getAllByRole('radio')[q.answer])
+    }
+    await userEvent.click(within(box).getByRole('button', { name: 'Check answers' }))
+    expect(within(box).getByRole('status')).toHaveTextContent('3 of 3 correct')
+    expect(loadLearn()[m.id].reviewStep).toBe(1)
+    expect(within(box).getByText('Refreshed')).toBeInTheDocument()
   })
 })
