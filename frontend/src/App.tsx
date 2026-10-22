@@ -8,7 +8,6 @@ import Landing from '@/pages/Landing'
 
 // The workspace is split out so the landing page stays small.
 const Workspace = lazy(() => import('@/pages/Workspace'))
-const ComingSoon = lazy(() => import('@/pages/ComingSoon'))
 const Roadmap = lazy(() => import('@/pages/Roadmap'))
 const RoadmapStage = lazy(() => import('@/pages/RoadmapStage'))
 const Today = lazy(() => import('@/pages/Today'))
@@ -20,6 +19,7 @@ const Lesson = lazy(() => import('@/pages/Lesson'))
 const Project = lazy(() => import('@/pages/Project'))
 const GitHub = lazy(() => import('@/pages/GitHub'))
 const GitChallenge = lazy(() => import('@/pages/GitChallenge'))
+const Resume = lazy(() => import('@/pages/Resume'))
 
 export default function App() {
   return (
@@ -41,7 +41,7 @@ export default function App() {
           <Route path="/projects/:projectId" element={<Project />} />
           <Route path="/git" element={<GitHub />} />
           <Route path="/git/:challengeId" element={<GitChallenge />} />
-          <Route path="/resume" element={<ComingSoon title="Resume projects" />} />
+          <Route path="/resume" element={<Resume />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
