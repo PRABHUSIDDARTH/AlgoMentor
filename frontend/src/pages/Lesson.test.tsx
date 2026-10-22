@@ -72,6 +72,23 @@ describe('Lesson page', () => {
     expect(screen.getByRole('button', { name: 'Mark complete' })).toBeDisabled()
   })
 
+  it('focusMovesToTheResultAfterCheckingAndBackToTheQuestionsOnRetry', async () => {
+    renderAt(`/learn/oop/${first.id}`)
+    const quiz = screen.getByRole('region', { name: 'Check yourself' })
+    await answerAll(false)
+    screen.getByRole('button', { name: 'Check answers' }).focus()
+    await userEvent.keyboard('{Enter}')
+    // The button that was pressed disappears, so focus must land on the result instead of falling back to the page.
+    const status = within(quiz).getByRole('status')
+    expect(status).toHaveFocus()
+    expect(status).toHaveTextContent('0 of 5 correct')
+    // The result comes before the per-question explanations, so a screen reader goes straight on to them.
+    const firstExplanation = within(quiz).getAllByText(/^Not quite: the answer is/)[0]
+    expect(status.compareDocumentPosition(firstExplanation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    await userEvent.click(within(quiz).getByRole('button', { name: 'Try again' }))
+    expect(within(within(quiz).getAllByRole('radiogroup')[0]).getAllByRole('radio')[0]).toHaveFocus()
+  })
+
   it('passingTheQuizAllowsMarkComplete', async () => {
     renderAt(`/learn/oop/${first.id}`)
     await answerAll(true)

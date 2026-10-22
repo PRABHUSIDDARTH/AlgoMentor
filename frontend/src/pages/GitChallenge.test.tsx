@@ -106,6 +106,12 @@ describe('Git challenge page', () => {
     expect(await navigator.clipboard.readText()).toContain('/git-challenges/conflict.ps1')
   })
 
+  it('saysPowerShellSevenIsNeededAndHowToGetIt', () => {
+    renderAt('/git/merge-conflict')
+    const box = screen.getByRole('region', { name: 'Set up the challenge' })
+    expect(within(box).getByText(/PowerShell 7/)).toHaveTextContent('winget install Microsoft.PowerShell')
+  })
+
   it('theCommandsDownloadFirstAndNeverPipeIntoAShell', () => {
     renderAt('/git/merge-conflict')
     const box = screen.getByRole('region', { name: 'Set up the challenge' })

@@ -53,6 +53,9 @@ export function ScriptBox({ script }: { script: string }) {
       </p>
       <Command label="bash" command={bash} />
       <Command label="PowerShell" command={powershell} />
+      <p className="max-w-[72ch] text-[12.5px] leading-relaxed text-ink-muted">
+        The PowerShell command needs PowerShell 7 (<code className="font-mono">pwsh</code>), not the older Windows PowerShell. On Windows, install it with <code className="font-mono">winget install Microsoft.PowerShell</code>.
+      </p>
     </section>
   )
 }

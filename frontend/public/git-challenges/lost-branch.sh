@@ -2,6 +2,8 @@
 # AlgoMentor Git challenge 7: recover a deleted branch.
 # Makes a commit on feature/rescue, then deletes that branch locally. It never pushes or touches remotes.
 CHALLENGE=rescue-branch
+FILES="rescue.txt"
+BRANCHES="feature/rescue"
 set -euo pipefail
 
 fail() { echo "AlgoMentor: $1" >&2; exit 1; }
@@ -11,6 +13,9 @@ git rev-parse --verify -q HEAD >/dev/null || fail "make a first commit before ru
 MAIN="$(git symbolic-ref --short -q HEAD)" || fail "you're on a detached HEAD. Check out your default branch first."
 [ -z "$(git status --porcelain)" ] || fail "your working tree is not clean. Commit or stash your changes first."
 [ ! -e ".algomentor/$CHALLENGE.json" ] || fail "this challenge is already set up here (.algomentor/$CHALLENGE.json exists)."
+# Never overwrite the learner's own files or branches: stop before anything is changed.
+for f in $FILES; do [ ! -e "$f" ] || fail "$f already exists here, and this script would overwrite it. Run it in a scratch clone instead."; done
+for b in $BRANCHES; do git show-ref --verify --quiet "refs/heads/$b" && fail "the branch $b already exists here. Rename it or run this in a scratch clone." || true; done
 BASE="$(git rev-parse HEAD)"
 
 # Records where the challenge started, so AlgoMentor can check your work once you push.

@@ -13,6 +13,10 @@ class GitChecksTests {
 
 	static final String COMMITS = "/commits?sha=main&per_page=100";
 
+	static final String LOST = "3".repeat(40);
+
+	static final String HOTFIX = "4".repeat(40);
+
 	FakeGitHub gh = new FakeGitHub("ana", "library");
 
 	CheckResult run(String challenge) {
@@ -140,13 +144,13 @@ class GitChecksTests {
 
 	@Test
 	void rescueBranchExistsWithScriptedCommit() {
-		gh.repo("main").on("/contents/.algomentor/rescue-branch.json?ref=main", marker("rescue-branch", ",\"commitSha\":\"r9\""))
-			.on("/compare/r9...feature/rescue", "{\"status\":\"identical\",\"ahead_by\":0,\"commits\":[]}");
+		gh.repo("main").on("/contents/.algomentor/rescue-branch.json?ref=main", marker("rescue-branch", ",\"commitSha\":\"" + LOST + "\""))
+			.on("/compare/" + LOST + "...feature/rescue", "{\"status\":\"identical\",\"ahead_by\":0,\"commits\":[]}");
 		assertThat(run("rescue-branch").passed()).isTrue();
 
 		FakeGitHub gone = new FakeGitHub("ana", "library");
-		gone.repo("main").on("/contents/.algomentor/rescue-branch.json?ref=main", marker("rescue-branch", ",\"commitSha\":\"r9\""))
-			.missing("/compare/r9...feature/rescue");
+		gone.repo("main").on("/contents/.algomentor/rescue-branch.json?ref=main", marker("rescue-branch", ",\"commitSha\":\"" + LOST + "\""))
+			.missing("/compare/" + LOST + "...feature/rescue");
 		CheckResult r = new GitChecks(gone.client()).check("ana", "library", "rescue-branch");
 		assertThat(r.passed()).isFalse();
 		assertThat(r.details()).anyMatch((d) -> d.text().contains("feature/rescue"));
@@ -154,16 +158,16 @@ class GitChecksTests {
 
 	@Test
 	void cherryPickSamePatchDifferentSha() {
-		String extra = ",\"commitSha\":\"h1\",\"subject\":\"Fix typo in welcome message\",\"file\":\"welcome.txt\"";
+		String extra = ",\"commitSha\":\"" + HOTFIX + "\",\"subject\":\"Fix typo in welcome message\",\"file\":\"welcome.txt\"";
 		gh.repo("main").on("/contents/.algomentor/cherry-pick.json?ref=main", marker("cherry-pick", extra))
 			.on(COMMITS, list(commit("c7", "Fix typo in welcome message", "ana", "b0")))
 			.on("/commits/c7", commitDetail("c7", "Fix typo in welcome message", "welcome.txt", "-Welcom\n+Welcome"))
-			.on("/commits/h1", commitDetail("h1", "Fix typo in welcome message", "welcome.txt", "-Welcom\n+Welcome"));
+			.on("/commits/" + HOTFIX, commitDetail(HOTFIX, "Fix typo in welcome message", "welcome.txt", "-Welcom\n+Welcome"));
 		assertThat(run("cherry-pick").passed()).isTrue();
 
 		FakeGitHub merged = new FakeGitHub("ana", "library");
 		merged.repo("main").on("/contents/.algomentor/cherry-pick.json?ref=main", marker("cherry-pick", extra))
-			.on(COMMITS, list(commit("h1", "Fix typo in welcome message", "ana", "b0")));
+			.on(COMMITS, list(commit(HOTFIX, "Fix typo in welcome message", "ana", "b0")));
 		CheckResult r = new GitChecks(merged.client()).check("ana", "library", "cherry-pick");
 		assertThat(r.passed()).isFalse();
 		assertThat(r.details()).anyMatch((d) -> d.text().contains("cherry-pick"));
@@ -220,6 +224,62 @@ class GitChecksTests {
 	void usesDefaultBranchFromApi() {
 		gh.repo("master").on("/commits?sha=master&per_page=100", list(commit("c1", "Add library catalogue", "ana"))).on("/readme", file("# Library"));
 		assertThat(run("first-commit").passed()).isTrue();
+	}
+
+
+	@Test
+	void mergeConflictAcceptsAResolutionThatKeepsOneSide() {
+		// Keeping the first parent's line leaves conflict.txt unchanged against it, so GitHub lists no file for the merge itself.
+		gh.repo("main").on("/contents/.algomentor/merge-conflict.json?ref=main", marker("merge-conflict", ",\"file\":\"conflict.txt\""))
+			.on(COMMITS, list(commit("m1", "Merge branch 'conflict/theirs'", "ana", "p1", "p2")))
+			.on("/commits/m1", "{\"sha\":\"m1\",\"commit\":{\"message\":\"Merge\"},\"files\":[]}")
+			.on("/commits/p2", commitDetail("p2", "Extend weekday opening hours", "conflict.txt", "+Opening hours: 10 to 6"))
+			.on("/contents/conflict.txt?ref=main", file("Opening hours: 8 to 4, closed on Sundays.\n"));
+		assertThat(run("merge-conflict").passed()).isTrue();
+	}
+
+	@Test
+	void mergeConflictStillNeedsTheMergeToInvolveTheFile() {
+		gh.repo("main").on("/contents/.algomentor/merge-conflict.json?ref=main", marker("merge-conflict", ",\"file\":\"conflict.txt\""))
+			.on(COMMITS, list(commit("m1", "Merge branch 'docs'", "ana", "p1", "p2")))
+			.on("/commits/m1", "{\"sha\":\"m1\",\"commit\":{\"message\":\"Merge\"},\"files\":[]}")
+			.on("/commits/p2", commitDetail("p2", "Edit docs", "README.md", "+docs"))
+			.on("/contents/conflict.txt?ref=main", file("clean\n"));
+		assertThat(run("merge-conflict").passed()).isFalse();
+	}
+
+	@Test
+	void firstCommitOnAnEmptyRepositoryAsksForACommitNotForAPublicRepo() {
+		gh.repo("main").conflict(COMMITS).missing("/readme");
+		CheckResult r = run("first-commit");
+		assertThat(r.passed()).isFalse();
+		assertThat(r.details()).anyMatch((d) -> !d.ok() && d.text().contains("no commits yet"));
+		assertThat(r.details()).noneMatch((d) -> d.text().contains("Make the repository public"));
+	}
+
+	@Test
+	void meaningfulCommitsOnAnEmptyRepositoryIsZeroOfFive() {
+		gh.repo("main").conflict(COMMITS);
+		assertThat(run("meaningful-commits").details()).anyMatch((d) -> d.text().contains("0 of 5"));
+	}
+
+	@Test
+	void markerValuesThatCouldLeaveTheRepoPathAreRejectedWithoutAnyRequest() {
+		String[][] bad = {
+				{"revert", ",\"commitSha\":\"../../../../user\""},
+				{"rescue-branch", ",\"commitSha\":\"zzzz\""},
+				{"cherry-pick", ",\"commitSha\":\"" + HOTFIX + "\",\"subject\":\"Fix\",\"file\":\"../../../user\""},
+				{"merge-conflict", ",\"file\":\"/etc/passwd\""},
+				{"remove-secret", ",\"file\":\"config/../../x\""},
+		};
+		for (String[] b : bad) {
+			FakeGitHub one = new FakeGitHub("ana", "library");
+			// Only the repo and the marker may be read: any further request makes the mock server fail the test.
+			one.repo("main").on("/contents/.algomentor/" + b[0] + ".json?ref=main", marker(b[0], b[1]));
+			CheckResult r = new GitChecks(one.client()).check("ana", "library", b[0]);
+			assertThat(r.passed()).as(b[0]).isFalse();
+			assertThat(r.details()).as(b[0]).singleElement().satisfies((d) -> assertThat(d.text()).contains("marker").contains("looks wrong"));
+		}
 	}
 
 }

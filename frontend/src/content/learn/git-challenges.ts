@@ -249,6 +249,7 @@ const ENTRIES: Entry[] = [
     steps: [
       'Run the setup script in your own clone. It commits config/secret.key (a fake key) to your default branch.',
       'Remove that file from every commit in history, for example with git filter-branch or the separate git filter-repo tool.',
+      'If you used git filter-repo, it removes the origin remote on purpose. Add it back with git remote add origin <url>, using the URL that git remote -v showed before you started.',
       'Add config/secret.key (or *.key) to .gitignore and commit it.',
       'Force-push the rewritten history to GitHub with --force-with-lease.',
       'Remember: anything that was pushed must be treated as leaked. Rewriting history is cleanup, not a substitute for revoking a real key.',

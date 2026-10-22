@@ -94,6 +94,21 @@ suite() {
 
   fresh "$r-detached"; git checkout -q --detach
   check "$r refusesDetachedHead" "! run $r squash && [ ! -d .algomentor ]"
+
+  # The learner's own files and branches are never overwritten, and a failed start leaves nothing behind.
+  for spec in "conflict:conflict.txt" "squash:squash.txt" "bad-commit:app.txt" "lost-branch:rescue.txt" "hotfix:welcome.txt" "secret:config/secret.key"; do
+    name=${spec%%:*}; file=${spec#*:}
+    fresh "$r-over-$name"; mkdir -p "$(dirname "$file")"; echo mine > "$file"; git add "$file"; git commit -qm "Add my own $file"
+    check "$r $name refuses to overwrite $file" "! run $r $name && [ ! -d .algomentor ] && [ \"\$(cat $file)\" = mine ]"
+    out=$(run "$r" "$name" 2>&1); check "$r $name says the file already exists" "echo \"\$out\" | grep -qi 'already exists'"
+  done
+  fresh "$r-branch"; git branch feature/squash
+  check "$r refuses when feature/squash already exists" "! run $r squash && [ ! -d .algomentor ] && [ -z \"\$(git status --porcelain)\" ]"
+  out=$(run "$r" squash 2>&1); check "$r says the branch already exists" "echo \"\$out\" | grep -qi 'branch feature/squash already exists'"
+
+  # A .gitignore that already ignores *.key must not let the secret challenge pass without any work.
+  fresh "$r-ignored"; echo '*.key' > .gitignore; git add .gitignore; git commit -qm "Ignore key files"; run "$r" secret >/dev/null
+  check "$r secret: the key is in history even when *.key is ignored" "[ -n \"\$(git log --all --format=%H -- config/secret.key)\" ]"
 }
 
 for s in conflict squash bad-commit lost-branch hotfix secret; do

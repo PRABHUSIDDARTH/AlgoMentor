@@ -85,7 +85,7 @@ docker build -t algomentor .
 docker run -p 8080:8080 -e GEMINI_API_KEY=your_key_here algomentor
 ```
 
-Optional environment variables: `GEMINI_MODEL` (default `gemini-2.5-flash`), `PORT` (default `8080`) and `GITHUB_TOKEN`. Without a token GitHub allows 60 Git checks an hour; with a **fine-grained token that has read-only access to public repositories** (no scopes beyond that) it is 5,000 an hour. Create one at github.com/settings/personal-access-tokens, and never give it write access. Rate limits and size caps live in `src/main/resources/application.properties`. A health check is served at `/actuator/health`.
+Optional environment variables: `GEMINI_MODEL` (default `gemini-2.5-flash`), `PORT` (default `8080`) and `GITHUB_TOKEN`. Without a token GitHub allows only 60 API calls an hour for the whole server, and one Git check uses 3 to 24 of them, so a token is strongly recommended. With a **fine-grained token that has read-only access to public repositories** (no scopes beyond that) the limit is 5,000 calls an hour. Create one at github.com/settings/personal-access-tokens, and never give it write access. Rate limits and size caps live in `src/main/resources/application.properties`. A health check is served at `/actuator/health`.
 
 ## 🌐 Deployment
 Deployed on Google Cloud Run via Docker.

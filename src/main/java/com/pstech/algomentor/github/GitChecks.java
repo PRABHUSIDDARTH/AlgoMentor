@@ -33,6 +33,10 @@ public class GitChecks {
 	private static final Set<String> NOT_PAST = Set.of("embed", "speed", "seed", "feed", "need", "shed", "proceed", "exceed", "succeed",
 			"bring", "ring", "ping", "string", "swing", "spring");
 
+	private static final Pattern SHA = Pattern.compile("^[0-9a-f]{40}$");
+
+	private static final Pattern SAFE_FILE = Pattern.compile("^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$");
+
 	private static final Pattern SEMVER = Pattern.compile("^v?(\\d+)\\.(\\d+)\\.(\\d+)$");
 
 	private final GitHubClient gh;
@@ -75,7 +79,32 @@ public class GitChecks {
 			return CheckResult.of(List.of(new Detail(false,
 					"No challenge marker on %s yet. Run the setup script in your clone, then push %s.".formatted(r.branch(), r.branch()))));
 		}
+		if (!validMarker(marker.get())) {
+			return CheckResult.of(List.of(new Detail(false,
+					"The challenge marker on %s looks wrong. Run the setup script again in a fresh clone.".formatted(r.branch()))));
+		}
 		return check.run(r, marker.get());
+	}
+
+	/**
+	 * The marker is a file in the learner's repository, so its values are untrusted: they end up in GitHub API
+	 * paths. Only a full commit hash and a plain relative file path are accepted.
+	 */
+	static boolean validMarker(JsonNode m) {
+		JsonNode sha = m.path("commitSha");
+		if (!sha.isMissingNode() && !(sha.isString() && SHA.matcher(sha.asString()).matches())) {
+			return false;
+		}
+		JsonNode file = m.path("file");
+		if (!file.isMissingNode() && !(file.isString() && safeFile(file.asString()))) {
+			return false;
+		}
+		JsonNode subject = m.path("subject");
+		return subject.isMissingNode() || (subject.isString() && subject.asString().length() <= 120);
+	}
+
+	private static boolean safeFile(String file) {
+		return SAFE_FILE.matcher(file).matches() && Arrays.stream(file.split("/")).noneMatch((s) -> s.equals(".") || s.equals(".."));
 	}
 
 	private static Optional<JsonNode> json(String text) {
@@ -118,13 +147,16 @@ public class GitChecks {
 	private CheckResult firstCommit(Repo r) {
 		String login = r.info().path("owner").path("login").asString(r.owner());
 		boolean ownerCommit = false;
-		for (JsonNode c : gh.commits(r.owner(), r.name(), r.branch())) {
+		JsonNode commits = gh.commits(r.owner(), r.name(), r.branch());
+		for (JsonNode c : commits) {
 			ownerCommit |= login.equalsIgnoreCase(c.path("author").path("login").asString(""));
 		}
 		boolean readme = gh.readme(r.owner(), r.name()).isPresent();
+		String commitText = commits.isEmpty() ? "The repository has no commits yet: make your first commit and push it."
+				: ownerCommit ? "There's a commit by %s on %s".formatted(login, r.branch())
+						: "No commit on %s is linked to %s's GitHub account. Check git config user.email.".formatted(r.branch(), login);
 		return CheckResult.of(List.of(new Detail(true, "The repository is public"),
-				new Detail(ownerCommit, ownerCommit ? "There's a commit by %s on %s".formatted(login, r.branch())
-						: "No commit on %s is linked to %s's GitHub account. Check git config user.email.".formatted(r.branch(), login)),
+				new Detail(ownerCommit, commitText),
 				new Detail(readme, readme ? "README found" : "Add a README and push it")));
 	}
 
@@ -164,9 +196,7 @@ public class GitChecks {
 		boolean merged = stream(gh.commits(r.owner(), r.name(), r.branch()))
 			.filter((c) -> c.path("parents").size() == 2)
 			.limit(10)
-			.anyMatch((c) -> gh.commit(r.owner(), r.name(), c.path("sha").asString(""))
-				.map((d) -> stream(d.path("files")).anyMatch((f) -> file.equals(f.path("filename").asString(""))))
-				.orElse(false));
+			.anyMatch((c) -> touches(r, c.path("sha").asString(""), file) || touches(r, c.path("parents").path(1).path("sha").asString(""), file));
 		Optional<String> content = gh.text(r.owner(), r.name(), file, r.branch());
 		boolean clean = content.isPresent() && content.get().lines()
 			.noneMatch((l) -> l.startsWith("<<<<<<<") || l.equals("=======") || l.startsWith(">>>>>>>"));
@@ -176,6 +206,16 @@ public class GitChecks {
 				new Detail(clean, clean ? "%s has no conflict markers left".formatted(file)
 						: content.isEmpty() ? "%s is missing on %s".formatted(file, r.branch())
 								: "%s still has conflict markers (<<<<<<<, =======, >>>>>>>)".formatted(file))));
+	}
+
+	/**
+	 * Whether a commit changed {@code file}. GitHub lists a merge commit's files against its first parent, so a
+	 * learner who resolved by keeping the first parent's line is recognised through the second parent instead.
+	 */
+	private boolean touches(Repo r, String sha, String file) {
+		return !sha.isEmpty() && gh.commit(r.owner(), r.name(), sha)
+			.map((d) -> stream(d.path("files")).anyMatch((f) -> file.equals(f.path("filename").asString(""))))
+			.orElse(false);
 	}
 
 	private CheckResult squash(Repo r, JsonNode marker) {

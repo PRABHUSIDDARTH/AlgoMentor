@@ -24,7 +24,7 @@ public class GitController {
 
 	private final RepoHealth health;
 
-	// Successful checks only: after a fix the learner re-checks within two minutes at most.
+	// Passing checks only: a learner who fixes something and presses Check again must see the new result at once.
 	private final Cache<String, CheckResult> cache = Caffeine.newBuilder().expireAfterWrite(CACHE_TTL).maximumSize(10_000).build();
 
 	public GitController(GitChecks checks, RepoHealth health) {
@@ -59,7 +59,16 @@ public class GitController {
 	}
 
 	private CheckResult cached(String owner, String repo, String what, Supplier<CheckResult> run) {
-		return cache.get((owner + "/" + repo + "/" + what).toLowerCase(), (k) -> run.get());
+		String key = (owner + "/" + repo + "/" + what).toLowerCase();
+		CheckResult hit = cache.getIfPresent(key);
+		if (hit != null) {
+			return hit;
+		}
+		CheckResult fresh = run.get();
+		if (fresh.passed()) {
+			cache.put(key, fresh);
+		}
+		return fresh;
 	}
 
 }

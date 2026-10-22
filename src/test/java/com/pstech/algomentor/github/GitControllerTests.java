@@ -105,4 +105,16 @@ class GitControllerTests {
 		mvc.perform(get("/git/repo-health/ana/library")).andExpect(status().isOk()).andExpect(jsonPath("$.passed").value(true));
 	}
 
+	@Test
+	void failedChecksAreNotCachedSoAFixIsSeenOnTheNextCheck() throws Exception {
+		CheckResult fail = new CheckResult(false, List.of(new CheckResult.Detail(false, "No merge commit yet")));
+		given(checks.check(anyString(), anyString(), anyString())).willReturn(fail).willReturn(PASS);
+		mvc.perform(get("/git/check/ana/library/merge-conflict")).andExpect(jsonPath("$.passed").value(false));
+		mvc.perform(get("/git/check/ana/library/merge-conflict")).andExpect(jsonPath("$.passed").value(true));
+		verify(checks, times(2)).check("ana", "library", "merge-conflict");
+		// A pass is then kept for two minutes.
+		mvc.perform(get("/git/check/ana/library/merge-conflict")).andExpect(jsonPath("$.passed").value(true));
+		verify(checks, times(2)).check("ana", "library", "merge-conflict");
+	}
+
 }

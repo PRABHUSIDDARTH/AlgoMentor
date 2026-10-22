@@ -53,4 +53,13 @@ describe('git challenges content', () => {
     expect(text('merge-conflict')).toContain('conflict.txt')
     expect(text('cherry-pick')).toContain('welcome.txt')
   })
+
+  it('theSecretChallengeTellsLearnersToReAddOriginAfterFilterRepo', () => {
+    // git filter-repo removes the origin remote on purpose, so the push step would otherwise fail.
+    const steps = GIT_CHALLENGE_BY_ID.get('remove-secret')!.steps.join(' ')
+    expect(steps).toMatch(/git remote add origin/)
+    const reAdd = steps.indexOf('git remote add origin')
+    expect(reAdd).toBeGreaterThan(steps.indexOf('filter-repo'))
+    expect(reAdd).toBeLessThan(steps.indexOf('--force-with-lease'))
+  })
 })

@@ -25,13 +25,14 @@ export function CheckResultView({ record }: { record?: CheckRecord }) {
   const failingNow = !!record && !record.passed
   const status = everPassed ? `Passed ${day(record!.passedAt!)}` : record ? 'Not yet' : 'Not checked'
   return (
-    <>
+    // A live region that exists before the result arrives, so pressing Check is announced to screen readers.
+    <div role="status" className="grid gap-2">
       <p className="font-mono text-[11.5px] text-ink-muted">
         <span className={everPassed ? 'text-ink' : undefined}>{status}</span>
         {everPassed && failingNow && <span className="text-danger"> · Now failing</span>}
       </p>
       {record?.error && <p className="text-[12.5px] leading-relaxed text-danger">{record.error}</p>}
       {record && !record.error && <CheckDetailsList details={record.details} />}
-    </>
+    </div>
   )
 }

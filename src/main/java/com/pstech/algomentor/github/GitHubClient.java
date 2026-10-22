@@ -44,12 +44,12 @@ public class GitHubClient {
 	}
 
 	public JsonNode commits(String owner, String repo, String branch) {
-		return get(owner, repo, "/commits?sha=" + q(branch) + "&per_page=100");
+		return get(owner, repo, "/commits?sha=" + q(branch) + "&per_page=100", true);
 	}
 
 	/** Commits reachable from {@code branch} that changed {@code path}. */
 	public JsonNode commitsTouching(String owner, String repo, String branch, String path) {
-		return get(owner, repo, "/commits?sha=" + q(branch) + "&path=" + q(path) + "&per_page=100");
+		return get(owner, repo, "/commits?sha=" + q(branch) + "&path=" + q(path) + "&per_page=100", true);
 	}
 
 	public Optional<JsonNode> commit(String owner, String repo, String sha) {
@@ -69,7 +69,7 @@ public class GitHubClient {
 	}
 
 	public JsonNode branches(String owner, String repo) {
-		return get(owner, repo, "/branches?per_page=100");
+		return get(owner, repo, "/branches?per_page=100", true);
 	}
 
 	/** The ref for a tag: its object type is "tag" for an annotated tag and "commit" for a lightweight one. */
@@ -78,7 +78,7 @@ public class GitHubClient {
 	}
 
 	public JsonNode tree(String owner, String repo, String ref) {
-		return get(owner, repo, "/git/trees/" + p(ref) + "?recursive=1");
+		return get(owner, repo, "/git/trees/" + p(ref) + "?recursive=1", true);
 	}
 
 	/** Empty when either side doesn't exist on GitHub. */
@@ -109,10 +109,19 @@ public class GitHubClient {
 	}
 
 	private JsonNode get(String owner, String repo, String path) {
-		return find(owner, repo, path).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, NOT_PUBLIC));
+		return get(owner, repo, path, false);
+	}
+
+	/** {@code emptyOk}: an empty repository (GitHub answers 409) reads as "nothing here" instead of "not found". */
+	private JsonNode get(String owner, String repo, String path, boolean emptyOk) {
+		return find(owner, repo, path, emptyOk).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, NOT_PUBLIC));
 	}
 
 	private Optional<JsonNode> find(String owner, String repo, String path) {
+		return find(owner, repo, path, false);
+	}
+
+	private Optional<JsonNode> find(String owner, String repo, String path, boolean emptyOk) {
 		URI uri = URI.create(baseUrl + "/repos/" + p(owner) + "/" + p(repo) + path);
 		try {
 			return http.get().uri(uri).headers((h) -> {
@@ -123,7 +132,10 @@ public class GitHubClient {
 				}
 			}).exchange((request, response) -> {
 				int status = response.getStatusCode().value();
-				if (status == 404 || status == 409) { // 409: an empty repository has no commits or contents
+				if (status == 409 && emptyOk) { // an empty repository has no commits, branches or tree
+					return Optional.of(JsonMapper.shared().createArrayNode());
+				}
+				if (status == 404 || status == 409) {
 					return Optional.empty();
 				}
 				boolean exhausted = "0".equals(response.getHeaders().getFirst("x-ratelimit-remaining"));

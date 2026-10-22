@@ -49,6 +49,13 @@ class FakeGitHub {
 		return this;
 	}
 
+	/** GitHub answers 409 "Git Repository is empty." for commits and trees of an empty repository. */
+	FakeGitHub conflict(String path) {
+		server.expect(ExpectedCount.manyTimes(), requestTo(BASE + repoPath + path)).andRespond(withStatus(HttpStatus.CONFLICT)
+			.contentType(MediaType.APPLICATION_JSON).body("{\"message\":\"Git Repository is empty.\"}"));
+		return this;
+	}
+
 	FakeGitHub repo(String defaultBranch) {
 		return on("", repoJson(defaultBranch, "null", "[]", "null"));
 	}

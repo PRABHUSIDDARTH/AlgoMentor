@@ -2,6 +2,8 @@
 # AlgoMentor Git challenge 10: remove a committed secret.
 # Commits a FAKE key file to your default branch. It never pushes or touches remotes.
 CHALLENGE=remove-secret
+FILES="config/secret.key config/app.properties"
+BRANCHES=""
 set -euo pipefail
 
 fail() { echo "AlgoMentor: $1" >&2; exit 1; }
@@ -11,6 +13,9 @@ git rev-parse --verify -q HEAD >/dev/null || fail "make a first commit before ru
 MAIN="$(git symbolic-ref --short -q HEAD)" || fail "you're on a detached HEAD. Check out your default branch first."
 [ -z "$(git status --porcelain)" ] || fail "your working tree is not clean. Commit or stash your changes first."
 [ ! -e ".algomentor/$CHALLENGE.json" ] || fail "this challenge is already set up here (.algomentor/$CHALLENGE.json exists)."
+# Never overwrite the learner's own files or branches: stop before anything is changed.
+for f in $FILES; do [ ! -e "$f" ] || fail "$f already exists here, and this script would overwrite it. Run it in a scratch clone instead."; done
+for b in $BRANCHES; do git show-ref --verify --quiet "refs/heads/$b" && fail "the branch $b already exists here. Rename it or run this in a scratch clone." || true; done
 BASE="$(git rev-parse HEAD)"
 
 # Records where the challenge started, so AlgoMentor can check your work once you push.
@@ -23,7 +28,7 @@ write_marker() { # write_marker '<extra json fields, each starting with a comma>
 mkdir -p config
 printf 'ALGOMENTOR-FAKE-KEY-%s\n' "$(date +%s)" > config/secret.key
 printf 'service=library\n' > config/app.properties
-git add config
+git add -f config   # -f: the challenge must work even if .gitignore already ignores *.key
 git commit -qm "Add service configuration"
 write_marker ',"file":"config/secret.key"'
 git commit -qm "Set up the remove-secret challenge"

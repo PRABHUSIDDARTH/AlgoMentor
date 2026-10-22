@@ -46,4 +46,13 @@ class RepoHealthTests {
 		assertThat(r.details()).anyMatch((d) -> d.text().contains("3 of 20"));
 	}
 
+	@Test
+	void anEmptyRepositoryIsAChecklistOfMissingThingsNotAnError() {
+		FakeGitHub gh = new FakeGitHub("ana", "library");
+		gh.repo("main").missing("/readme").conflict("/git/trees/main?recursive=1").conflict("/commits?sha=main&per_page=100").on("/tags?per_page=100", "[]");
+		CheckResult r = new RepoHealth(gh.client()).check("ana", "library");
+		assertThat(r.passed()).isFalse();
+		assertThat(r.details()).hasSize(9).noneMatch(CheckResult.Detail::ok);
+	}
+
 }
