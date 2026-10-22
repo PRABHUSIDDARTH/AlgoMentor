@@ -15,9 +15,13 @@
 	<description>AI-powered DSA assistant backed by Google Gemini</description>
 	<properties>
 		<java.version>21</java.version>
+		<skipTests>false</skipTests>
+		<frontend.skip>false</frontend.skip>
 		<google-genai.version>1.57.0</google-genai.version>
 		<bucket4j.version>8.14.0</bucket4j.version>
 		<jsoup.version>1.21.1</jsoup.version>
+		<frontend-maven-plugin.version>2.0.2</frontend-maven-plugin.version>
+		<node.version>v26.12.1</node.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -71,6 +75,60 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<!-- Builds the React app in frontend/ into target/classes/static, and runs its unit tests. -->
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>${frontend-maven-plugin.version}</version>
+				<configuration>
+					<workingDirectory>frontend</workingDirectory>
+					<installDirectory>target</installDirectory>
+					<!-- -Dfrontend.skip=true runs only the backend build and tests. -->
+					<skip>${frontend.skip}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install-node-and-npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>${node.version}</nodeVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm-ci</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>ci --no-audit --no-fund</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm-build</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>test</arguments>
+							<skip>${frontend.skip}</skip>
+							<skipTests>${skipTests}</skipTests>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

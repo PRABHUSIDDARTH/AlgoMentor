@@ -4,19 +4,57 @@ import java.util.List;
 
 public enum Mode {
 
-	EXPLAIN, HINT, SOLUTION;
+	EXPLAIN, HINT, SOLUTION, FOLLOWUP;
 
 	/**
-	 * Builds the prompt for this mode. For {@link #HINT}, {@code previousHints} are the hints the
-	 * user has already seen, so the model gives the next one instead of repeating them.
+	 * Builds the prompt for this mode. For {@link #HINT}, {@code in.previousHints()} are the hints
+	 * the user has already seen, so the model gives the next one instead of repeating them.
 	 */
-	public String prompt(String problem, List<String> previousHints, int maxHints) {
+	public String prompt(PromptInput in) {
 		return switch (this) {
-			case EXPLAIN -> "Explain this DSA problem clearly with approach and intuition:\n\n" + problem;
-			case SOLUTION ->
-				"Give the optimal solution with code (Python/Java) and time/space complexity for:\n\n" + problem;
-			case HINT -> hintPrompt(problem, previousHints, maxHints);
+			case EXPLAIN -> "Explain this DSA problem clearly with approach and intuition:\n\n" + in.problem();
+			case SOLUTION -> solutionPrompt(in.problem(), in.language());
+			case HINT -> hintPrompt(in.problem(), in.previousHints(), in.maxHints());
+			case FOLLOWUP -> followupPrompt(in);
 		};
+	}
+
+	private static String followupPrompt(PromptInput in) {
+		StringBuilder prompt = new StringBuilder()
+			.append("You are a DSA tutor answering a student's follow-up question about this problem only. ")
+			.append("If the question is unrelated to the problem, steer back to it briefly.\n");
+		if (!in.solutionRevealed()) {
+			prompt.append("Do not give full code or the complete solution; keep guiding with reasoning.\n");
+		}
+		prompt.append("\nProblem:\n").append(in.problem()).append('\n');
+		if (!in.previousHints().isEmpty()) {
+			prompt.append("\nHints already given:\n");
+			for (int i = 0; i < in.previousHints().size(); i++) {
+				prompt.append(i + 1).append(". ").append(in.previousHints().get(i).strip()).append('\n');
+			}
+		}
+		if (!in.conversation().isEmpty()) {
+			prompt.append("\nConversation so far:\n");
+			for (PromptInput.Turn turn : in.conversation()) {
+				prompt.append("user".equals(turn.role()) ? "Student: " : "Mentor: ").append(turn.text().strip()).append('\n');
+			}
+		}
+		prompt.append("\nStudent's follow-up question:\n").append(in.question().strip()).append('\n');
+		return prompt.toString();
+	}
+
+	private static String solutionPrompt(String problem, Language language) {
+		return """
+				Give the optimal solution with code in %s and explain the approach for:
+
+				%s
+
+				End your answer with this fenced block, filled in:
+				```complexity
+				time: O(...) | <short reason>
+				space: O(...) | <short reason>
+				```
+				""".formatted(language.displayName(), problem);
 	}
 
 	private static String hintPrompt(String problem, List<String> previousHints, int maxHints) {

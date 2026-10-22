@@ -1,0 +1,4 @@
+{"status":true,"models":[
+ {"badge_category":"HackerBadge::MultiDomain","badge_type":"problem-solving","badge_name":"Problem Solving","total_stars":6,"solved":202,"stars":6,"level":3,"current_points":7158.51},
+ {"badge_category":"HackerBadge::Language","badge_type":"java","badge_name":"Java","total_stars":5,"solved":40,"stars":4,"level":2,"current_points":810.0}
+],"version":2}

@@ -1,0 +1,91 @@
+{
+ "data": {
+  "matchedUser": {
+   "username": "lee215",
+   "profile": {
+    "ranking": 104649
+   },
+   "submitStatsGlobal": {
+    "acSubmissionNum": [
+     {
+      "difficulty": "All",
+      "count": 686
+     },
+     {
+      "difficulty": "Easy",
+      "count": 126
+     },
+     {
+      "difficulty": "Medium",
+      "count": 411
+     },
+     {
+      "difficulty": "Hard",
+      "count": 149
+     }
+    ]
+   },
+   "tagProblemCounts": {
+    "advanced": [
+     {
+      "tagName": "Data Stream",
+      "problemsSolved": 3
+     },
+     {
+      "tagName": "Game Theory",
+      "problemsSolved": 9
+     },
+     {
+      "tagName": "Rolling Hash",
+      "problemsSolved": 5
+     }
+    ],
+    "intermediate": [
+     {
+      "tagName": "Tree",
+      "problemsSolved": 57
+     },
+     {
+      "tagName": "Binary Tree",
+      "problemsSolved": 54
+     },
+     {
+      "tagName": "Hash Table",
+      "problemsSolved": 151
+     }
+    ],
+    "fundamental": [
+     {
+      "tagName": "Array",
+      "problemsSolved": 385
+     },
+     {
+      "tagName": "Matrix",
+      "problemsSolved": 48
+     },
+     {
+      "tagName": "String",
+      "problemsSolved": 165
+     }
+    ]
+   }
+  },
+  "recentAcSubmissionList": [
+   {
+    "title": "Maximum Alternating Subarray Sum With One Deletion",
+    "titleSlug": "maximum-alternating-subarray-sum-with-one-deletion",
+    "timestamp": "1791086655"
+   },
+   {
+    "title": "Count Good Strings",
+    "titleSlug": "count-good-strings",
+    "timestamp": "1791086605"
+   },
+   {
+    "title": "Longest Subarray Divisible by K with At Most One Negation I",
+    "titleSlug": "longest-subarray-divisible-by-k-with-at-most-one-negation-i",
+    "timestamp": "1790438495"
+   }
+  ]
+ }
+}

@@ -10,3 +10,12 @@ target/
 .project
 .settings
 .factorypath
+
+# Brainstorming companion mockups
+.superpowers/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/

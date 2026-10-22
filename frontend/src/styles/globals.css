@@ -1,0 +1,226 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Palette v4 (spec section 4). Components use these tokens only, never raw hex. */
+:root {
+  --cream: #f7f2eb;
+  --sand: #eae2d6;
+  --grey: #eeeeee;
+  --ink: #262c1e;
+  --ink-muted: #56613f;
+  --sage: #8b9a6e;
+  --sage-soft: #8b9a6e;
+  --on-sage: #262c1e;
+  --line: rgb(38 44 30 / 0.12);
+  --line-strong: rgb(38 44 30 / 0.6); /* >= 3:1 on every surface (WCAG 1.4.11) */
+  --band: #262c1e;
+  --on-band: #f7f2eb;
+  --band-accent: #b9c49f;
+  --code-bg: #1e2318;
+  --code-fg: #eae2d6;
+  --code-keyword: #b9c49f;
+  --code-string: #d9cdb8;
+  --code-comment: rgb(247 242 235 / 0.5);
+  --danger: #8a3b2e;
+  --logo-deep: #495638; /* the logo's deep olive */
+
+  /* shadcn/ui variable names, mapped onto the palette */
+  --background: var(--cream);
+  --foreground: var(--ink);
+  --card: var(--sand);
+  --card-foreground: var(--ink);
+  --popover: var(--cream);
+  --popover-foreground: var(--ink);
+  --primary: var(--sage);
+  --primary-foreground: var(--on-sage);
+  --secondary: var(--sand);
+  --secondary-foreground: var(--ink);
+  --muted: var(--sand);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--grey);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--ink);
+  --radius: 6px;
+}
+
+/* Dark: the palette inverted, with black added (spec section 4). */
+.dark {
+  --cream: #0e100b;
+  --sand: #181c13;
+  --grey: #22271b;
+  --ink: #f7f2eb;
+  --ink-muted: #c9c0b1;
+  --sage: #8b9a6e;
+  --sage-soft: #a8b68a;
+  --on-sage: #0e100b;
+  --line: rgb(247 242 235 / 0.12);
+  --line-strong: rgb(247 242 235 / 0.5);
+  --band: #000000;
+  --on-band: #f7f2eb;
+  --band-accent: #a8b68a;
+  --code-bg: #080906;
+  --danger: #e0a091;
+  --logo-deep: #eae2d6;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-sand: var(--sand);
+  --color-grey: var(--grey);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-sage: var(--sage);
+  --color-sage-soft: var(--sage-soft);
+  --color-on-sage: var(--on-sage);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-band: var(--band);
+  --color-on-band: var(--on-band);
+  --color-band-accent: var(--band-accent);
+  --color-code: var(--code-bg);
+  --color-danger: var(--danger);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+  html {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100vh;
+    background: var(--cream);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--sage);
+    color: var(--on-sage);
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Rendered Markdown: problem statements and mentor answers. :where() keeps these rules weak, so
+   components inside (code blocks, complexity panel) style themselves. */
+@layer components {
+  .prose-am {
+    font-size: 13.5px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+  .prose-am :where(p, ul, ol, table, blockquote) { margin: 0 0 12px; }
+  .prose-am :where(h1, h2, h3, h4) {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 18px 0 8px;
+    line-height: 1.3;
+  }
+  .prose-am :where(h1) { font-size: 19px; }
+  .prose-am :where(h2) { font-size: 17px; }
+  .prose-am :where(h3, h4) { font-size: 15px; }
+  .prose-am > :where(:first-child) > :where(:first-child) { margin-top: 0; }
+  .prose-am :where(ul) { list-style: disc; padding-left: 20px; }
+  .prose-am :where(ol) { list-style: decimal; padding-left: 20px; }
+  .prose-am :where(li) { margin: 3px 0; }
+  .prose-am :where(strong) { font-weight: 600; }
+  .prose-am :where(a) { text-decoration: underline; text-underline-offset: 3px; }
+  .prose-am :where(:not(pre) > code) {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--grey);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .prose-am :where(table) { border-collapse: collapse; display: block; overflow-x: auto; }
+  .prose-am :where(th, td) { border: 1px solid var(--line-strong); padding: 5px 9px; text-align: left; }
+  .prose-am :where(blockquote) { border-left: 2px solid var(--sage); padding-left: 12px; color: var(--ink-muted); }
+}
+
+@layer components {
+  /* Streaming caret: blinks, or stays solid when motion is reduced. */
+  /* While streaming, the caret follows the last line of text. */
+  .streaming-am > div:last-of-type > :last-child::after,
+  .caret-am {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    margin-left: 2px;
+    vertical-align: -2px;
+    background: var(--ink);
+    animation: am-blink 1s steps(1) infinite;
+  }
+  .code-am .hljs-keyword, .code-am .hljs-built_in, .code-am .hljs-type, .code-am .hljs-literal { color: var(--code-keyword); }
+  .code-am .hljs-string, .code-am .hljs-number { color: var(--code-string); }
+  .code-am .hljs-comment { color: var(--code-comment); font-style: italic; }
+  .code-am .hljs-title, .code-am .hljs-function { color: var(--code-fg); font-weight: 500; }
+}
+
+@keyframes am-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret-am, .streaming-am > div:last-of-type > :last-child::after { animation: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
