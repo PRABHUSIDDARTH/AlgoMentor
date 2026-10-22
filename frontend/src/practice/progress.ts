@@ -67,6 +67,14 @@ export function recordSolve(id: string, { hintsUsed, now = Date.now() }: { hints
   save(progress, [id])
 }
 
+/** Un-ticks a problem (e.g. ticked by mistake on the roadmap). */
+export function clearProblem(id: string): void {
+  const progress = loadProgress()
+  if (!(id in progress)) return
+  delete progress[id]
+  save(progress, [id])
+}
+
 /** A review the learner couldn't complete: back to step 0, due again tomorrow. */
 export function recordReviewFailed(id: string, now = Date.now()): void {
   const progress = loadProgress()

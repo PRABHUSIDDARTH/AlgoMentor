@@ -10,6 +10,8 @@ import Landing from '@/pages/Landing'
 // The workspace is split out so the landing page stays small.
 const Workspace = lazy(() => import('@/pages/Workspace'))
 const ComingSoon = lazy(() => import('@/pages/ComingSoon'))
+const Roadmap = lazy(() => import('@/pages/Roadmap'))
+const RoadmapStage = lazy(() => import('@/pages/RoadmapStage'))
 
 export default function App() {
   return (
@@ -20,7 +22,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/app/*" element={<Workspace />} />
-          <Route path="/roadmap/*" element={<ComingSoon title="Roadmap" />} />
+          <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/roadmap/:stageId" element={<RoadmapStage />} />
           <Route path="/today" element={<ComingSoon title="Today" />} />
           <Route path="/test/:testId" element={<ComingSoon title="Test" />} />
           <Route path="/level" element={<ComingSoon title="Level" />} />
