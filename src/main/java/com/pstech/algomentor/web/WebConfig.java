@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
 		return new RequestGuardInterceptor(properties.rateLimit(), properties.maxRequestBytes());
 	}
 
-	// LeetCode lookups get their own allowance so fetching a problem doesn't use up /ask requests.
+	// LeetCode, profile and GitHub lookups get their own allowance so they don't use up /ask requests.
 	@Bean
 	RequestGuardInterceptor problemGuard() {
 		return new RequestGuardInterceptor(properties.problemRateLimit(), properties.maxRequestBytes());
@@ -49,7 +49,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(askGuard()).addPathPatterns("/ask", "/ask/stream");
-		registry.addInterceptor(problemGuard()).addPathPatterns("/problem", "/profiles/**");
+		registry.addInterceptor(problemGuard()).addPathPatterns("/problem", "/profiles/**", "/git/check/**", "/git/repo-health/**");
 	}
 
 }
