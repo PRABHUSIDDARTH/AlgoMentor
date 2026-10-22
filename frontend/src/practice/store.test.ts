@@ -40,6 +40,24 @@ describe('settings store', () => {
     expect(loadSettings().target).toEqual({ company: 'startup', role: 'intern' })
   })
 
+  it('roundTripsIdentityFields', () => {
+    const settings = { name: 'Ana Gomez', email: 'ana@example.com', linkedin: 'ana-gomez', github: 'anagomez', target: { company: 'maang' as const, role: 'sde1' as const }, dailyGoal: 3 as const }
+    saveSettings(settings)
+    expect(loadSettings()).toEqual(settings)
+  })
+
+  it('dropsMalformedIdentityFieldsButKeepsTheRest', () => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ name: '<script>', email: 'not-an-email', linkedin: 'a b', github: '-bad-', leetcode: 'lee215', target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 }))
+    expect(loadSettings()).toEqual({ leetcode: 'lee215', target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 })
+  })
+
+  it('keepsGitHubStatsThatHaveTheRightShape', () => {
+    saveStats('github', { username: 'x', publicRepos: 1, followers: 2, stars: 3, languages: ['Go'], lastPushAt: 1 })
+    expect(loadStats().github?.data).toMatchObject({ stars: 3 })
+    localStorage.setItem('algomentor.stats.v1', JSON.stringify({ github: { data: { username: 'x', stars: 'many' }, fetchedAt: 1 } }))
+    expect(loadStats().github).toBeUndefined()
+  })
+
   it('saveEmitsSettingsEvent', () => {
     const listener = vi.fn()
     window.addEventListener(SETTINGS_EVENT, listener)

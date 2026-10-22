@@ -101,7 +101,7 @@ export function looksLikeProblemRef(input: string): boolean {
   return PROBLEM_URL.test(text)
 }
 
-export type ProfileSite = 'leetcode' | 'hackerrank' | 'gfg'
+export type ProfileSite = 'leetcode' | 'hackerrank' | 'gfg' | 'github'
 export interface LeetCodeProfile {
   username: string
   ranking: number | null
@@ -111,7 +111,8 @@ export interface LeetCodeProfile {
 }
 export interface HackerRankProfile { username: string; badges: { name: string; stars: number; level: number; solved: number }[] }
 export interface GfgProfile { username: string; solved: number; score: number; instituteRank: number | null; streak: number | null }
-export type ProfileFor<S extends ProfileSite> = S extends 'leetcode' ? LeetCodeProfile : S extends 'hackerrank' ? HackerRankProfile : GfgProfile
+export interface GitHubProfile { username: string; publicRepos: number; followers: number; stars: number; languages: string[]; lastPushAt: number | null }
+export type ProfileFor<S extends ProfileSite> = S extends 'leetcode' ? LeetCodeProfile : S extends 'hackerrank' ? HackerRankProfile : S extends 'github' ? GitHubProfile : GfgProfile
 
 /** Public profile stats, read by the backend (cached there for 6 hours). */
 export async function fetchProfile<S extends ProfileSite>(site: S, user: string, signal?: AbortSignal, opts?: { refresh?: boolean }): Promise<ProfileFor<S>> {

@@ -1,4 +1,4 @@
-import type { Site } from './profileUrls'
+import { GITHUB_USER, LINKEDIN_USER, type Site } from './profileUrls'
 
 export type Tier = 'maang' | 'product' | 'startup' | 'service'
 export type Role = 'intern' | 'sde1' | 'sde2' | 'sde3'
@@ -7,7 +7,20 @@ export type Focus = 'general' | 'backend' | 'frontend' | 'fullstack' | 'mobile' 
 /** `company` is the tier. `employer` is a company id from the dataset, set from the Companies pages or Settings. */
 export type Target = { company: Tier; role: Role; employer?: string; focus?: Focus }
 export type DailyGoal = 2 | 3 | 5
-export type ProfileSettings = { leetcode?: string; hackerrank?: string; gfg?: string; target: Target; dailyGoal: DailyGoal }
+export type ProfileSettings = {
+  leetcode?: string
+  hackerrank?: string
+  gfg?: string
+  github?: string
+  /** LinkedIn can only be linked to, not read. */
+  linkedin?: string
+  /** Shown on the dream ID card. */
+  name?: string
+  /** Kept in this browser; only sent if the learner adds it to a contribution. */
+  email?: string
+  target: Target
+  dailyGoal: DailyGoal
+}
 
 export const SETTINGS_KEY = 'algomentor.profile.v1'
 export const STATS_KEY = 'algomentor.stats.v1'
@@ -17,6 +30,8 @@ export const SETTINGS_EVENT = 'algomentor:settings'
 export const DEFAULT_SETTINGS: ProfileSettings = { target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 }
 
 const USERNAME = /^[A-Za-z0-9_.-]{1,40}$/
+const NAME = /^[^<>{}\n]{1,60}$/
+const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/
 export const TIERS: Tier[] = ['maang', 'product', 'startup', 'service']
 export const ROLES: Role[] = ['intern', 'sde1', 'sde2', 'sde3']
 export const FOCUSES: Focus[] = ['general', 'backend', 'frontend', 'fullstack', 'mobile', 'data', 'devops', 'sdet']
@@ -62,6 +77,12 @@ export function loadSettings(): ProfileSettings {
       out[site] = u
     }
   }
+  // Identity fields added later: a bad value is dropped on its own rather than resetting everything.
+  const ok = (x: unknown, re: RegExp): x is string => typeof x === 'string' && re.test(x)
+  if (ok(v.github, GITHUB_USER)) out.github = v.github
+  if (ok(v.linkedin, LINKEDIN_USER)) out.linkedin = v.linkedin
+  if (ok(v.name, NAME)) out.name = v.name
+  if (ok(v.email, EMAIL)) out.email = v.email
   return out
 }
 
@@ -82,13 +103,14 @@ const VALID: Record<Site, (d: any) => boolean> = { // eslint-disable-line @types
     && Array.isArray(d.recent) && d.recent.every((r: any) => r && str(r.slug) && str(r.title) && num(r.solvedAt)), // eslint-disable-line @typescript-eslint/no-explicit-any
   hackerrank: (d) => str(d.username) && Array.isArray(d.badges) && d.badges.every((b: any) => b && str(b.name) && num(b.stars) && num(b.level) && num(b.solved)), // eslint-disable-line @typescript-eslint/no-explicit-any
   gfg: (d) => str(d.username) && num(d.solved) && num(d.score) && numOrNull(d.instituteRank) && numOrNull(d.streak),
+  github: (d) => str(d.username) && num(d.publicRepos) && num(d.followers) && num(d.stars) && Array.isArray(d.languages) && d.languages.every(str) && numOrNull(d.lastPushAt),
 }
 
 export function loadStats(): Partial<Record<Site, StatsEntry>> {
   const v = read(STATS_KEY)
   if (!v || typeof v !== 'object') return {}
   const out: Partial<Record<Site, StatsEntry>> = {}
-  for (const site of ['leetcode', 'hackerrank', 'gfg'] as const) {
+  for (const site of ['leetcode', 'hackerrank', 'gfg', 'github'] as const) {
     const e = (v as Record<string, StatsEntry>)[site]
     if (e && typeof e === 'object' && typeof e.fetchedAt === 'number' && e.data && typeof e.data === 'object' && VALID[site](e.data)) out[site] = e
   }

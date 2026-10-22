@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseProfileUrl } from './profileUrls'
+import { parseLinkedIn, parseProfileUrl } from './profileUrls'
 
 describe('parseProfileUrl', () => {
   it.each([
@@ -37,5 +37,31 @@ describe('parseProfileUrl', () => {
     const result = parseProfileUrl(site, input)
     expect(result).toHaveProperty('error')
     expect((result as { error: string }).error).toMatch(/Use a link like/)
+  })
+
+  it.each([
+    ['https://github.com/octocat', 'octocat'],
+    ['github.com/octo-cat/', 'octo-cat'],
+    ['https://www.github.com/octocat?tab=repositories', 'octocat'],
+    ['https://github.com/octocat/hello-world', 'octocat'],
+  ])('parsesGitHubLinks %s', (input, user) => {
+    expect(parseProfileUrl('github', input)).toEqual({ username: user })
+  })
+
+  it.each(['https://github.com/settings/profile', 'https://github.com/orgs/x', 'https://gitlab.com/octocat', 'https://github.com/'])('rejectsGitHubPagesThatAreNotUsers %s', (input) => {
+    expect(parseProfileUrl('github', input)).toHaveProperty('error')
+  })
+
+  it.each([
+    ['https://www.linkedin.com/in/ana-gomez-123/', 'ana-gomez-123'],
+    ['linkedin.com/in/anagomez', 'anagomez'],
+    ['https://in.linkedin.com/in/ana-gomez', 'ana-gomez'],
+    ['ana-gomez', 'ana-gomez'],
+  ])('parsesLinkedInProfiles %s', (input, user) => {
+    expect(parseLinkedIn(input)).toEqual({ username: user })
+  })
+
+  it.each(['https://www.linkedin.com/company/acme', 'https://evil.com/in/ana', 'a', 'ana gomez'])('rejectsWhatIsNotALinkedInProfile %s', (input) => {
+    expect(parseLinkedIn(input)).toHaveProperty('error')
   })
 })
