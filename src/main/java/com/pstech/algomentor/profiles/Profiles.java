@@ -2,7 +2,7 @@ package com.pstech.algomentor.profiles;
 
 import java.util.List;
 
-/** Public profile data read from LeetCode, HackerRank and GeeksforGeeks. */
+/** Public profile data read from LeetCode, HackerRank, GeeksforGeeks and GitHub. */
 public final class Profiles {
 
 	private Profiles() {
@@ -29,6 +29,11 @@ public final class Profiles {
 	}
 
 	public record GfgProfile(String username, int solved, int score, Integer instituteRank, Integer streak) {
+	}
+
+	/** Stars and languages cover the user's own public repositories (not forks); {@code lastPushAt} is epoch seconds. */
+	public record GitHubProfile(String username, int publicRepos, int followers, int stars, List<String> languages,
+			Long lastPushAt) {
 	}
 
 }

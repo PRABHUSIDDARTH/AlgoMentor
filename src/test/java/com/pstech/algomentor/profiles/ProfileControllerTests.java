@@ -46,6 +46,9 @@ class ProfileControllerTests {
 	@MockitoBean
 	GfgProfileClient gfg;
 
+	@MockitoBean
+	GitHubProfileClient gitHub;
+
 	@BeforeEach
 	void setUp() {
 		problemGuard.reset();
@@ -53,6 +56,15 @@ class ProfileControllerTests {
 		given(leetCode.fetch(anyString())).willReturn(new Profiles.LeetCodeProfile("demo", 10, new Profiles.Solved(1, 2, 3, 6),
 				List.of(new Profiles.TopicCount("Array", 4)), List.of()));
 		given(gfg.fetch(anyString())).willReturn(new Profiles.GfgProfile("demo", 125, 320, 454, 7));
+	}
+
+	@Test
+	void returnsGitHubProfile() throws Exception {
+		given(gitHub.fetch("octocat")).willReturn(new Profiles.GitHubProfile("octocat", 8, 24711, 21117, List.of("CSS", "HTML"), 1724253942L));
+		mvc.perform(get("/profiles/github/octocat"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.stars").value(21117))
+			.andExpect(jsonPath("$.languages[0]").value("CSS"));
 	}
 
 	@Test
