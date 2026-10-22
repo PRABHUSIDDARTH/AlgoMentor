@@ -19,7 +19,7 @@ export default function Projects() {
           title="Projects"
           summary="Build each one in your own repository, then let the Git milestones check that your history shows real work."
         />
-        <div className="grid gap-8 xl:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
           {TRACKS.map((t) => (
             <section key={t.id} aria-labelledby={`proj-${t.id}`} className="grid content-start gap-3">
               <h2 id={`proj-${t.id}`} className="text-[18px] font-semibold">{t.title}</h2>

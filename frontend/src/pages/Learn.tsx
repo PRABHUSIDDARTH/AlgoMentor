@@ -15,7 +15,7 @@ export default function Learn() {
           title="The core CS interviews ask about."
           summary="Short lessons with a quiz each. Pass a quiz and the module comes back for a quick re-quiz after 1, 3, 7, 21 and 60 days."
         />
-        <ul aria-label="Tracks" className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <ul aria-label="Tracks" className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {TRACKS.map((t) => <TrackCard key={t.id} track={t} progress={progress} />)}
         </ul>
         <section aria-labelledby="learn-build" className="grid gap-3">

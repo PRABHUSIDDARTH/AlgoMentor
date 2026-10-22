@@ -55,7 +55,7 @@ describe('SiteNav', () => {
     renderAt('/today')
     await userEvent.click(screen.getByRole('button', { name: 'Menu' }))
     const menu = await screen.findByRole('dialog')
-    for (const name of ['Workspace', 'Roadmap', 'Today', 'Tests', 'Overview', 'OOP', 'Networks', 'DBMS', 'Projects', 'Challenges', 'Repo health', 'DSA level', 'Core CS level', 'Resume projects']) {
+    for (const name of ['Workspace', 'Roadmap', 'Today', 'Tests', 'Overview', 'OOP', 'Networks', 'DBMS', 'OS', 'Projects', 'Challenges', 'Repo health', 'DSA level', 'Core CS level', 'Resume projects']) {
       expect(within(menu).getByRole('link', { name })).toBeInTheDocument()
     }
   })

@@ -30,9 +30,9 @@ describe('Core CS level page', () => {
     const oop = Object.fromEntries(TRACKS[0].modules.map((m) => [m.id, { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: null }]))
     localStorage.setItem(LEARN_KEY, JSON.stringify(oop))
     renderCore()
-    // 10 of 30 modules (13.3) + quiz 50/150 (10) = 23.3 of a 70 bar
-    expect(screen.getByRole('meter', { name: 'Core CS readiness for FAANG / product' })).toHaveAttribute('aria-valuenow', '33')
-    expect(within(screen.getByRole('table', { name: 'Core CS breakdown' })).getByText('13.3 / 40')).toBeInTheDocument()
+    // 10 of 40 modules (10) + quiz 50/200 (7.5) = 17.5 of a 70 bar
+    expect(screen.getByRole('meter', { name: 'Core CS readiness for FAANG / product' })).toHaveAttribute('aria-valuenow', '25')
+    expect(within(screen.getByRole('table', { name: 'Core CS breakdown' })).getByText('10.0 / 40')).toBeInTheDocument()
     expect(within(screen.getByRole('list', { name: 'Core CS: what to do next' })).getByText('Networks: finish 3 more modules')).toBeInTheDocument()
   })
 })

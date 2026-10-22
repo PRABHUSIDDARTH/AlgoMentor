@@ -10,6 +10,8 @@ const ROUTES: [string, string, string][] = [
   ['/learn', 'Learn', 'Overview'],
   ['/learn/cn', 'Learn', 'Networks'],
   ['/learn/dbms/indexing', 'Learn', 'DBMS'],
+  ['/learn/os', 'Learn', 'OS'],
+  ['/learn/os/virtual-memory', 'Learn', 'OS'],
   ['/projects', 'Learn', 'Projects'],
   ['/projects/library-manager', 'Learn', 'Projects'],
   ['/git', 'Git', 'Challenges'],
