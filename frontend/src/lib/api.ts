@@ -119,3 +119,19 @@ export async function fetchProfile<S extends ProfileSite>(site: S, user: string,
   if (!res.ok) throw await errorFrom(res)
   return res.json()
 }
+
+export interface CheckResult { passed: boolean; details: { ok: boolean; text: string }[] }
+
+/** Checks one Git challenge against a public GitHub repository (read-only; no AI involved). */
+export async function checkGit(owner: string, repo: string, challengeId: string, signal?: AbortSignal): Promise<CheckResult> {
+  const res = await fetch(`/git/check/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/${encodeURIComponent(challengeId)}`, { signal })
+  if (!res.ok) throw await errorFrom(res)
+  return res.json()
+}
+
+/** The "make your GitHub shine" checklist for a project repository. */
+export async function repoHealth(owner: string, repo: string, signal?: AbortSignal): Promise<CheckResult> {
+  const res = await fetch(`/git/repo-health/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`, { signal })
+  if (!res.ok) throw await errorFrom(res)
+  return res.json()
+}

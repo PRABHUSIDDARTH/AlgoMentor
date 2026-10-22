@@ -15,6 +15,6 @@ export const OOP: Track = {
   title: 'Object-oriented programming',
   short: 'OOP',
   summary: 'Model programs as objects that own their data and behaviour, then design them so they stay easy to change.',
-  projects: [],
+  projects: ['library-manager', 'parking-lot', 'expense-splitter'],
   modules: [classesObjects, encapsulation, inheritance, polymorphism, abstraction, solid, composition, patterns, uml, interviews],
 }

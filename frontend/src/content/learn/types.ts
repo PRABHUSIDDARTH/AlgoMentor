@@ -16,3 +16,36 @@ export type Lesson = {
 }
 
 export type Track = { id: TrackId; title: string; short: string; summary: string; modules: Lesson[]; projects: string[] }
+
+export type ChallengeId = 'first-commit' | 'meaningful-commits' | 'feature-pr' | 'merge-conflict' | 'squash' | 'revert' | 'rescue-branch' | 'cherry-pick' | 'release' | 'remove-secret'
+
+export const CHALLENGE_IDS: readonly ChallengeId[] = ['first-commit', 'meaningful-commits', 'feature-pr', 'merge-conflict', 'squash', 'revert', 'rescue-branch', 'cherry-pick', 'release', 'remove-secret']
+
+export const CHALLENGE_TITLES: Record<ChallengeId, string> = {
+  'first-commit': 'First commit and push',
+  'meaningful-commits': 'Meaningful commits',
+  'feature-pr': 'Feature branch and pull request',
+  'merge-conflict': 'Resolve a merge conflict',
+  squash: 'Squash with interactive rebase',
+  revert: 'Revert a bad commit',
+  'rescue-branch': 'Recover a deleted branch',
+  'cherry-pick': 'Cherry-pick a hotfix',
+  release: 'Tag a release',
+  'remove-secret': 'Remove a committed secret',
+}
+
+export type Project = {
+  id: string
+  track: TrackId
+  level: 'beginner' | 'intermediate' | 'advanced'
+  title: string
+  goal: string
+  proves: string[]
+  requirements: string[]
+  stretch: string[]
+  /** Suggested, not required: any language works. */
+  stack: string
+  acceptance: string[]
+  /** Git challenges this project's repository should show, checked against the learner's public repo. */
+  gitMilestones: ChallengeId[]
+}

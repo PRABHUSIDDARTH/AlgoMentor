@@ -2,8 +2,10 @@ import { Link, useParams } from 'react-router'
 import { AppShell } from '@/components/AppShell'
 import { LearnNav } from '@/components/learn/LearnNav'
 import { ModuleList } from '@/components/learn/ModuleList'
+import { ProjectCard } from '@/components/learn/ProjectCard'
 import { ProgressBar } from '@/components/practice/ProgressBar'
 import { TRACK_BY_ID, type TrackId } from '@/content/learn'
+import { PROJECT_BY_ID } from '@/content/learn/projects'
 import { useLearn } from '@/learn/useLearn'
 
 export default function LearnTrack() {
@@ -30,11 +32,20 @@ export default function LearnTrack() {
           <p className="max-w-[72ch] text-[14px] leading-relaxed text-ink-muted">{track.summary}</p>
         </header>
         <LearnNav />
-        <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
-          <section aria-labelledby="track-modules" className="grid content-start gap-3">
-            <h2 id="track-modules" className="text-[18px] font-semibold">Modules</h2>
-            <ModuleList track={track} progress={progress} />
-          </section>
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid content-start gap-8">
+            <section aria-labelledby="track-modules" className="grid content-start gap-3">
+              <h2 id="track-modules" className="text-[18px] font-semibold">Modules</h2>
+              <ModuleList track={track} progress={progress} />
+            </section>
+            <section aria-labelledby="track-projects" className="grid content-start gap-3">
+              <h2 id="track-projects" className="text-[18px] font-semibold">Projects</h2>
+              <p className="max-w-[72ch] text-[13.5px] leading-relaxed text-ink-muted">Build these in your own public repository, in any language. Each one has Git milestones that AlgoMentor checks for you.</p>
+              <ul aria-label="Projects" className="grid gap-4 md:grid-cols-3">
+                {track.projects.map((id) => <ProjectCard key={id} project={PROJECT_BY_ID.get(id)!} />)}
+              </ul>
+            </section>
+          </div>
           <aside aria-label="Track progress" className="grid content-start gap-3 rounded-lg border border-line bg-sand px-5 py-5">
             <p className="text-[15px] font-semibold">{done} of {track.modules.length} complete</p>
             <ProgressBar value={done / track.modules.length} label={`${track.title} progress`} />

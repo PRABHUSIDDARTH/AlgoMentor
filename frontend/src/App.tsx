@@ -17,6 +17,7 @@ const Level = lazy(() => import('@/pages/Level'))
 const Learn = lazy(() => import('@/pages/Learn'))
 const LearnTrack = lazy(() => import('@/pages/LearnTrack'))
 const Lesson = lazy(() => import('@/pages/Lesson'))
+const Project = lazy(() => import('@/pages/Project'))
 
 export default function App() {
   return (
@@ -35,7 +36,7 @@ export default function App() {
           <Route path="/learn" element={<Learn />} />
           <Route path="/learn/:trackId" element={<LearnTrack />} />
           <Route path="/learn/:trackId/:moduleId" element={<Lesson />} />
-          <Route path="/projects/:projectId" element={<ComingSoon title="Project" />} />
+          <Route path="/projects/:projectId" element={<Project />} />
           <Route path="/git" element={<ComingSoon title="Git challenges" />} />
           <Route path="/git/:challengeId" element={<ComingSoon title="Git challenge" />} />
           <Route path="/resume" element={<ComingSoon title="Resume projects" />} />

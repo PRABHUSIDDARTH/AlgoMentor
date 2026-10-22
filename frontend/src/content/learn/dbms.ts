@@ -15,6 +15,6 @@ export const DBMS: Track = {
   title: 'Database management systems',
   short: 'DBMS',
   summary: 'Design schemas, write SQL, and understand transactions, indexes and how a database runs your query.',
-  projects: [],
+  projects: ['ecommerce-schema', 'kv-store', 'bplus-index'],
   modules: [er, keys, sql, joins, normal, acid, isolation, indexing, optimiser, nosql],
 }

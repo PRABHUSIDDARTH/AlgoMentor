@@ -15,6 +15,6 @@ export const CN: Track = {
   title: 'Computer networks',
   short: 'Networks',
   summary: 'How data gets from one machine to another: layers, addresses, routing, TCP and UDP, DNS, HTTP and TLS.',
-  projects: [],
+  projects: ['tcp-chat', 'http-server', 'dns-resolver'],
   modules: [models, physical, ip, routing, tcpUdp, dns, http, sockets, edge, url],
 }
