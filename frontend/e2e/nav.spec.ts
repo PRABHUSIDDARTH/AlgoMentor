@@ -20,6 +20,8 @@ const ROUTES: [string, string, string][] = [
   ['/level', 'Progress', 'DSA level'],
   ['/level/core', 'Progress', 'Core CS level'],
   ['/resume', 'Progress', 'Resume projects'],
+  ['/companies', 'Progress', 'Companies'],
+  ['/companies/meta', 'Progress', 'Companies'],
 ]
 
 for (const [path, section, tab] of ROUTES) {

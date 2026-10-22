@@ -25,6 +25,8 @@ const Tests = lazy(() => import('@/pages/Tests'))
 const Projects = lazy(() => import('@/pages/Projects'))
 const GitHealth = lazy(() => import('@/pages/GitHealth'))
 const LevelCore = lazy(() => import('@/pages/LevelCore'))
+const Companies = lazy(() => import('@/pages/Companies'))
+const Company = lazy(() => import('@/pages/Company'))
 
 export default function App() {
   return (
@@ -51,6 +53,8 @@ export default function App() {
           <Route path="/git/health" element={<GitHealth />} />
           <Route path="/git/:challengeId" element={<GitChallenge />} />
           <Route path="/resume" element={<Resume />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/companies/:companyId" element={<Company />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

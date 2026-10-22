@@ -30,6 +30,7 @@ const TABS: Record<SectionId, () => Tab[]> = {
   progress: () => [
     { label: 'DSA level', to: '/level', end: true },
     { label: 'Core CS level', to: '/level/core' },
+    { label: 'Companies', to: '/companies' },
     { label: 'Resume projects', to: '/resume' },
   ],
 }
@@ -55,7 +56,7 @@ export function tabFor(pathname: string): Tab | null {
 /** Section by first path segment, for pages that belong to a section but match none of its tabs (such as "not found" pages). */
 const BY_SEGMENT: Record<string, SectionId> = {
   app: 'practice', roadmap: 'practice', today: 'practice', tests: 'practice', test: 'practice',
-  learn: 'learn', projects: 'learn', git: 'git', level: 'progress', resume: 'progress',
+  learn: 'learn', projects: 'learn', git: 'git', level: 'progress', resume: 'progress', companies: 'progress',
 }
 
 export function sectionFor(pathname: string): SectionId | null {

@@ -89,3 +89,11 @@ for (const path of ['/', '/app', '/roadmap', '/today', '/level', '/learn', '/git
     await expect(page.getByRole('dialog', { name: 'Settings' })).toBeVisible()
   })
 }
+
+test('choosing a company as the target shows up on Today', async ({ page }) => {
+  await page.goto('/companies/meta')
+  await page.getByRole('button', { name: 'Set Meta as my target' }).click()
+  await expect(page.getByText('Meta is your target.')).toBeVisible()
+  await page.goto('/today')
+  await expect(page.getByRole('meter', { name: /Readiness for Meta/ })).toBeVisible()
+})

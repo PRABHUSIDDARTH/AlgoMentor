@@ -1,12 +1,15 @@
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
+import { companiesByTier } from '@/content/companies'
+import { ANY_COMPANY_LABEL, FOCUS_LABEL, ROLE_LABEL, TIER_LABEL } from '@/content/targets'
 import type { Site } from '@/practice/profileUrls'
-import type { Tier, DailyGoal, Role } from '@/practice/store'
+import { FOCUSES, ROLES, TIERS, type DailyGoal, type Focus, type Role, type Tier } from '@/practice/store'
 import { useSettings, useStats } from '@/practice/useSettings'
 import { cn } from '@/lib/utils'
 import { ProfileCard } from './ProfileCard'
 
-const COMPANIES: [Tier, string][] = [['maang', 'MAANG'], ['startup', 'Startup'], ['service', 'Service company']]
-const ROLES: [Role, string][] = [['intern', 'Intern'], ['sde1', 'SDE-1'], ['sde2', 'SDE-2']]
+const TIER_OPTIONS = TIERS.map((t) => [t, TIER_LABEL[t]] as [Tier, string])
+const ROLE_OPTIONS = ROLES.map((r) => [r, ROLE_LABEL[r]] as [Role, string])
+const FOCUS_OPTIONS = FOCUSES.map((f) => [f, FOCUS_LABEL[f]] as [Focus, string])
 const GOALS: DailyGoal[] = [2, 3, 5]
 
 function Choice<T extends string | number>({ options, value, onChange, label }: { options: [T, string][]; value: T; onChange: (v: T) => void; label: string }) {
@@ -64,8 +67,33 @@ export function SettingsSheet({ open, onOpenChange }: { open: boolean; onOpenCha
 
           <section aria-labelledby="s-target" className="grid gap-2.5">
             <h2 id="s-target" className="eyebrow">Target</h2>
-            <Choice label="Tier" options={COMPANIES} value={settings.target.company} onChange={(company) => update({ ...settings, target: { ...settings.target, company } })} />
-            <Choice label="Role" options={ROLES} value={settings.target.role} onChange={(role) => update({ ...settings, target: { ...settings.target, role } })} />
+            <Choice
+              label="Tier"
+              options={TIER_OPTIONS}
+              value={settings.target.company}
+              onChange={(company) => {
+                // A company belongs to one tier, so changing tier clears it.
+                const { employer: _dropped, ...rest } = settings.target
+                update({ ...settings, target: { ...rest, company } })
+              }}
+            />
+            <label className="grid gap-1 text-[12px] text-ink-muted">
+              <span id="s-employer">Target company</span>
+              <select
+                aria-labelledby="s-employer"
+                value={settings.target.employer ?? ''}
+                onChange={(e) => {
+                  const { employer: _dropped, ...rest } = settings.target
+                  update({ ...settings, target: e.target.value ? { ...rest, employer: e.target.value } : rest })
+                }}
+                className="rounded-md border border-line-strong bg-cream px-2.5 py-2 text-[13px] text-ink"
+              >
+                <option value="">{ANY_COMPANY_LABEL[settings.target.company]}</option>
+                {companiesByTier(settings.target.company).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </label>
+            <Choice label="Level" options={ROLE_OPTIONS} value={settings.target.role} onChange={(role) => update({ ...settings, target: { ...settings.target, role } })} />
+            <Choice label="Focus" options={FOCUS_OPTIONS} value={settings.target.focus ?? 'general'} onChange={(focus) => update({ ...settings, target: { ...settings.target, focus } })} />
           </section>
 
           <section aria-labelledby="s-goal" className="grid gap-2.5">

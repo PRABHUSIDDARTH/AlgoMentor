@@ -20,6 +20,8 @@ const CASES: [string, string, string][] = [
   ['/level', 'progress', '/level'],
   ['/level/core', 'progress', '/level/core'],
   ['/resume', 'progress', '/resume'],
+  ['/companies', 'progress', '/companies'],
+  ['/companies/meta', 'progress', '/companies'],
 ]
 
 describe('sections', () => {
@@ -35,7 +37,7 @@ describe('sections', () => {
   })
 
   it('keeps the right section highlighted on a not-found page inside it', () => {
-    for (const [path, section] of [['/learn/nope', 'learn'], ['/level/nope', 'progress'], ['/learn/os/nope/deeper', 'learn'], ['/test', 'practice']] as const) {
+    for (const [path, section] of [['/learn/nope', 'learn'], ['/level/nope', 'progress'], ['/learn/os/nope/deeper', 'learn'], ['/test', 'practice'], ['/companies/nope/x', 'progress']] as const) {
       expect(sectionFor(path), path).toBe(section)
     }
     expect(tabFor('/learn/nope')).toBeNull()

@@ -80,11 +80,11 @@ describe('Settings', () => {
 
   it('targetAndGoalPersist', async () => {
     await open()
-    await userEvent.click(screen.getByRole('button', { name: 'Service company' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Service and IT consulting' }))
     await userEvent.click(screen.getByRole('button', { name: 'Intern' }))
     await userEvent.click(screen.getByRole('button', { name: '5 a day' }))
     expect(loadSettings()).toMatchObject({ target: { company: 'service', role: 'intern' }, dailyGoal: 5 })
-    expect(screen.getByRole('button', { name: 'Service company' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Service and IT consulting' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('usesFreshCachedStatsAndRefreshBypassesThem', async () => {
@@ -107,5 +107,39 @@ describe('Settings', () => {
     const card = screen.getByRole('region', { name: 'LeetCode' })
     await userEvent.click(within(card).getByRole('button', { name: 'Disconnect LeetCode' }))
     expect(loadSettings().leetcode).toBeUndefined()
+  })
+
+  it('offersEveryTierLevelAndFocus', async () => {
+    await open()
+    const tier = screen.getByRole('group', { name: 'Tier' })
+    expect(within(tier).getAllByRole('button').map((b) => b.textContent)).toEqual(['MAANG', 'Big tech and product', 'Startups', 'Service and IT consulting'])
+    const level = screen.getByRole('group', { name: 'Level' })
+    expect(within(level).getAllByRole('button').map((b) => b.textContent)).toEqual(['Intern', 'SDE-1', 'SDE-2', 'Senior SDE'])
+    const focus = screen.getByRole('group', { name: 'Focus' })
+    expect(within(focus).getAllByRole('button').map((b) => b.textContent)).toEqual(['General', 'Backend', 'Frontend', 'Full stack', 'Mobile', 'Data', 'DevOps and SRE', 'Test and QA'])
+  })
+
+  it('focusIsSaved', async () => {
+    await open()
+    await userEvent.click(within(screen.getByRole('group', { name: 'Focus' })).getByRole('button', { name: 'Backend' }))
+    expect(loadSettings().target.focus).toBe('backend')
+    expect(within(screen.getByRole('group', { name: 'Focus' })).getByRole('button', { name: 'Backend' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('companyListOnlyHasTheTiersCompaniesAndIsSaved', async () => {
+    await open()
+    const select = screen.getByRole('combobox', { name: 'Target company' })
+    expect(within(select).getAllByRole('option').map((o) => o.textContent)).toEqual(['Any MAANG company', 'Google', 'Meta', 'Amazon', 'Apple', 'Netflix'])
+    await userEvent.selectOptions(select, 'Meta')
+    expect(loadSettings().target.employer).toBe('meta')
+  })
+
+  it('changingTierDropsAnEmployerFromAnotherTier', async () => {
+    await open()
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target company' }), 'Meta')
+    await userEvent.click(screen.getByRole('button', { name: 'Startups' }))
+    expect(loadSettings().target).toMatchObject({ company: 'startup' })
+    expect(loadSettings().target.employer).toBeUndefined()
+    expect(within(screen.getByRole('combobox', { name: 'Target company' })).getAllByRole('option').map((o) => o.textContent)).toEqual(['Any startup', 'Razorpay'])
   })
 })

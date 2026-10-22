@@ -1,4 +1,4 @@
-import type { Role, Target, Tier } from '@/practice/store'
+import type { Focus, Role, Target, Tier } from '@/practice/store'
 import { employerFor } from './companies'
 import { STAGE_GROUPS, type Weight } from './stageGroups'
 
@@ -40,6 +40,15 @@ export const CORE_BAR: Record<Tier, number> = { maang: 70, product: 65, startup:
 
 export const TIER_LABEL: Record<Tier, string> = { maang: 'MAANG', product: 'Big tech and product', startup: 'Startups', service: 'Service and IT consulting' }
 export const ROLE_LABEL: Record<Role, string> = { intern: 'Intern', sde1: 'SDE-1', sde2: 'SDE-2', sde3: 'Senior SDE' }
+
+export const FOCUS_LABEL: Record<Focus, string> = {
+  general: 'General', backend: 'Backend', frontend: 'Frontend', fullstack: 'Full stack', mobile: 'Mobile', data: 'Data', devops: 'DevOps and SRE', sdet: 'Test and QA',
+}
+
+/** The "no specific company" choice in the company list, worded for the tier. */
+export const ANY_COMPANY_LABEL: Record<Tier, string> = {
+  maang: 'Any MAANG company', product: 'Any big tech or product company', startup: 'Any startup', service: 'Any service company',
+}
 
 /** What to call the target: the employer when one is chosen for this tier, otherwise the tier. */
 export function targetName(target: Target): string {
