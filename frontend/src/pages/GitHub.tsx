@@ -1,6 +1,5 @@
 import { Link } from 'react-router'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
 import { GIT_CHALLENGES } from '@/content/learn/git-challenges'
 import { passedChallenges } from '@/learn/repos'
 import { useGit } from '@/learn/useGit'
@@ -28,7 +27,6 @@ export default function GitHub() {
             These are your commits in your repository, so there is no AI on these pages: you read the brief, use Git yourself, and the check only looks at what is on GitHub.
           </p>
         </header>
-        <LearnNav />
         <div className="grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
           <section aria-labelledby="git-list" className="grid content-start gap-3">
             <div className="flex flex-wrap items-baseline gap-3">

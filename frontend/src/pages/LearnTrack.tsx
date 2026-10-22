@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
 import { ModuleList } from '@/components/learn/ModuleList'
 import { ProjectCard } from '@/components/learn/ProjectCard'
 import { ProgressBar } from '@/components/practice/ProgressBar'
@@ -31,7 +30,6 @@ export default function LearnTrack() {
           <h1 className="display text-[32px] leading-tight xl:text-[38px]">{track.title}</h1>
           <p className="max-w-[72ch] text-[14px] leading-relaxed text-ink-muted">{track.summary}</p>
         </header>
-        <LearnNav />
         <div className="grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid content-start gap-8">
             <section aria-labelledby="track-modules" className="grid content-start gap-3">

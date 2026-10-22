@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
 import { ResumeCard } from '@/components/learn/ResumeCard'
 import { matchesFilter, RESUME_PROJECTS, type CompanyFilter, type RoleFilter } from '@/content/learn/resume-projects'
 import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
@@ -22,7 +21,6 @@ export default function Resume() {
             Twelve projects that show depth, each with the resume line to write about it and a checklist that makes the repository look the part.
           </p>
         </header>
-        <LearnNav />
 
         <section aria-labelledby="resume-how" className="grid max-w-[80ch] gap-3 rounded-lg border border-line bg-sand px-5 py-5">
           <h2 id="resume-how" className="text-[17px] font-semibold">How to write the bullet</h2>

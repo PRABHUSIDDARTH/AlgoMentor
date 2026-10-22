@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router'
 import { AppShell } from '@/components/AppShell'
 import { CheatSheet } from '@/components/learn/CheatSheet'
 import { CheckResultView } from '@/components/learn/CheckResultView'
-import { LearnNav } from '@/components/learn/LearnNav'
 import { RepoLink } from '@/components/learn/RepoLink'
 import { ScriptBox } from '@/components/learn/ScriptBox'
 import { Button } from '@/components/ui/button'
@@ -60,7 +59,6 @@ export default function GitChallenge() {
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_360px] xl:px-20">
         <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-7">
-          <LearnNav />
           <header className="grid gap-2">
             <p className="eyebrow">Git challenge {challenge.order} of {GIT_CHALLENGES.length}</p>
             <h1 className="display text-[30px] leading-tight xl:text-[36px]">{challenge.title}</h1>

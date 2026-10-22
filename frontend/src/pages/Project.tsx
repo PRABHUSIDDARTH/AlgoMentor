@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
 import { MilestoneList } from '@/components/learn/MilestoneList'
 import { RepoLink } from '@/components/learn/RepoLink'
 import { PROJECT_BY_ID } from '@/content/learn/projects'
@@ -42,7 +41,6 @@ export default function Project() {
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_380px] xl:px-20">
         <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-7">
-          <LearnNav />
           <header className="grid gap-2">
             <p className="eyebrow">
               <Link to={`/learn/${track.id}`} className="hover:underline">{track.short}</Link> · {LEVEL[project.level]} project

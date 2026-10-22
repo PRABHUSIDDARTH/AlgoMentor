@@ -1,6 +1,5 @@
 import { Link } from 'react-router'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
 import { TrackCard } from '@/components/learn/TrackCard'
 import { TRACKS } from '@/content/learn'
 import { useLearn } from '@/learn/useLearn'
@@ -17,7 +16,6 @@ export default function Learn() {
             Three tracks of short lessons with a quiz each. Pass a quiz and the module comes back for a quick re-quiz after 1, 3, 7, 21 and 60 days.
           </p>
         </header>
-        <LearnNav />
         <ul aria-label="Tracks" className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {TRACKS.map((t) => <TrackCard key={t.id} track={t} progress={progress} />)}
         </ul>

@@ -88,11 +88,11 @@ describe('Landing', () => {
   it('navUsesGooeyNavForPageSections', () => {
     renderLanding()
     const header = screen.getByRole('banner')
-    const sections = within(header).getAllByRole('navigation')[0]
+    const sections = within(header).getByRole('navigation', { name: 'Page' })
     expect(within(sections).getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how')
     expect(within(sections).getByRole('link', { name: 'Integrations' })).toHaveAttribute('href', '#integrations')
     expect(within(sections).getByRole('link', { name: 'FAQ' })).toHaveAttribute('href', '#faq')
-    expect(within(header).getByRole('link', { name: 'Workspace' })).toHaveAttribute('href', '/app')
+    expect(within(header).getByRole('link', { name: 'Get started' })).toHaveAttribute('href', '/app')
   })
 
   it('logoIsTheTreeMarkWithWordmark', () => {
