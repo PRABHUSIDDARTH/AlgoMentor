@@ -5,11 +5,21 @@ const lesson: Lesson = {
   title: 'Abstraction & interfaces',
   minutes: 9,
   diagram: 'interface-impl',
+  hook: 'A checkout service calls a card processor directly. When the team adds a wallet, the change touches the cart, the receipt and every test, and the tests still hit the real processor. If checkout had only known a `PaymentGateway` that can `charge`, the wallet would have been one new class.',
+  keyPoints: [
+    'Abstraction exposes what something does and hides how. Encapsulation hides an object\'s data.',
+    'An interface is a contract of method signatures. Many classes can implement it, and one class can implement several.',
+    'An abstract class cannot be instantiated but can carry state and finished methods. Use it when subclasses truly share code.',
+    'Declare variables and parameters with the abstract type so the concrete choice lives in one place and tests can swap in fakes.',
+  ],
   body: `## Say what, not how
 
 **Abstraction** means exposing what something does while hiding how it does it. A \`PaymentGateway\` offers \`charge(amount)\`; whether that talks to a card network, a wallet or a test double is invisible to the checkout code. The caller depends on the idea, not the machinery.
 
 Encapsulation hides an object's *data*. Abstraction hides a whole *implementation* behind a smaller, simpler surface. The two work together, but they are not the same thing, and interviewers often ask you to separate them.
+
+> [!KEY] Hiding data vs hiding a how
+> Encapsulation protects one object's fields. Abstraction gives callers a smaller surface so that a whole implementation can be replaced. A class can have one without the other.
 
 ## Interfaces are contracts
 
@@ -25,6 +35,26 @@ A class can implement many interfaces, which is how Java and C# offer the flexib
 
 Modern Java interfaces may carry \`default\` methods with a body, which helps evolve an interface without breaking implementers. Python expresses interfaces with abstract base classes (\`abc.ABC\` and \`@abstractmethod\`) or structural \`Protocol\` types. C++ uses a class whose methods are all *pure virtual* (\`= 0\`).
 
+> [!TRY] When does Python object?
+> When does Python complain: at the \`class Sms\` line, at \`Sms()\`, or never?
+>
+> \`\`\`python
+> from abc import ABC, abstractmethod
+>
+> class Notifier(ABC):
+>     @abstractmethod
+>     def send(self, to, message): ...
+>
+> class Sms(Notifier):
+>     pass
+>
+> Sms()
+> \`\`\`
+>
+> ---
+>
+> At \`Sms()\`. Defining the class is fine; creating an instance raises a \`TypeError\` saying \`Sms\` cannot be instantiated because it does not implement the abstract method \`send\`.
+
 ## Abstract classes sit in between
 
 An **abstract class** can't be instantiated, but unlike an interface it can hold fields, constructors and finished methods alongside abstract ones. Use it when implementations share real state or a fixed algorithm with a few steps left open.
@@ -36,9 +66,15 @@ How to choose:
 
 When in doubt, start with an interface. It keeps callers decoupled, and you can add an abstract base class behind it later for shared code.
 
+> [!INTERVIEW] Interface or abstract class?
+> Expect this almost word for word. Lead with the question you would ask: do the types share only a capability, or real state and code? Then give the rule from this lesson with an example for each, and add that a Java class can implement many interfaces but extend only one class.
+
 ## Programming to an interface
 
 "Program to an interface, not an implementation" is one of the oldest pieces of design advice. Declare variables, parameters and return types with the abstract type: \`List<Book> books = new ArrayList<>()\`, not \`ArrayList<Book>\`. Then the concrete choice is made in one place and can change without a ripple.
+
+> [!GOTCHA] Declaring the concrete type
+> Writing \`ArrayList<Book> books\` as a field or parameter type ties every caller to \`ArrayList\`. When you later want an immutable or sorted list, each signature that mentions \`ArrayList\` has to change too. Declare \`List<Book>\` and construct the concrete class in one place.
 
 This is also what makes code testable. If \`OrderService\` takes a \`Notifier\` in its constructor, a test can pass a fake that records messages instead of sending real emails. Passing dependencies in from outside like this is called **dependency injection**, and it only works because of abstraction.
 

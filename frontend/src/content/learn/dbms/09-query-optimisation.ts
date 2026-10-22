@@ -4,6 +4,13 @@ const lesson: Lesson = {
   id: 'query-optimisation',
   title: 'Query processing & optimisation',
   minutes: 10,
+  hook: 'A page that lists fifty orders feels slow. The query for the list is fast. The slowness is that the code then fetches each order\'s customer with its own query, fifty-one round trips in all. Many slow queries are found by reading the plan, and some by simply counting how many queries a page runs.',
+  keyPoints: [
+    'The optimiser picks the cheapest plan using statistics, so stale statistics cause many slow queries.',
+    'Read EXPLAIN ANALYZE from the innermost node and compare estimated rows with actual rows.',
+    'Tune in order: find the slow query, index for its filter and sort, remove functions on columns, select fewer columns.',
+    'Watch for N+1 queries and large OFFSETs; keyset pagination avoids reading skipped rows.',
+  ],
   body: `## From SQL text to results
 
 When you send a query, the database goes through four stages:
@@ -33,6 +40,9 @@ The search space grows fast: the number of possible join orders explodes with th
 
 Bad estimates cause most bad plans. If statistics say a filter matches 10 rows but it really matches 2 million, the optimiser might choose a nested loop that runs for an hour. Keeping statistics fresh (\`ANALYZE\` in PostgreSQL, automatic in most systems) fixes a surprising number of slow queries.
 
+> [!KEY] Estimates drive plans
+> The optimiser works from statistics, not from the data itself. When estimated rows and actual rows differ by orders of magnitude, suspect the statistics first and the query second.
+
 ## Reading EXPLAIN
 
 \`EXPLAIN\` shows the chosen plan; \`EXPLAIN ANALYZE\` actually runs the query and adds real row counts and timings. When reading one:
@@ -40,6 +50,9 @@ Bad estimates cause most bad plans. If statistics say a filter matches 10 rows b
 - Start from the innermost (most indented) nodes; they run first.
 - Compare **estimated rows** with **actual rows**. A large mismatch points at stale statistics or correlated columns the optimiser doesn't understand.
 - Look for sequential scans on big tables inside loops, sorts that spill to disk, and nested loops over large inputs.
+
+> [!GOTCHA] Tuning on tiny data
+> Checking a plan against a few hundred development rows. A sequential scan is the best plan there, so no index appears to be needed. On production volumes the plan changes, or no good plan exists. Test against data of realistic size and distribution.
 
 ## A practical tuning checklist
 
@@ -51,9 +64,19 @@ Bad estimates cause most bad plans. If statistics say a filter matches 10 rows b
 6. Fix the **N+1 query problem** in application code: one query for a list, then one query per item. Load the related rows in a single join or an \`IN\` query instead. ORMs make this mistake easy and common.
 7. Paginate with **keyset pagination** (\`WHERE id > last_seen ORDER BY id LIMIT 20\`) rather than large \`OFFSET\`s, which still read and discard every skipped row.
 
+> [!TRY] How many queries?
+> A page lists 50 orders. The code runs one query for the orders, then loads each order's customer separately. How many queries run, and what is the fix?
+>
+> ---
+>
+> 51 queries: one for the list plus one per order. This is the N+1 problem. Join the customer into the first query (1 query), or collect the customer ids and load them with a single \`IN\` query (2 queries).
+
 ## Caching and materialised views
 
-Some results are expensive and rarely change: dashboards and leaderboards, for example. A **materialised view** stores a query's result as a table that you refresh periodically. An application cache (such as Redis) can hold hot results for seconds or minutes. Both trade freshness for speed, so decide explicitly how stale the data may be.`,
+Some results are expensive and rarely change: dashboards and leaderboards, for example. A **materialised view** stores a query's result as a table that you refresh periodically. An application cache (such as Redis) can hold hot results for seconds or minutes. Both trade freshness for speed, so decide explicitly how stale the data may be.
+
+> [!INTERVIEW]
+> "This query is slow, what do you do?" Do not start by adding an index. Say you would find the query, run \`EXPLAIN ANALYZE\`, compare estimated and actual rows, then index or rewrite, and measure again. If you suggest a cache or materialised view, state the freshness cost.`,
   quiz: [
     { id: 'qo-1', prompt: 'What does the optimiser use to estimate how many rows each step returns?', options: ['The SQL formatting', 'The client\'s network speed', 'The order of columns in SELECT', 'Table and column statistics such as histograms and distinct counts'], answer: 3, why: 'Cardinality estimates come from statistics; stale statistics lead to bad plans.' },
     { id: 'qo-2', prompt: 'EXPLAIN ANALYZE shows 10 estimated rows but 2,000,000 actual rows at one step. What is a likely fix?', options: ['Add more CPU', 'Rewrite the query in uppercase', 'Refresh statistics (ANALYZE) or help the optimiser with better indexes', 'Disable the optimiser'], answer: 2, why: 'A large estimate error points to stale or insufficient statistics.' },

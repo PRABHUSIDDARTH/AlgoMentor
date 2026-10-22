@@ -21,6 +21,11 @@ export function ResumeCard({ project }: { project: ResumeProject }) {
         </p>
       </div>
       <p className="max-w-[72ch] text-[14px] leading-relaxed">{project.proves}</p>
+      {project.inspiredBy && (
+        <p className="text-[12.5px] text-ink-muted">
+          Idea from <a href={project.inspiredBy.url} target="_blank" rel="noreferrer" className="underline underline-offset-[3px] hover:text-ink">{project.inspiredBy.label}<span className="sr-only"> (opens in a new tab)</span></a>
+        </p>
+      )}
       <Accordion type="multiple" defaultValue={['bullet']} className="rounded-lg border border-line px-4">
         <AccordionItem value="bullet">
           <AccordionTrigger className="text-[14px]">Resume bullet</AccordionTrigger>

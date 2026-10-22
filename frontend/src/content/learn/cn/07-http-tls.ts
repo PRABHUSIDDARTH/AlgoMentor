@@ -5,6 +5,13 @@ const lesson: Lesson = {
   title: 'HTTP/HTTPS & TLS',
   minutes: 11,
   diagram: 'tls-handshake',
+  hook: 'A payment request times out, the app retries, and the customer is charged twice. The network did nothing wrong; the team simply did not know which HTTP methods are safe to repeat. A few rules about methods, status codes and TLS decide whether a retry is harmless.',
+  keyPoints: [
+    'HTTP is stateless: a request is a method, path, headers and optional body, and state travels in cookies or headers.',
+    'GET, PUT and DELETE are idempotent while POST is not, so retrying a POST needs an idempotency key.',
+    'Status families: 2xx success, 3xx redirect, 4xx client error, 5xx server error; 401 and 403 mean different things.',
+    'TLS 1.3 agrees keys with Diffie-Hellman in one round trip, then encrypts data with a fast symmetric cipher.',
+  ],
   body: `## HTTP: requests and responses
 
 **HTTP** is the application protocol of the web. A client sends a **request**: a method, a path, headers and an optional body. The server returns a **response**: a status code, headers and an optional body. HTTP is **stateless**: each request stands alone, and anything like a login session is carried explicitly, usually in a cookie or an \`Authorization\` header.
@@ -18,6 +25,13 @@ const lesson: Lesson = {
 
 Two properties matter in API design. A **safe** method doesn't change state (GET, HEAD). An **idempotent** method has the same effect whether you send it once or five times (GET, PUT, DELETE). POST is neither, which is why retrying a failed "pay" POST can charge twice unless the API accepts an idempotency key.
 
+> [!TRY] Delete it twice
+> A client sends DELETE /orders/42 twice in a row. The first call returns 204. What can the second return, and is DELETE still idempotent?
+>
+> ---
+>
+> Usually 404, because the order is already gone. DELETE is still idempotent: the term is about the server's state after the calls (order 42 does not exist), not about getting identical responses.
+
 ## Status codes by family
 
 - **2xx success**: 200 OK, 201 Created, 204 No Content.
@@ -26,6 +40,9 @@ Two properties matter in API design. A **safe** method doesn't change state (GET
 - **5xx server error**: 500 internal error, 502 bad gateway, 503 unavailable, 504 gateway timeout.
 
 Knowing 401 vs 403 and 502 vs 504 precisely is a common interview check.
+
+> [!GOTCHA] 401 and 403 are not interchangeable
+> Answering 403 for a missing login leaves clients unable to tell whether to ask the user to sign in. Use 401 when credentials are missing or invalid, and 403 when the caller is known but not allowed. Likewise 502 means a bad answer from upstream, 504 means upstream timed out.
 
 ## Versions
 
@@ -48,9 +65,15 @@ Plain HTTP travels as readable text: anyone on the path can read or alter it. **
 
 TLS 1.3 completes this in one round trip, and resumed sessions can even send data immediately. Asymmetric cryptography is only used to agree keys and authenticate; bulk data uses symmetric ciphers because they are much faster.
 
+> [!KEY] Asymmetric to agree, symmetric to talk
+> Public-key maths is used once, to agree on keys and prove the server's identity. After the handshake the data is encrypted with a symmetric cipher such as AES-GCM, because it is far faster.
+
 ## Certificates and trust
 
 A certificate binds a domain name to a public key and is signed by a **certificate authority** (CA). Your browser trusts a set of root CAs and checks the chain from the site's certificate up to one of them, plus the name, expiry date and revocation status. An expired certificate is one of the most common causes of production outages, which is why automated issuers like Let's Encrypt renew certificates every few weeks.
+
+> [!INTERVIEW] Walk through HTTPS in order
+> Give the sequence: hellos and key shares, certificate checked against a CA chain, shared session keys, symmetric encryption. Saying what the certificate proves (that the key belongs to that domain) and that public-key crypto is only for setup separates good answers from recited ones.
 
 ## Cookies, caching and headers worth knowing
 

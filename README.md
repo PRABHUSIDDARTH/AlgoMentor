@@ -33,14 +33,15 @@ An AI assistant that explains DSA problems, gives hints, and provides optimal so
 
 ### Navigation
 One navbar (React Bits GooeyNav) on every page, with four sections and the section's pages underneath:
-**Practice** (Workspace, Roadmap, Today, Tests), **Learn** (Overview, one tab per track, Projects), **Git** (Challenges, Repo health) and **Progress** (DSA level, Core CS level, Resume projects). On phones the same structure opens as a menu.
+**Practice** (Workspace, Roadmap, Today, Tests), **Learn** (Overview, one tab per track, Projects), **Git** (Challenges, Repo health) and **Progress** (DSA level, Core CS level, Companies, Resume projects).
 
 ### Learning hub
 - 📚 **Learn**: four tracks of original lessons, **OOP, Computer Networks, DBMS and Operating Systems**, 10 modules each, with diagrams, Java/Python/C++ samples (OOP), a 5-question quiz per module and interview questions. A module completes at 4 of 5 on its quiz, then comes back on Today as a 3-question re-quiz after 1, 3, 7, 21 and 60 days
 - 🛠️ **Projects**: twelve specs (three per track, beginner to advanced) with requirements, stretch goals and an acceptance checklist. Link your public GitHub repo and AlgoMentor checks each project's Git milestones
 - 🔀 **Git challenges**: ten real situations in *your own* repository: first commit, meaningful commits, feature PR, merge conflict, squash, revert, recover a deleted branch, cherry-pick, release, remove a committed secret. Setup scripts (bash and PowerShell) put your clone into the situation, you fix it with Git, and the check reads your repo on GitHub. **There is no AI on the Git pages**
-- 📄 **Resume projects**: twelve projects that get shortlisted, filtered by target and role, each with a resume-bullet template and a "make your GitHub shine" checklist checked against your repo
-- 🎯 **Core CS readiness**: modules, quizzes, projects and Git challenges score out of 100 against your target's bar (FAANG/product 70, startup 60, service 75). Today shows the lower of your DSA and Core CS readiness
+- 🏢 **Companies**: how 14 real companies hire (Google, Meta, Amazon, Apple, Netflix, Microsoft, Adobe, Atlassian, Razorpay, TCS, Infosys, Cognizant, Accenture, Capgemini), round by round, taken from their own careers pages with the date each was read. Apple has no official guide, so it is marked as candidate-reported. Set one as your target and the roadmap weights follow what that company says it tests
+- 📄 **Resume projects**: twenty-five projects that get shortlisted, filtered by target, role and focus; ideas drawn from public repositories and roadmaps are credited on the card, each with a resume-bullet template and a "make your GitHub shine" checklist checked against your repo
+- 🎯 **Core CS readiness**: modules, quizzes, projects and Git challenges score out of 100 against your target's bar (MAANG 70, big tech and product 65, startup 60, service 75). Choosing a focus (backend, frontend, full stack, mobile, data, DevOps, test) changes which tracks count for more. Today shows the lower of your DSA and Core CS readiness
 
 Git checks read public GitHub data only (commits, branches, tags, releases), never your code, so the repository must be public.
 

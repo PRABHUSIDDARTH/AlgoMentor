@@ -4,6 +4,13 @@ const lesson: Lesson = {
   id: 'physical-data-link',
   title: 'Physical & data link basics',
   minutes: 8,
+  hook: 'A video call is smooth for ten minutes, then stutters the moment the whole office comes online, even though the internet connection tests fast. The cause sits in the bottom two layers: Wi-Fi is a shared channel where devices take turns. A handful of terms (bandwidth, latency, MAC, MTU) explains most odd network behaviour.',
+  keyPoints: [
+    'Bandwidth is capacity, latency is delay, and throughput is what you actually get after overhead and loss.',
+    'A MAC address names an interface on the local network only; every router hop rewrites the MAC addresses.',
+    'A switch learns which MAC lives on which port and forwards each frame there; a hub repeats it to every port.',
+    'ARP maps a local IP address to a MAC address, and the 1500-byte Ethernet MTU caps each frame\'s payload.',
+  ],
   body: `## The bottom of the stack
 
 Every network message eventually becomes something physical: voltage changes on copper, pulses of light in fibre, or radio waves. The **physical layer** is about encoding bits into those signals and getting them across a medium. The **data link layer** sits just above it and turns a stream of bits into **frames** delivered between devices on the same local network.
@@ -26,11 +33,17 @@ Every network interface has a **MAC address**: 48 bits, usually written as six h
 
 MAC addresses only matter on the local network. When a packet crosses a router, the IP addresses stay the same but the MAC addresses are rewritten for each hop.
 
+> [!KEY] Addresses with different reach
+> IP addresses name the destination for the whole journey. MAC addresses name only the next hop and are rewritten at every router. A frame says where to go next; a packet says where to end up.
+
 ## Hubs, switches and collisions
 
 An old **hub** repeated every frame to every port, so all devices shared one channel and their transmissions could collide. A **switch** learns which MAC address lives on which port (it keeps a MAC table) and forwards each frame only where it needs to go. Every port gets its own collision-free link, which is why switched Ethernet scales well.
 
 Wi-Fi is still a shared medium: all devices on a channel take turns talking. It avoids collisions by listening before sending and backing off randomly, which is why a crowded network feels slow even when the internet connection behind it is fast.
+
+> [!INTERVIEW] Hub, switch, router in one breath
+> Say what each device looks at: a hub looks at nothing and repeats to every port, a switch reads the destination MAC, a router reads the destination IP. Adding the phrase "collision domain" shows you know why switches scale.
 
 ## ARP: from IP address to MAC address
 
@@ -38,9 +51,19 @@ To send an IP packet to a machine on the same network, a host needs that machine
 
 ARP has no authentication, so a malicious machine can answer for someone else's IP and intercept traffic (ARP spoofing). Switch features and encryption at higher layers are the defences.
 
+> [!GOTCHA] A switch is not a privacy device
+> A switch sends a frame only to the learned port, but broadcasts and frames for unknown MAC addresses go out of every port, and ARP spoofing can persuade hosts to send traffic through an attacker. Switched does not mean safe from other machines on the LAN.
+
 ## VLANs and MTU
 
-Two more terms come up often. A **VLAN** splits one physical switch into several isolated logical networks, for example separating guest Wi-Fi from office machines. The **MTU** (maximum transmission unit) is the largest payload a frame can carry, 1500 bytes on standard Ethernet; bigger IP packets must be fragmented or avoided, which is a classic source of mysterious "small requests work, large ones hang" bugs.`,
+Two more terms come up often. A **VLAN** splits one physical switch into several isolated logical networks, for example separating guest Wi-Fi from office machines. The **MTU** (maximum transmission unit) is the largest payload a frame can carry, 1500 bytes on standard Ethernet; bigger IP packets must be fragmented or avoided, which is a classic source of mysterious "small requests work, large ones hang" bugs.
+
+> [!TRY] How much TCP per frame?
+> Ethernet MTU is 1500 bytes. IPv4 and TCP headers are 20 bytes each (no options). What is the largest amount of TCP data one packet can carry?
+>
+> ---
+>
+> 1460 bytes. The MTU limits the whole IP packet, so subtract 40 bytes of headers. This is the usual TCP maximum segment size on Ethernet.`,
   quiz: [
     { id: 'pd-1', prompt: 'What does a network switch use to decide where to send a frame?', options: ['The destination IP address', 'The TCP port number', 'The URL', 'A table of MAC addresses learned per port'], answer: 3, why: 'Switches operate at the data link layer and forward by destination MAC using their MAC table.' },
     { id: 'pd-2', prompt: 'A link has huge bandwidth but 600 ms latency. Which workload suffers most?', options: ['Downloading one large file', 'Streaming a video', 'A protocol that waits for a reply after every small message', 'Backing up overnight'], answer: 2, why: 'Latency dominates request-response chatter; bandwidth dominates bulk transfer.' },

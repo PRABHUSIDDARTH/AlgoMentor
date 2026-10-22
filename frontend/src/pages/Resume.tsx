@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { AppShell } from '@/components/AppShell'
 import { PageHeader } from '@/components/PageHeader'
 import { ResumeCard } from '@/components/learn/ResumeCard'
-import { matchesFilter, RESUME_PROJECTS, type CompanyFilter, type RoleFilter } from '@/content/learn/resume-projects'
-import { TIER_LABEL, ROLE_LABEL } from '@/content/targets'
+import { matchesFilter, RESUME_PROJECTS, type CompanyFilter, type FocusFilter, type RoleFilter } from '@/content/learn/resume-projects'
+import { FOCUS_LABEL, ROLE_LABEL, TIER_LABEL } from '@/content/targets'
 
 const SELECT = 'h-9 rounded-md border border-line-strong bg-cream px-3 text-[13.5px] text-ink focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none'
 
@@ -11,7 +11,8 @@ const SELECT = 'h-9 rounded-md border border-line-strong bg-cream px-3 text-[13.
 export default function Resume() {
   const [company, setCompany] = useState<CompanyFilter>('all')
   const [role, setRole] = useState<RoleFilter>('all')
-  const shown = RESUME_PROJECTS.filter((p) => matchesFilter(p, company, role))
+  const [focus, setFocus] = useState<FocusFilter>('all')
+  const shown = RESUME_PROJECTS.filter((p) => matchesFilter(p, company, role, focus))
   return (
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-7 px-6 py-8 sm:px-10 lg:px-14 xl:px-20">
@@ -19,7 +20,7 @@ export default function Resume() {
           crumbs={[{ label: 'Progress', to: '/level' }, { label: 'Resume projects' }]}
           eyebrow="Resume projects"
           title="Projects a recruiter remembers."
-          summary="Twelve projects that show depth, each with the resume line to write about it and a checklist that makes the repository look the part."
+          summary={`${RESUME_PROJECTS.length} projects that show depth, for backend, frontend, full stack, mobile, data, DevOps and test engineers. Each has the resume line to write about it and a checklist that makes the repository look the part. Where an idea comes from a public repository or roadmap, the card links to it.`}
         />
 
         <section aria-labelledby="resume-how" className="grid max-w-[80ch] gap-3 rounded-lg border border-line bg-sand px-5 py-5">
@@ -51,9 +52,16 @@ export default function Resume() {
                 {(Object.keys(ROLE_LABEL) as (keyof typeof ROLE_LABEL)[]).map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
               </select>
             </label>
+            <label className="grid gap-1 text-[12.5px] font-medium">
+              Focus
+              <select className={SELECT} value={focus} onChange={(e) => setFocus(e.target.value as FocusFilter)}>
+                <option value="all">Any</option>
+                {(Object.keys(FOCUS_LABEL) as (keyof typeof FOCUS_LABEL)[]).filter((f) => f !== 'general').map((f) => <option key={f} value={f}>{FOCUS_LABEL[f]}</option>)}
+              </select>
+            </label>
             <p role="status" className="pb-2 font-mono text-[12px] text-ink-muted">{shown.length} {shown.length === 1 ? 'project' : 'projects'}</p>
           </div>
-          {shown.length === 0 && <p className="text-[13.5px] text-ink-muted">No project matches both choices. Set one of them to Any.</p>}
+          {shown.length === 0 && <p className="text-[13.5px] text-ink-muted">No project matches all three choices. Set one of them to Any.</p>}
           <ul aria-label="Resume projects" className="grid gap-5 xl:grid-cols-2">
             {shown.map((p) => <ResumeCard key={p.id} project={p} />)}
           </ul>

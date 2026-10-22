@@ -1,10 +1,15 @@
-import type { Tier, Role } from '@/practice/store'
+import type { Focus, Role, Tier } from '@/practice/store'
+import { SOURCED_PROJECTS } from './resume-projects-sourced'
 
 export type ResumeProject = {
   id: string
   title: string
   targets: Tier[]
   roles: Role[]
+  /** The kinds of engineer this project suits. Never 'general'. */
+  focus: Exclude<Focus, 'general'>[]
+  /** Where the idea comes from, for projects drawn from a public repository or roadmap. The write-up is our own. */
+  inspiredBy?: { label: string; url: string }
   /** What building it shows a recruiter or interviewer. */
   proves: string
   core: string[]
@@ -14,12 +19,13 @@ export type ResumeProject = {
   bullet: { template: string; example: string }
 }
 
-export const RESUME_PROJECTS: ResumeProject[] = [
+const ORIGINAL_PROJECTS: ResumeProject[] = [
   {
     id: 'collab-editor',
     title: 'Real-time collaborative editor',
-    targets: ['maang', 'startup'],
-    roles: ['sde1', 'sde2'],
+    targets: ['maang', 'product', 'startup'],
+    roles: ['sde1', 'sde2', 'sde3'],
+    focus: ['fullstack', 'backend'],
     proves: 'You can reason about concurrent edits and convergence: the hard problem behind shared documents, whiteboards and design tools.',
     core: [
       'A shared text document that several browser tabs can edit at once over WebSockets',
@@ -38,8 +44,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'url-shortener',
     title: 'URL shortener with analytics',
-    targets: ['startup', 'service', 'maang'],
+    targets: ['startup', 'service', 'product', 'maang'],
     roles: ['intern', 'sde1'],
+    focus: ['backend', 'fullstack'],
     proves: 'You can build a complete, small web service end to end: API, data model, caching, a redirect that must be fast, and numbers about how it is used.',
     core: [
       'An API to create a short link for a long URL, with unique codes and validation of the URL',
@@ -58,8 +65,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'rate-limiter',
     title: 'Distributed rate limiter',
-    targets: ['maang', 'startup'],
-    roles: ['sde1', 'sde2'],
+    targets: ['maang', 'product', 'startup'],
+    roles: ['sde1', 'sde2', 'sde3'],
+    focus: ['backend', 'devops'],
     proves: 'You understand algorithms for limiting traffic, and what changes when the limiter itself runs on many servers.',
     core: [
       'Token bucket and sliding-window limiters behind one interface, with unit tests using a fake clock',
@@ -78,8 +86,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'job-queue',
     title: 'Job queue with retries',
-    targets: ['startup', 'service', 'maang'],
-    roles: ['intern', 'sde1', 'sde2'],
+    targets: ['startup', 'service', 'maang', 'product'],
+    roles: ['intern', 'sde1', 'sde2', 'sde3'],
+    focus: ['backend', 'devops'],
     proves: 'You know how background work is done reliably: acknowledgements, retries with backoff, idempotency and what happens when workers crash.',
     core: [
       'Producers enqueue jobs with a payload and a priority; workers pull and run them',
@@ -98,8 +107,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'search-engine',
     title: 'Search engine over a dataset',
-    targets: ['maang'],
-    roles: ['sde1', 'sde2'],
+    targets: ['maang', 'product'],
+    roles: ['sde1', 'sde2', 'sde3'],
+    focus: ['backend', 'data'],
     proves: 'You can build the core of information retrieval: indexing, ranking and query processing, and you can measure whether the results are any good.',
     core: [
       'An ingestion step that tokenises, normalises and indexes at least 100,000 documents',
@@ -118,8 +128,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'payments-ledger',
     title: 'Payments ledger with idempotency',
-    targets: ['startup', 'service'],
-    roles: ['sde1', 'sde2'],
+    targets: ['startup', 'service', 'product'],
+    roles: ['sde1', 'sde2', 'sde3'],
+    focus: ['backend', 'data'],
     proves: 'You take correctness seriously: money moves exactly once, books always balance, and retries are safe.',
     core: [
       'Double-entry accounting: every transfer writes balanced debit and credit entries in one database transaction',
@@ -138,8 +149,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'mini-git',
     title: 'Mini Git',
-    targets: ['maang'],
+    targets: ['maang', 'product'],
     roles: ['sde1', 'sde2'],
+    focus: ['backend'],
     proves: 'You understand how a tool you use every day works inside: content-addressed storage, a commit graph, and diffs.',
     core: [
       'init, add, commit and log commands, storing objects by the hash of their content',
@@ -158,8 +170,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'code-runner',
     title: 'Sandboxed code runner',
-    targets: ['maang'],
-    roles: ['sde1', 'sde2'],
+    targets: ['maang', 'product'],
+    roles: ['sde1', 'sde2', 'sde3'],
+    focus: ['backend', 'devops'],
     proves: 'You know how untrusted code is run safely: process isolation, resource limits and timeouts, the same ideas as online judges.',
     core: [
       'An API that accepts source code and input, and returns output, exit status and run time',
@@ -178,8 +191,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'realtime-chat',
     title: 'Real-time chat with presence and history',
-    targets: ['startup', 'service'],
+    targets: ['startup', 'service', 'product'],
     roles: ['intern', 'sde1'],
+    focus: ['fullstack', 'frontend'],
     proves: 'You can build the kind of stateful, real-time feature most products need: connections, rooms, message history and who is online.',
     core: [
       'WebSocket chat with rooms, nicknames and messages delivered to everyone in the room',
@@ -198,8 +212,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'feature-flags',
     title: 'Feature-flag service with gradual rollout',
-    targets: ['startup', 'service'],
-    roles: ['intern', 'sde1'],
+    targets: ['startup', 'service', 'product'],
+    roles: ['intern', 'sde1', 'sde2'],
+    focus: ['backend', 'fullstack', 'devops'],
     proves: 'You can design a small platform service with a clean API, a client library and careful behaviour under failure.',
     core: [
       'An admin API and a simple UI to create flags, turn them on and off, and set a rollout percentage',
@@ -218,8 +233,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'metrics-pipeline',
     title: 'Metrics and log pipeline with a dashboard',
-    targets: ['maang', 'service'],
-    roles: ['sde1', 'sde2'],
+    targets: ['maang', 'service', 'product'],
+    roles: ['sde1', 'sde2', 'sde3'],
+    focus: ['data', 'devops'],
     proves: 'You can move and summarise a large stream of data: ingestion, aggregation, storage and a way for people to see it.',
     core: [
       'An ingest endpoint that accepts metric points and log lines in batches, with backpressure when overloaded',
@@ -238,8 +254,9 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'mini-redis',
     title: 'Mini Redis: an in-memory data store',
-    targets: ['maang', 'startup'],
-    roles: ['sde1', 'sde2'],
+    targets: ['maang', 'startup', 'product'],
+    roles: ['sde1', 'sde2', 'sde3'],
+    focus: ['backend'],
     proves: 'You can build a networked server with a real protocol, rich data structures, expiry and eviction, and you can reason about its performance.',
     core: [
       'A TCP server that speaks the RESP protocol, so the real redis-cli can talk to it',
@@ -257,9 +274,12 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   },
 ]
 
+export const RESUME_PROJECTS: ResumeProject[] = [...ORIGINAL_PROJECTS, ...SOURCED_PROJECTS]
+
 export type CompanyFilter = Tier | 'all'
 export type RoleFilter = Role | 'all'
+export type FocusFilter = Exclude<Focus, 'general'> | 'all'
 
-export function matchesFilter(p: ResumeProject, company: CompanyFilter, role: RoleFilter): boolean {
-  return (company === 'all' || p.targets.includes(company)) && (role === 'all' || p.roles.includes(role))
+export function matchesFilter(p: ResumeProject, company: CompanyFilter, role: RoleFilter, focus: FocusFilter = 'all'): boolean {
+  return (company === 'all' || p.targets.includes(company)) && (role === 'all' || p.roles.includes(role)) && (focus === 'all' || p.focus.includes(focus))
 }

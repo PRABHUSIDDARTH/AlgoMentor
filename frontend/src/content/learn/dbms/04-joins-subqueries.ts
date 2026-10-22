@@ -5,6 +5,13 @@ const lesson: Lesson = {
   title: 'Joins & subqueries',
   minutes: 10,
   diagram: 'join-kinds',
+  hook: 'A dashboard is meant to list every member and their overdue loans, but members with no loans have vanished from it. Someone moved one condition from `ON` to `WHERE`, and the left join quietly became an inner join. Joins are simple once you know where the nulls go.',
+  keyPoints: [
+    'INNER JOIN keeps matches only; LEFT JOIN keeps every left row and fills the right side with nulls.',
+    'A WHERE condition on the right table of a LEFT JOIN removes the unmatched rows; put it in ON instead.',
+    'Find missing rows with LEFT JOIN ... IS NULL or NOT EXISTS, never NOT IN over a column that can be null.',
+    'You write the query; the optimiser picks nested loop, hash or merge join.',
+  ],
   body: `## Why joins exist
 
 A well-designed schema spreads data across tables: members in one, loans in another, books in a third. A **join** puts it back together for a query by matching rows on related columns, usually a foreign key and the key it references.
@@ -26,6 +33,9 @@ WHERE l.returned_at IS NULL;
 - **CROSS JOIN** pairs every row with every row: a Cartesian product. Occasionally useful (every date times every store), usually a mistake caused by a missing join condition.
 - A **self join** joins a table to itself, for example employees to their managers in the same \`employee\` table.
 
+> [!KEY] Left means keep the left side
+> Put the table whose rows you must never lose on the left. Whatever happens on the right can only add columns or nulls, until a WHERE clause on the right table says otherwise.
+
 ## The left-join trap
 
 A condition on the right table in \`WHERE\` silently turns a left join into an inner join, because rows with nulls on the right fail the condition:
@@ -38,6 +48,22 @@ WHERE l.returned_at IS NULL AND l.due_at < CURRENT_DATE;
 
 Put conditions about the right-hand table in the \`ON\` clause when you want to keep unmatched left rows. This is one of the most common real-world SQL bugs.
 
+> [!TRY] Count the rows
+> Members: Ana (one open loan), Ben (no loans), Cy (one returned loan). How many rows does each query return?
+>
+> \`\`\`sql
+> -- A
+> SELECT m.name FROM member m LEFT JOIN loan l ON l.member_id = m.id
+> WHERE l.status = 'open';
+> -- B
+> SELECT m.name, l.status FROM member m LEFT JOIN loan l ON l.member_id = m.id
+> AND l.status = 'open';
+> \`\`\`
+>
+> ---
+>
+> A returns 1 row (Ana): the WHERE test rejects the null rows for Ben and Cy. B returns 3 rows: Ana with \`open\`, and Ben and Cy with a null status, because the condition now only decides which loans match.
+
 ## Finding rows without a match
 
 "Members who have never borrowed anything" is an **anti-join**. Two standard ways:
@@ -48,6 +74,9 @@ SELECT m.* FROM member m WHERE NOT EXISTS (SELECT 1 FROM loan l WHERE l.member_i
 \`\`\`
 
 Avoid \`NOT IN (subquery)\` here: if the subquery returns a single null, \`NOT IN\` returns no rows at all.
+
+> [!GOTCHA] NOT IN and a single null
+> \`NOT IN (SELECT member_id FROM loan)\` returns nothing if any \`loan.member_id\` is NULL, so the report claims no member is without loans. It passes tests on tidy data and fails in production. Use \`NOT EXISTS\` or the left-join form.
 
 ## Subqueries
 
@@ -74,7 +103,10 @@ Recursive CTEs (\`WITH RECURSIVE\`) walk hierarchies such as category trees or r
 
 ## Joins and performance
 
-Databases join with three main algorithms: **nested loops** (good when one side is small and the other has an index on the join column), **hash join** (build a hash table on the smaller side, probe with the larger) and **merge join** (both sides sorted on the key). You choose the query; the optimiser chooses the algorithm. Your job is to make good plans possible: index foreign keys, join on matching types, and filter early.`,
+Databases join with three main algorithms: **nested loops** (good when one side is small and the other has an index on the join column), **hash join** (build a hash table on the smaller side, probe with the larger) and **merge join** (both sides sorted on the key). You choose the query; the optimiser chooses the algorithm. Your job is to make good plans possible: index foreign keys, join on matching types, and filter early.
+
+> [!INTERVIEW]
+> The usual path is inner versus left join, then "how does the database run a join?" Name the three algorithms and when each wins: nested loop with an index on a small outer side, hash join for large unsorted inputs, merge join when both sides are sorted. "Customers with no orders" is the standard follow-up, and the answer is an anti-join.`,
   quiz: [
     { id: 'js-1', prompt: 'You need every member, with their loans if they have any. Which join?', options: ['LEFT JOIN from member to loan', 'INNER JOIN', 'CROSS JOIN', 'A join with no ON clause'], answer: 0, why: 'A left join keeps all left rows and fills unmatched right columns with nulls.' },
     { id: 'js-2', prompt: 'A LEFT JOIN query adds WHERE loan.due_at < CURRENT_DATE. What happens to members with no loans?', options: ['They still appear with nulls', 'They disappear, because the WHERE condition fails on nulls', 'The query errors', 'They appear twice'], answer: 1, why: 'Conditions on the right table in WHERE turn the left join into an inner join; move them to ON.' },

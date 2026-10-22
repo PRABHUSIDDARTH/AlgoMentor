@@ -44,10 +44,10 @@ afterEach(() => {
 })
 
 describe('Resume page', () => {
-  it('twelveProjects', () => {
+  it('listsEveryProject', () => {
     renderResume()
-    expect(cards()).toHaveLength(12)
-    expect(screen.getByText('12 projects')).toBeInTheDocument()
+    expect(cards()).toHaveLength(RESUME_PROJECTS.length)
+    expect(screen.getByText(`${RESUME_PROJECTS.length} projects`)).toBeInTheDocument()
   })
 
   it('filtersByTargetAndRole', async () => {
@@ -55,7 +55,7 @@ describe('Resume page', () => {
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'startup')
     const startup = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'startup', 'all'))
     expect(cards()).toHaveLength(startup.length)
-    expect(startup.length).toBeLessThan(12)
+    expect(startup.length).toBeLessThan(RESUME_PROJECTS.length)
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Role' }), 'intern')
     const both = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'startup', 'intern'))
     expect(cards()).toHaveLength(both.length)
@@ -63,7 +63,22 @@ describe('Resume page', () => {
     for (const p of both) expect(screen.getByRole('heading', { name: p.title })).toBeInTheDocument()
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'all')
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Role' }), 'all')
-    expect(cards()).toHaveLength(12)
+    expect(cards()).toHaveLength(RESUME_PROJECTS.length)
+  })
+
+  it('filtersByFocus', async () => {
+    renderResume()
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Focus' }), 'mobile')
+    const mobile = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'mobile'))
+    expect(cards()).toHaveLength(mobile.length)
+    for (const p of mobile) expect(screen.getByRole('heading', { name: p.title })).toBeInTheDocument()
+  })
+
+  it('creditsTheRepositoryOrRoadmapAProjectCameFrom', () => {
+    renderResume()
+    const p = RESUME_PROJECTS.find((x) => x.id === 'mini-docker')!
+    const card = cards().find((c) => within(c).queryByRole('heading', { name: p.title }))!
+    expect(within(card).getByRole('link', { name: new RegExp(p.inspiredBy!.label) })).toHaveAttribute('href', p.inspiredBy!.url)
   })
 
   it('cardShowsBulletTemplateAndExample', () => {
@@ -125,7 +140,7 @@ describe('Resume page', () => {
     await userEvent.click(within(card).getByRole('button', { name: /Make your GitHub shine/ }))
     await userEvent.click(within(card).getByRole('button', { name: 'Check repository' }))
     expect(await within(card).findByText(/Couldn't reach AlgoMentor/)).toBeInTheDocument()
-    expect(cards()).toHaveLength(12)
+    expect(cards()).toHaveLength(RESUME_PROJECTS.length)
   })
 
   it('noAskCallsOnTheResumePage', async () => {

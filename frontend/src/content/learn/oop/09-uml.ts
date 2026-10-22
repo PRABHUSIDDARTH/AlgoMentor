@@ -5,6 +5,13 @@ const lesson: Lesson = {
   title: 'UML class diagrams',
   minutes: 8,
   diagram: 'uml-notation',
+  hook: 'Two engineers spend twenty minutes arguing about whether a `Loan` belongs to a `Member` or to a `Book`. Someone draws three boxes and two lines on the whiteboard, and the argument ends in a minute. A class diagram is a shared sketch, and low-level design interviews expect you to draw one.',
+  keyPoints: [
+    'A class box has a name, attributes and operations. The symbol in front shows visibility: + public, - private, # protected.',
+    'Six relationships carry the meaning: inheritance, realisation, association, aggregation, composition and dependency.',
+    'Multiplicity such as 1, 0..1, * and 1..* turns a vague line into a business rule worth questioning.',
+    'Keep diagrams to five to ten classes. If the diagram and the code disagree, the code wins.',
+  ],
   body: `## A picture of the design
 
 A **UML class diagram** shows the classes in a design, what each one holds and does, and how they relate. You won't draw full UML at work very often, but a quick class diagram on a whiteboard is the fastest way to agree on a design, and low-level design interviews expect you to sketch one.
@@ -30,9 +37,15 @@ The lines between boxes carry most of the meaning, so learn them precisely:
 - **Composition:** solid line with a filled diamond at the whole. A \`House\` has \`Rooms\` that die with it.
 - **Dependency:** dashed line with an open arrow. A class uses another briefly, for example as a method parameter.
 
+> [!GOTCHA] The diamond on the wrong end
+> The diamond always sits at the whole, and the hollow triangle of inheritance points at the parent. Swapping either end reverses the sentence the diagram says: it now claims a \`Room\` owns a \`House\`. Read each line aloud as a sentence before you move on.
+
 ## Multiplicity
 
 Numbers at the ends of an association say how many objects take part: \`1\`, \`0..1\`, \`*\` (zero or more), \`1..*\` (at least one). "A \`Member\` has \`0..5\` active \`Loans\`; each \`Loan\` belongs to exactly \`1\` \`Member\`" is a business rule the diagram makes explicit, and a good prompt for a clarifying question in an interview.
+
+> [!INTERVIEW] Multiplicities are questions
+> Interviewers read your multiplicities as a record of what you asked. Writing \`0..5\` on loans without being told means you invented a rule. Say it aloud ("can a member hold more than one active loan?") and write the answer on the line.
 
 ## From diagram to code
 
@@ -45,9 +58,27 @@ Each relationship has a usual translation:
 
 Going the other way, reading a codebase and sketching its class diagram, is a fast way to understand unfamiliar code.
 
+> [!TRY] Which line joins Loan to Book?
+> Draw the relationship from \`Loan\` to \`Book\` for this class. Which line is it?
+>
+> \`\`\`java
+> class Loan {
+>     double fee(Book book, int daysLate) {
+>         return book.dailyFee() * daysLate;
+>     }
+> }
+> \`\`\`
+>
+> ---
+>
+> A dependency: a dashed line with an open arrow from \`Loan\` to \`Book\`. \`Book\` appears only as a parameter, and no field holds one, so there is no association.
+
 ## Keep diagrams honest and small
 
 A diagram with forty classes communicates nothing. Draw the five to ten classes that matter for the question at hand, show only the attributes and methods that explain the design, and label associations with verbs ("borrows", "parks in"). If the diagram and the code disagree, the code wins, so treat diagrams as a thinking tool for a conversation, not documentation to maintain forever.
+
+> [!KEY] A sketch, not a specification
+> Draw the five to ten classes the question needs and label the lines with verbs. The diagram's job is to get two people agreeing on a design quickly. Once it has done that, the code is the source of truth.
 
 UML also has sequence diagrams (who calls whom, in what order), which are worth knowing for explaining flows such as "a car enters the parking lot".`,
   code: {

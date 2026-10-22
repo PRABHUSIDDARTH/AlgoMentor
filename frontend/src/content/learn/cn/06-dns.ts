@@ -4,6 +4,13 @@ const lesson: Lesson = {
   id: 'dns',
   title: 'DNS',
   minutes: 9,
+  hook: 'A team moves their site to a new server and updates the DNS record. Half the users see the new site while the rest keep hitting the old one for hours. Nothing is broken. DNS answers are cached on purpose, and how long they live is a number the owner sets, the TTL.',
+  keyPoints: [
+    'DNS maps names to records through a hierarchy: root, top-level domain, then the domain\'s authoritative servers.',
+    'The client asks one recursive question; the resolver does the iterative walk and caches the answer.',
+    'Know A, AAAA, CNAME, MX, NS and TXT records; queries use UDP port 53, with TCP for large answers.',
+    'TTL sets how long answers are cached, so lower it before a migration and expect stale answers anyway.',
+  ],
   body: `## The internet's phone book
 
 Computers connect to IP addresses; people type names. The **Domain Name System** translates names like \`www.example.com\` into addresses like \`93.184.215.14\`. It is one of the largest distributed databases in the world, and nearly every connection on the internet starts with a DNS lookup.
@@ -30,6 +37,9 @@ When your browser needs \`www.example.com\`:
 
 The client makes one *recursive* request; the resolver does the *iterative* work. Interviewers like that distinction.
 
+> [!KEY] Recursive client, iterative resolver
+> Your device asks one question and waits. The resolver does the legwork: root, then top-level domain, then authoritative server, each pointing to the next. It caches the result, so most lookups never leave the resolver.
+
 DNS queries normally travel over **UDP port 53**: a question and answer fit in single datagrams and a lost one is just retried. Large responses and transfers between servers use TCP. Encrypted variants (DNS over HTTPS and DNS over TLS) hide lookups from observers on the network.
 
 ## Record types you should know
@@ -41,13 +51,26 @@ DNS queries normally travel over **UDP port 53**: a question and answer fit in s
 - **NS**: the authoritative name servers for a zone.
 - **TXT**: free text, used for domain ownership verification and email security (SPF, DKIM).
 
+> [!GOTCHA] No CNAME at the zone apex
+> A CNAME cannot share a name with other records, and the bare domain (example.com) must carry SOA and NS records. Trying to point it at a hostname with a CNAME is rejected, or breaks mail by shadowing the MX records. Use A/AAAA records, or an ALIAS-style feature if your DNS provider has one.
+
 ## Caching and TTL
 
 Every record has a **TTL**: how many seconds resolvers may cache it. Long TTLs mean fewer lookups and faster responses; short TTLs mean changes spread quickly. Before migrating a site to a new server, teams lower the TTL days in advance so the switch takes effect within minutes. "It works for me but not for them" after a DNS change is almost always caching.
 
+> [!TRY] Stale on purpose
+> A resolver cached an A record for shop.example.com at 12:00:00 with TTL 300. The owner changes the record at 12:01:00. At 12:03:00 a client asks that resolver. Which address does it get, and what TTL does it show?
+>
+> ---
+>
+> The old address, with a TTL of about 120 seconds. The resolver counts the TTL down and does not ask the authoritative server again until the entry expires at 12:05:00. Changing a record never clears other people's caches.
+
 ## DNS in system design
 
 DNS is also a tool. It can return different addresses by region (**geo DNS**), rotate among several servers (**round-robin DNS**), or fail over to a backup when health checks fail. It is coarse, because clients cache answers and you can't control them, which is why it is usually combined with load balancers.
+
+> [!INTERVIEW] DNS is coarse traffic control
+> Geo DNS, round robin and health-checked failover all come up in design rounds. The expected caveat is caching: clients and resolvers hold answers for the TTL, so DNS cannot fail over instantly. Pair it with a load balancer and say so.
 
 Failures matter too: if DNS is down, everything looks down, even when every server is healthy. Large outages have been caused by DNS providers or misconfigured records, so production systems use multiple name server providers and monitor resolution itself.`,
   quiz: [

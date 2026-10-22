@@ -4,6 +4,13 @@ const lesson: Lesson = {
   id: 'polymorphism',
   title: 'Polymorphism: overloading and overriding',
   minutes: 9,
+  hook: 'A drawing app has a `switch` on shape type in six places. Adding a triangle means finding all six, and missing one ships a shape that renders but never responds to clicks. With polymorphism the same call, `shape.area()`, reaches the right code, and a new shape is one new class.',
+  keyPoints: [
+    'Overloading picks a method at compile time from the argument types. Overriding picks one at run time from the actual object.',
+    'Dynamic dispatch lets code written against a parent type work with subclasses that did not exist when it was written.',
+    'A type switch that grows with every new kind is a sign that the behaviour belongs in subclasses.',
+    'In C++ only virtual methods dispatch dynamically, and deleting through a base pointer needs a virtual destructor.',
+  ],
   body: `## One call, many behaviours
 
 **Polymorphism** means "many forms": the same call does the right thing for different kinds of objects. You write \`shape.area()\` once and it computes a circle's area for a circle and a rectangle's for a rectangle. The caller doesn't need an \`if\` for every shape, and adding a new shape doesn't touch the caller.
@@ -18,6 +25,21 @@ Overloads are a convenience for callers. Keep them consistent: every \`print\` s
 
 Operator overloading is the same idea applied to operators: C++ and Python let a \`Money\` class define \`+\`, so \`price + tax\` reads naturally.
 
+> [!TRY] Which overload runs?
+> What does this print?
+>
+> \`\`\`java
+> static void f(Object o) { System.out.println("object"); }
+> static void f(String s) { System.out.println("string"); }
+>
+> Object x = "hi";
+> f(x);
+> \`\`\`
+>
+> ---
+>
+> It prints \`object\`. The compiler chooses the overload from the declared type of the argument, which is \`Object\`, before the program runs. Only overriding looks at the actual object. Calling \`f("hi")\` directly would print \`string\`.
+
 ## Run-time polymorphism: overriding
 
 **Overriding** is where object-oriented design gets its power. A subclass replaces a method it inherited, and when you call that method through a reference of the parent type, the program decides at run time which version to run based on the actual object. This is **dynamic dispatch**.
@@ -29,9 +51,15 @@ s.area();   // runs Circle.area, even though s is declared as Shape
 
 Under the hood, languages like C++ and Java keep a table of method pointers per class (a *vtable*). Each object points at its class's table, so a call looks up the right function in constant time. In C++ only methods marked \`virtual\` are dispatched this way; in Java every non-static, non-final, non-private method is.
 
+> [!KEY] Two types, two jobs
+> A variable has a declared type and the object has an actual type. The declared type decides which method names you may call and which overload is chosen. The actual type decides which overridden body runs.
+
 ## Replacing conditionals with polymorphism
 
 A long \`switch\` on a type field (\`if kind == "circle" ... else if kind == "square" ...\`) is a sign that polymorphism is missing. Every time you add a kind, you must find and update every switch. Move each branch into a class with a shared method, and adding a kind becomes adding one class. This is the *open/closed principle* in action: open to extension, closed to modification.
+
+> [!INTERVIEW] Refactor this switch
+> Given a switch on a type tag, the expected move is to give each branch to a class behind one method. State the payoff plainly: adding a kind is one new class and no existing code changes. Mention the cost as well, since the behaviour is now spread over several files.
 
 ## Duck typing
 
@@ -42,6 +70,9 @@ Python and other dynamic languages take this further with **duck typing**: if an
 - **Calling overridable methods from a constructor.** The subclass's override may run before the subclass's fields are set.
 - **Forgetting a virtual destructor in C++.** Deleting a derived object through a base pointer without one leaks the derived part.
 - **Overloading on related types** (\`f(Object)\` and \`f(String)\`): which one runs depends on the declared type, not the actual one, and surprises readers.
+
+> [!GOTCHA] The half-built subclass
+> In Java a base constructor that calls an overridable method runs the subclass version before the subclass's fields are assigned. An override that returns a field prints \`null\`, and one that uses the field can throw a \`NullPointerException\`. Call only private or final methods from a constructor.
 
 Remember the one-line summary for interviews: overloading is chosen by the compiler from the parameters; overriding is chosen at run time from the object.`,
   code: {

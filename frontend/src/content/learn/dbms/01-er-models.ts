@@ -5,6 +5,13 @@ const lesson: Lesson = {
   title: 'Data models & ER diagrams',
   minutes: 9,
   diagram: 'er-library',
+  hook: 'A clinic\'s booking app stores every appointment as one row, with the patient\'s name, phone and doctor typed in again each time. Six months later a patient changes their number and half the old rows disagree with the rest. Drawing the entities and how they relate before any table exists is the cheap way to avoid that.',
+  keyPoints: [
+    'An ER model lists the things you store (entities), facts about them (attributes) and how they connect (relationships).',
+    'Cardinality and participation decide where foreign keys, junction tables and NOT NULL constraints go.',
+    'A weak entity has no key of its own; its key includes its owner\'s key.',
+    'Mapping an ER model to tables is mechanical, so settle the model before writing CREATE TABLE.',
+  ],
   body: `## Start from the things, not the tables
 
 Before choosing tables and columns, decide what the system needs to remember and how those things relate. A **data model** is that description. Getting it right early is cheap; fixing it after a year of production data means migrations, backfills and broken reports.
@@ -23,6 +30,9 @@ ER diagrams distinguish attributes that will matter when you design tables:
 - **Single-valued** vs **multi-valued** (a member with several phone numbers). Multi-valued attributes usually become their own table.
 - **Derived** attributes can be computed from others (\`age\` from \`date_of_birth\`), so they are often not stored at all.
 
+> [!GOTCHA]
+> Storing a multi-valued attribute as a comma-separated string, such as \`phones = '555-1234, 555-9876'\`, looks fine until you need to find who owns one number or remove just one. Every query then needs string parsing, and nothing can enforce uniqueness. Give each value its own row in a child table.
+
 ## Cardinality and participation
 
 Each relationship has a **cardinality**:
@@ -32,6 +42,9 @@ Each relationship has a **cardinality**:
 - **Many-to-many**: a member borrows many books over time, and each book is borrowed by many members.
 
 **Participation** says whether every instance must take part. Every \`Loan\` must have a member (total participation), but a member need not have any loans (partial). These rules become \`NOT NULL\` constraints and foreign keys later, so ask about them when gathering requirements.
+
+> [!KEY] Cardinality decides the tables
+> Ask "one or many?" in both directions for every relationship. One-to-many puts a foreign key on the many side. Many-to-many needs a junction table. Most schema mistakes start with a cardinality nobody asked about.
 
 ## Weak entities
 
@@ -52,9 +65,19 @@ The mapping is mechanical, which is the point of the exercise:
 
 Notice that \`Loan\` started as a relationship and turned into an entity once it gained its own attributes and lifecycle. That happens often, and it is a good sign your model is capturing something real.
 
+> [!TRY] Where does the due date live?
+> Members borrow books, and each loan has a due date. Which table holds \`due_at\`: member, book or loan?
+>
+> ---
+>
+> The loan table. A due date describes one pairing of a member and a copy, not the member alone or the book alone, so it sits next to both keys in the junction table.
+
 ## In interviews
 
-Database design questions start exactly here: list the entities, mark keys, draw relationships with cardinalities, and only then write \`CREATE TABLE\`. Saying the cardinalities out loud ("one member, many loans") shows you are designing from the domain, not guessing at columns.`,
+Database design questions start exactly here: list the entities, mark keys, draw relationships with cardinalities, and only then write \`CREATE TABLE\`. Saying the cardinalities out loud ("one member, many loans") shows you are designing from the domain, not guessing at columns.
+
+> [!INTERVIEW] Say each cardinality aloud
+> State each relationship as a sentence ("one member, many loans") and ask about participation before you draw anything. The interviewer is listening for questions about requirements, and for you noticing when a relationship with its own attributes becomes a table.`,
   quiz: [
     { id: 'er-1', prompt: 'In an ER model, what is an entity?', options: ['A thing the system stores data about, such as Member or Book', 'A SQL query', 'An index on a column', 'A transaction log'], answer: 0, why: 'Entities are the nouns of the domain; attributes describe them and relationships connect them.' },
     { id: 'er-2', prompt: 'Members borrow many books and each book is borrowed by many members over time. How is this stored in tables?', options: ['A foreign key on books', 'A junction table holding both keys', 'A foreign key on members', 'A comma-separated list column'], answer: 1, why: 'Many-to-many relationships need a junction (associative) table with one row per pairing.' },
