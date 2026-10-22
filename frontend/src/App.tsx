@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { MotionProvider } from '@/components/MotionProvider'
-import { SettingsButton } from '@/components/settings/SettingsButton'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Landing from '@/pages/Landing'
@@ -34,7 +33,6 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
-      <SettingsButton />
       <Toaster position="bottom-right" />
     </TooltipProvider>
     </MotionProvider>

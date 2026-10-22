@@ -146,6 +146,12 @@ describe('Workspace', () => {
     expect(screen.getByTestId('starter-groups').className).toMatch(/lg:grid-cols-3/)
   })
 
+  it('settingsFollowsThemeInTabOrder', () => {
+    renderAt('/app')
+    const names = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? b.textContent)
+    expect(names.indexOf('Settings')).toBe(names.indexOf('Theme') + 1)
+  })
+
   it('hasLandmarksAndSkipLink', () => {
     renderAt('/app')
     expect(screen.getByRole('main')).toBeInTheDocument()

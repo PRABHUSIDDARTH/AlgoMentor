@@ -3,6 +3,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router'
 import GooeyNav from '@/components/bits/GooeyNav'
 import { Logo } from '@/components/Logo'
+import { SettingsButton } from '@/components/settings/SettingsButton'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -78,6 +79,8 @@ export function Nav() {
             </div>
           </SheetContent>
         </Sheet>
+        {/* Fixed top-right on screen; placed last so it follows the nav in keyboard order. */}
+        <SettingsButton />
       </div>
     </header>
   )

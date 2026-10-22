@@ -1,6 +1,7 @@
 import { Menu, Search } from 'lucide-react'
 import { NavLink } from 'react-router'
 import { Logo } from '@/components/Logo'
+import { SettingsButton } from '@/components/settings/SettingsButton'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/button'
 
@@ -46,6 +47,8 @@ export function AppNav({ onJump, onMenu }: Props) {
           <Search className="size-4" aria-hidden="true" />
         </Button>}
         <ThemeToggle className="text-on-band hover:text-on-band" />
+        {/* Fixed top-right on screen; placed here so it follows Theme in keyboard order. */}
+        <SettingsButton />
       </nav>
     </header>
   )

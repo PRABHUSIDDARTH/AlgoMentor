@@ -2,7 +2,7 @@ import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import { SettingsSheet } from './SettingsSheet'
 
-/** The one global Settings control, fixed top-right on every page (navbars reserve room for it). */
+/** The Settings control: fixed top-right on every page, rendered as the last item of each navbar (which reserves room for it). */
 export function SettingsButton() {
   const [open, setOpen] = useState(false)
   return (

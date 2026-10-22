@@ -114,6 +114,14 @@ describe('Landing', () => {
     expect(document.body.innerHTML).not.toMatch(/max-w-\[1180px\]/)
   })
 
+  it('settingsIsInTheNavAfterTheme', () => {
+    renderLanding()
+    const banner = screen.getByRole('banner')
+    const names = within(banner).getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? b.textContent)
+    expect(names).toContain('Settings')
+    expect(names.indexOf('Settings')).toBeGreaterThan(names.indexOf('Theme'))
+  })
+
   it('headlineIsReadableAsOneSentence', () => {
     renderLanding()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Understand the problem before you see the answer.')
