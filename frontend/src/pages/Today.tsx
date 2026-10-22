@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { PROBLEMS, STAGES } from '@/content/roadmap'
 import { buildPlan, getDay, last14, loadDays, localDateKey, markItem, streak, type Day, type DailyItem } from '@/practice/daily'
 import { loadProgress, loadUnlocks, PROGRESS_EVENT, recordReviewFailed, recordSolve } from '@/practice/progress'
+import { solveHref } from '@/practice/roadmapView'
 import { useSettings } from '@/practice/useSettings'
 
 const PATTERNS = new Map(STAGES.flatMap((s) => s.patterns.map((p) => [p.id, { p, s }] as const)))
@@ -117,7 +118,7 @@ export default function Today() {
               <p className="text-[15px] font-semibold">{refresher.p.title}</p>
               <p className="max-w-[70ch] text-[13.5px] leading-relaxed text-ink-muted">{refresher.p.idea}</p>
               <div className="flex flex-wrap items-center gap-4 text-[13px]">
-                <Link to={`/app?q=${refresher.p.problems[0].slug}&from=${refresher.p.problems[0].id}`} className="underline underline-offset-[3px]">Open a problem</Link>
+                <Link to={solveHref(refresher.p.problems[0])} className="underline underline-offset-[3px]">Open a problem</Link>
                 <label className="flex items-center gap-2">
                   <input type="checkbox" checked={day.completedIds.includes(groups.refresher.id)} onChange={(e) => toggle(groups.refresher!, e.target.checked)} className="size-4 accent-[var(--sage)]" />
                   Refreshed

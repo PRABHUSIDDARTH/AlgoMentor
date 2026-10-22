@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import { afterEach, describe, expect, it } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { STAGES } from '@/content/roadmap'
+import { looksLikeProblemRef } from '@/lib/api'
 import { loadProgress, recordSolve } from '@/practice/progress'
 import { saveSettings, saveStats } from '@/practice/store'
 import Roadmap from './Roadmap'
@@ -82,7 +83,9 @@ describe('Roadmap', () => {
     renderAt(`/roadmap/${first.id}`)
     const q = first.patterns[0].problems[0]
     await userEvent.click(screen.getByRole('link', { name: `Solve ${q.title}` }))
-    expect(screen.getByTestId('at')).toHaveTextContent(`/app?q=${q.slug}&from=${q.id}`)
+    // q must be something the workspace recognises as a LeetCode problem (a URL), not a bare slug.
+    expect(screen.getByTestId('at')).toHaveTextContent(`/app?q=${encodeURIComponent(q.url)}&from=${q.id}`)
+    expect(looksLikeProblemRef(q.url)).toBe(true)
   })
 
   it('tickingAProblemUpdatesProgress', async () => {

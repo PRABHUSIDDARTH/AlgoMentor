@@ -67,6 +67,16 @@ export function recordSolve(id: string, { hintsUsed, now = Date.now() }: { hints
   save(progress, [id])
 }
 
+/** Brings a solved problem's next review forward to `at` (never later than already scheduled). */
+export function scheduleReview(id: string, at: number): void {
+  const progress = loadProgress()
+  const current = progress[id]
+  if (!current || current.status !== 'solved') return
+  if (current.nextReviewAt !== null && current.nextReviewAt <= at) return
+  progress[id] = { ...current, nextReviewAt: at, reviewStep: Math.min(current.reviewStep, MASTERED_STEP - 1), known: undefined }
+  save(progress, [id])
+}
+
 /** Un-ticks a problem (e.g. ticked by mistake on the roadmap). */
 export function clearProblem(id: string): void {
   const progress = loadProgress()

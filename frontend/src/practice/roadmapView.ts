@@ -1,4 +1,4 @@
-import { STAGES } from '@/content/roadmap'
+import { STAGES, type RoadmapProblem } from '@/content/roadmap'
 import { TARGET_WEIGHTS } from '@/content/targets'
 import type { LeetCodeProfile } from '@/lib/api'
 import { isUnlocked, stageCompletion, type Progress } from './progress'
@@ -20,4 +20,9 @@ export function tagSolves(stageId: string, profile?: LeetCodeProfile): number {
   const stage = STAGES.find((s) => s.id === stageId)
   if (!stage || !profile) return 0
   return profile.topics.filter((t) => stage.leetcodeTags.includes(t.tag)).reduce((n, t) => n + t.solved, 0)
+}
+
+/** Workspace link for a roadmap problem: its LeetCode URL (which the workspace imports) plus its roadmap id. */
+export function solveHref(problem: Pick<RoadmapProblem, 'url' | 'id'>): string {
+  return `/app?q=${encodeURIComponent(problem.url)}&from=${encodeURIComponent(problem.id)}`
 }

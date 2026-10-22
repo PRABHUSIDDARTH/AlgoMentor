@@ -1,5 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import { Link } from 'react-router'
+import { solveHref } from '@/practice/roadmapView'
 import { DifficultyMarker } from '@/components/workspace/Difficulty'
 import type { RoadmapProblem } from '@/content/roadmap'
 import { clearProblem, recordSolve, type ProblemProgress } from '@/practice/progress'
@@ -27,7 +28,7 @@ export function ProblemRow({ problem, progress }: { problem: RoadmapProblem; pro
         <ExternalLink className="size-3.5" aria-hidden="true" />
       </a>
       <Link
-        to={`/app?q=${encodeURIComponent(problem.slug)}&from=${encodeURIComponent(problem.id)}`}
+        to={solveHref(problem)}
         aria-label={`Solve ${problem.title}`}
         className="rounded-md border border-ink px-2.5 py-1 text-[12px] font-medium hover:bg-ink hover:text-cream"
       >

@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { solveHref } from '@/practice/roadmapView'
 import { DifficultyMarker } from '@/components/workspace/Difficulty'
 import { STAGE_BY_ID } from '@/content/roadmap'
 import type { Progress } from '@/practice/progress'
@@ -20,7 +21,7 @@ export function UpNext({ stageId, progress }: { stageId: string; progress: Progr
           {next.map((q) => (
             <li key={q.id} className="flex items-center gap-2">
               <span className="min-w-0 flex-1 text-[13px] leading-snug">{q.title}<span className="block font-mono text-[10.5px] text-ink-muted"><DifficultyMarker difficulty={q.difficulty} />{q.difficulty}</span></span>
-              <Link to={`/app?q=${encodeURIComponent(q.slug)}&from=${encodeURIComponent(q.id)}`} aria-label={`Solve ${q.title}`} className="rounded-md border border-ink px-2.5 py-1 text-[12px] font-medium hover:bg-ink hover:text-cream">Solve</Link>
+              <Link to={solveHref(q)} aria-label={`Solve ${q.title}`} className="rounded-md border border-ink px-2.5 py-1 text-[12px] font-medium hover:bg-ink hover:text-cream">Solve</Link>
             </li>
           ))}
         </ul>
