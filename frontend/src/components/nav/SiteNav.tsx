@@ -1,15 +1,15 @@
 import { Menu, Search } from 'lucide-react'
-import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
-import GooeyNav, { type GooeyNavItem } from '@/components/bits/GooeyNav'
+import type { GooeyNavItem } from '@/components/bits/GooeyNav'
 import { Logo } from '@/components/Logo'
 import { SettingsButton } from '@/components/settings/SettingsButton'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { useActiveSection } from '@/hooks/useActiveSection'
-import { useResolvedTheme } from '@/lib/useTheme'
 import { cn } from '@/lib/utils'
 import { SECTIONS, sectionFor } from '@/nav/sections'
+import { Gooey } from './Gooey'
 import { MobileMenu } from './MobileMenu'
 import { SectionTabs } from './SectionTabs'
 
@@ -33,48 +33,26 @@ const LANDING_ITEMS: GooeyNavItem[] = LANDING_LINKS.map((l) => ({ label: l.label
 const PAGE_LINKS = LANDING_LINKS.map((l) => ({ label: l.label, href: `#${l.id}` }))
 const SECTION_ITEMS: GooeyNavItem[] = SECTIONS.map((s) => ({ label: s.label, href: s.to }))
 
-// GooeyNav draws its blob on a canvas, so it needs literal colours rather than CSS variables.
-const BLOB = { light: { pill: '#8B9A6E', ink: '#262C1E' }, dark: { pill: '#8B9A6E', ink: '#0E100B' } }
-
-function Gooey({ items, activeIndex, label, onItemClick }: { items: GooeyNavItem[]; activeIndex: number; label: string; onItemClick?: (item: GooeyNavItem, e: MouseEvent) => void }) {
-  const theme = useResolvedTheme()
-  // GooeyNav sets its own display, so the responsive hiding lives on a wrapper.
-  return (
-    <div className="hidden md:block">
-      <GooeyNav
-        aria-label={label}
-        items={items}
-        activeIndex={activeIndex}
-        onItemClick={onItemClick}
-        theme={theme}
-        color={BLOB[theme].pill}
-        activeTextColor={BLOB[theme].ink}
-        colors={['#8B9A6E', '#A8B68A', '#56613F']}
-        frame={false}
-        size="sm"
-        particleCount={10}
-        style={{ '--gn-ink': 'var(--ink)', '--gn-muted': 'var(--ink-muted)' } as CSSProperties}
-      />
-    </div>
-  )
-}
-
 function SectionLinks() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const index = Math.max(0, SECTIONS.findIndex((s) => s.id === sectionFor(pathname)))
   return (
     <Gooey
+      className="hidden md:block"
       label="Sections"
       items={SECTION_ITEMS}
       activeIndex={index}
+      size="md"
+      frame
+      particleCount={15}
       onItemClick={(item, e) => { e.preventDefault(); if (item.href) navigate(item.href) }}
     />
   )
 }
 
 function LandingLinks() {
-  return <Gooey label="Page" items={LANDING_ITEMS} activeIndex={useActiveSection(LANDING_IDS)} />
+  return <Gooey className="hidden md:block" label="Page" items={LANDING_ITEMS} activeIndex={useActiveSection(LANDING_IDS)} size="md" frame particleCount={15} />
 }
 
 /** The navbar for every page: logo, sections (GooeyNav), search, theme and settings, with the section's pages beneath. */
