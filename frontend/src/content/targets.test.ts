@@ -53,6 +53,11 @@ describe('targets', () => {
     expect(weightsFor({ company: 'service', role: 'sde1', employer: 'meta' })).toEqual(TARGET_WEIGHTS.service)
   })
 
+  it('aDirectoryCompanyWithoutAVerifiedProcessUsesTheTierWeights', () => {
+    expect(weightsFor({ company: 'product', role: 'sde1', employer: 'flipkart' })).toEqual(TARGET_WEIGHTS.product)
+    expect(targetName({ company: 'product', role: 'sde1', employer: 'flipkart' })).toBe('Flipkart')
+  })
+
   it('targetNameUsesTheEmployerOtherwiseTheTier', () => {
     expect(targetName({ company: 'maang', role: 'sde1' })).toBe('MAANG')
     expect(targetName({ company: 'maang', role: 'sde1', employer: 'meta' })).toBe('Meta')

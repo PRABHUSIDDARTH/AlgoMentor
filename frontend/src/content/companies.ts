@@ -1,4 +1,5 @@
 import type { Target, Tier } from '@/practice/store'
+import { directoryEntry, type DirectoryEntry } from './directory'
 import type { StageGroupId, Weight } from './stageGroups'
 
 export type Round = { name: string; detail: string }
@@ -262,8 +263,16 @@ const BY_ID = new Map(COMPANIES.map((c) => [c.id, c]))
 export const companyById = (id: string): CompanyProfile | undefined => BY_ID.get(id)
 export const companiesByTier = (tier: Tier): CompanyProfile[] => COMPANIES.filter((c) => c.tier === tier)
 
+/** A directory company, with its hiring process when that has been checked against the company's own pages. */
+export type Employer = DirectoryEntry & { profile?: CompanyProfile }
+
+export function employerById(id: string): Employer | undefined {
+  const entry = directoryEntry(id)
+  return entry && { ...entry, profile: BY_ID.get(id) }
+}
+
 /** The chosen employer, only when it belongs to the chosen tier (so changing tier never leaves a stale employer in force). */
-export function employerFor(target: Target): CompanyProfile | undefined {
-  const c = target.employer ? BY_ID.get(target.employer) : undefined
-  return c && c.tier === target.company ? c : undefined
+export function employerFor(target: Target): Employer | undefined {
+  const e = target.employer ? employerById(target.employer) : undefined
+  return e && e.tier === target.company ? e : undefined
 }

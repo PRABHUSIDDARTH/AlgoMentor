@@ -50,4 +50,11 @@ describe('company dataset', () => {
     expect(employerFor({ company: 'service', role: 'sde1', employer: 'meta' })).toBeUndefined()
     expect(employerFor({ company: 'maang', role: 'sde1' })).toBeUndefined()
   })
+
+  it('employerForAlsoFindsDirectoryCompaniesWithoutAVerifiedProcess', () => {
+    const flipkart = employerFor({ company: 'product', role: 'sde1', employer: 'flipkart' })
+    expect(flipkart?.name).toBe('Flipkart')
+    expect(flipkart?.profile).toBeUndefined()
+    expect(employerFor({ company: 'maang', role: 'sde1', employer: 'meta' })?.profile?.rounds.length).toBeGreaterThan(0)
+  })
 })

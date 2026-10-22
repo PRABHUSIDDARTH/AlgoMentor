@@ -16,7 +16,7 @@ export const TARGET_WEIGHTS: Record<Tier, Record<string, Weight>> = {
 /** Stage weights for a target: the tier's, with the chosen employer's own emphasis laid over them. */
 export function weightsFor(target: Target): Record<string, Weight> {
   const base = TARGET_WEIGHTS[target.company]
-  const emphasis = employerFor(target)?.emphasis
+  const emphasis = employerFor(target)?.profile?.emphasis
   if (!emphasis) return base
   const out = { ...base }
   for (const g of STAGE_GROUPS) {
