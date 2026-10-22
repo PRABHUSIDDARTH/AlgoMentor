@@ -56,7 +56,8 @@ export function CodeBlock({ code, lang, languages, activeLanguage, onLanguage, l
             {Array.from({ length: lines }, (_, i) => i + 1).join('\n')}
           </pre>
         )}
-        <pre className={cn('min-w-0 flex-1 pr-4', wrap ? 'pl-4 break-words whitespace-pre-wrap' : 'overflow-x-auto')}>
+        {/* A scrollable region must be reachable by keyboard, so long lines can be scrolled without a mouse. */}
+        <pre tabIndex={wrap ? undefined : 0} className={cn('min-w-0 flex-1 pr-4', wrap ? 'pl-4 break-words whitespace-pre-wrap' : 'overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-sage')}>
           <code dangerouslySetInnerHTML={{ __html: html }} />
         </pre>
       </div>

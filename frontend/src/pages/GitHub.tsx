@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
+import { PageHeader } from '@/components/PageHeader'
 import { GIT_CHALLENGES } from '@/content/learn/git-challenges'
 import { passedChallenges } from '@/learn/repos'
 import { useGit } from '@/learn/useGit'
@@ -21,14 +21,11 @@ export default function GitHub() {
   return (
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-7 px-6 py-8 sm:px-10 lg:px-14 xl:px-20">
-        <header className="grid gap-2">
-          <p className="eyebrow">Git</p>
-          <h1 className="display text-[32px] leading-tight xl:text-[38px]">Fix real Git problems in your own repository.</h1>
-          <p className="max-w-[72ch] text-[14px] leading-relaxed text-ink-muted">
-            These are your commits in your repository, so there is no AI on these pages: you read the brief, use Git yourself, and the check only looks at what is on GitHub.
-          </p>
-        </header>
-        <LearnNav />
+        <PageHeader
+          eyebrow="Git"
+          title="Fix real Git problems in your own repository."
+          summary="These are your commits in your repository, so there is no AI on these pages: you read the brief, use Git yourself, and the check only looks at what is on GitHub."
+        />
         <div className="grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
           <section aria-labelledby="git-list" className="grid content-start gap-3">
             <div className="flex flex-wrap items-baseline gap-3">

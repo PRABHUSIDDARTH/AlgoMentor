@@ -31,9 +31,13 @@ An AI assistant that explains DSA problems, gives hints, and provides optimal so
 - 🧪 **Generate test**: 10 mixed problems (revision + new) matched to your level, timed, with a report
 - 📈 **Level & readiness**: levels 1-10 and readiness % for your target, with the three things to do next
 
+### Navigation
+One navbar (React Bits GooeyNav) on every page, with four sections and the section's pages underneath:
+**Practice** (Workspace, Roadmap, Today, Tests), **Learn** (Overview, one tab per track, Projects), **Git** (Challenges, Repo health) and **Progress** (DSA level, Core CS level, Resume projects). On phones the same structure opens as a menu.
+
 ### Learning hub
-- 📚 **Learn**: three tracks of original lessons, **OOP, Computer Networks and DBMS**, 10 modules each, with diagrams, Java/Python/C++ samples (OOP), a 5-question quiz per module and interview questions. A module completes at 4 of 5 on its quiz, then comes back on Today as a 3-question re-quiz after 1, 3, 7, 21 and 60 days
-- 🛠️ **Projects**: nine specs (three per track, beginner to advanced) with requirements, stretch goals and an acceptance checklist. Link your public GitHub repo and AlgoMentor checks each project's Git milestones
+- 📚 **Learn**: four tracks of original lessons, **OOP, Computer Networks, DBMS and Operating Systems**, 10 modules each, with diagrams, Java/Python/C++ samples (OOP), a 5-question quiz per module and interview questions. A module completes at 4 of 5 on its quiz, then comes back on Today as a 3-question re-quiz after 1, 3, 7, 21 and 60 days
+- 🛠️ **Projects**: twelve specs (three per track, beginner to advanced) with requirements, stretch goals and an acceptance checklist. Link your public GitHub repo and AlgoMentor checks each project's Git milestones
 - 🔀 **Git challenges**: ten real situations in *your own* repository: first commit, meaningful commits, feature PR, merge conflict, squash, revert, recover a deleted branch, cherry-pick, release, remove a committed secret. Setup scripts (bash and PowerShell) put your clone into the situation, you fix it with Git, and the check reads your repo on GitHub. **There is no AI on the Git pages**
 - 📄 **Resume projects**: twelve projects that get shortlisted, filtered by target and role, each with a resume-bullet template and a "make your GitHub shine" checklist checked against your repo
 - 🎯 **Core CS readiness**: modules, quizzes, projects and Git challenges score out of 100 against your target's bar (FAANG/product 70, startup 60, service 75). Today shows the lower of your DSA and Core CS readiness

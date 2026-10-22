@@ -99,13 +99,13 @@ describe('Today page', () => {
 
   it('todayShowsLowerReadiness', () => {
     allSolved()
-    localStorage.setItem(LEARN_KEY, JSON.stringify(modules([0]))) // core readiness 33%
+    localStorage.setItem(LEARN_KEY, JSON.stringify(modules([0]))) // core readiness 25%
     renderToday()
     const sub = screen.getByText(/^DSA \d+% · Core CS \d+%$/)
     const [, dsa, core] = /DSA (\d+)% · Core CS (\d+)%/.exec(sub.textContent ?? '')!.map(Number)
-    expect(core).toBe(33)
-    expect(dsa).toBeGreaterThan(33)
-    expect(screen.getByRole('meter', { name: 'Readiness for FAANG / product SDE-1' })).toHaveAttribute('aria-valuenow', '33')
+    expect(core).toBe(25)
+    expect(dsa).toBeGreaterThan(25)
+    expect(screen.getByRole('meter', { name: 'Readiness for FAANG / product SDE-1' })).toHaveAttribute('aria-valuenow', '25')
     expect(screen.getByText(/The lower one counts/)).toBeInTheDocument()
   })
 

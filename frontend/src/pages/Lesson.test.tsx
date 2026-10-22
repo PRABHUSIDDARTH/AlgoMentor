@@ -126,12 +126,12 @@ describe('Learn hub', () => {
     localStorage.setItem('algomentor.learn.v1', JSON.stringify({ [first.id]: { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: null } }))
     renderAt('/learn')
     const tracks = screen.getByRole('list', { name: 'Tracks' })
-    expect(within(tracks).getAllByRole('listitem')).toHaveLength(3)
+    expect(within(tracks).getAllByRole('listitem')).toHaveLength(TRACKS.length)
     for (const t of TRACKS) expect(within(tracks).getByRole('heading', { name: t.title })).toBeInTheDocument()
     expect(within(tracks).getByText(`1 of ${oop.modules.length} modules`)).toBeInTheDocument()
     expect(within(tracks).getByRole('link', { name: `Continue ${oop.title}` })).toHaveAttribute('href', `/learn/oop/${oop.modules[1].id}`)
-    const nav = screen.getByRole('navigation', { name: 'Learn' })
-    for (const name of ['OOP', 'Networks', 'DBMS', 'Git', 'Resume projects']) expect(within(nav).getByRole('link', { name })).toBeInTheDocument()
+    const nav = screen.getByRole('navigation', { name: 'Learn pages' })
+    for (const name of ['OOP', 'Networks', 'DBMS', 'Projects']) expect(within(nav).getByRole('link', { name })).toBeInTheDocument()
   })
 
   it('trackPageListsModulesInOrder', () => {

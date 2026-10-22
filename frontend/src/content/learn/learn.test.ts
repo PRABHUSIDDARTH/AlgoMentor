@@ -8,10 +8,15 @@ import { TRACKS } from '.'
 const SPEC_ORDER: Record<string, string[]> = {
   oop: ['classes-objects', 'encapsulation', 'inheritance', 'polymorphism', 'abstraction-interfaces', 'solid', 'composition', 'design-patterns', 'uml', 'oop-interviews'],
   cn: ['network-models', 'physical-data-link', 'ip-subnetting', 'routing', 'tcp-udp', 'dns', 'http-tls', 'sockets', 'cdn-lb-nat', 'type-a-url'],
+  os: ['os-basics', 'processes', 'threads', 'cpu-scheduling', 'synchronization', 'deadlocks', 'memory-management', 'virtual-memory', 'file-systems', 'ipc-and-io'],
   dbms: ['er-models', 'relational-keys', 'sql-basics', 'joins-subqueries', 'normalisation', 'transactions-acid', 'concurrency-isolation', 'indexing', 'query-optimisation', 'nosql-cap'],
 }
 
 const words = (md: string) => md.replace(/```[\s\S]*?```/g, ' ').split(/\s+/).filter((w) => /[A-Za-z0-9]/.test(w)).length
+
+it('hasFourTracks', () => {
+  expect(TRACKS.map((t) => t.id)).toEqual(['oop', 'cn', 'dbms', 'os'])
+})
 
 describe.each(TRACKS.map((t) => [t.id, t] as const))('%s content', (id, track) => {
   it('tenModulesInSpecOrder', () => {

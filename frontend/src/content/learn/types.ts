@@ -1,4 +1,4 @@
-export type TrackId = 'oop' | 'cn' | 'dbms'
+export type TrackId = 'oop' | 'cn' | 'dbms' | 'os'
 
 export type QuizQuestion = { id: string; prompt: string; options: string[]; answer: number; why: string }
 

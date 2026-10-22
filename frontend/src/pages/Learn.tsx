@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
+import { PageHeader } from '@/components/PageHeader'
 import { TrackCard } from '@/components/learn/TrackCard'
 import { TRACKS } from '@/content/learn'
 import { useLearn } from '@/learn/useLearn'
@@ -10,15 +10,12 @@ export default function Learn() {
   return (
     <AppShell>
       <div className="grid content-start gap-7 px-6 py-8 sm:px-10 lg:px-14 xl:px-20">
-        <header className="grid gap-2">
-          <p className="eyebrow">Learn</p>
-          <h1 className="display text-[32px] leading-tight xl:text-[38px]">The core CS interviews ask about.</h1>
-          <p className="max-w-[72ch] text-[14px] leading-relaxed text-ink-muted">
-            Three tracks of short lessons with a quiz each. Pass a quiz and the module comes back for a quick re-quiz after 1, 3, 7, 21 and 60 days.
-          </p>
-        </header>
-        <LearnNav />
-        <ul aria-label="Tracks" className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <PageHeader
+          eyebrow="Learn"
+          title="The core CS interviews ask about."
+          summary="Short lessons with a quiz each. Pass a quiz and the module comes back for a quick re-quiz after 1, 3, 7, 21 and 60 days."
+        />
+        <ul aria-label="Tracks" className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {TRACKS.map((t) => <TrackCard key={t.id} track={t} progress={progress} />)}
         </ul>
         <section aria-labelledby="learn-build" className="grid gap-3">
