@@ -1,8 +1,14 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
+const ROUTES = [
+  '/', '/app', '/app?q=1', '/roadmap', '/roadmap/arrays', '/today', '/level',
+  '/learn', '/learn/oop', '/learn/oop/classes-objects', '/learn/cn/tcp-udp', '/learn/dbms/indexing',
+  '/projects/library-manager', '/git', '/git/merge-conflict', '/resume',
+]
+
 for (const colorScheme of ['light', 'dark'] as const) {
-  for (const path of ['/', '/app', '/app?q=1', '/roadmap', '/roadmap/arrays', '/today', '/level']) {
+  for (const path of ROUTES) {
     test(`no serious or critical axe violations on ${path} (${colorScheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' })
       await page.goto(path)

@@ -72,10 +72,10 @@ test('the level page shows a level, readiness and three next steps', async ({ pa
   await page.goto('/level')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Level \d+$/)
   await expect(page.getByRole('meter', { name: /Readiness for/ })).toBeVisible()
-  await expect(page.getByRole('list', { name: 'What to do next' }).getByRole('listitem')).toHaveCount(3)
+  await expect(page.getByRole('list', { name: 'What to do next', exact: true }).getByRole('listitem')).toHaveCount(3)
 })
 
-for (const path of ['/', '/app', '/roadmap', '/today', '/level']) {
+for (const path of ['/', '/app', '/roadmap', '/today', '/level', '/learn', '/git', '/resume']) {
   test(`the Settings gear is reachable and clear of the nav on ${path}`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto(path)
