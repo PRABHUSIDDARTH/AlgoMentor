@@ -43,6 +43,17 @@ export function cardData(settings: ProfileSettings, parts: { dsa: number; core: 
   }
 }
 
+/** One honest, encouraging line for how far along the learner is. */
+export function motivation(readiness: number, company: string): string {
+  if (readiness <= 0) return 'Day one. The first solved problem is the hardest one, and it is the one that starts the number moving.'
+  if (readiness < 20) return `You have started, and that already puts you ahead of everyone still planning. Keep the streak going toward ${company}.`
+  if (readiness < 45) return 'The foundations are going in. This is the stretch where it feels slow and is not, so keep showing up.'
+  if (readiness < 70) return `More than halfway to what ${company} looks for. Mix in timed practice and mock interviews now.`
+  if (readiness < 90) return 'You are close. Tighten the weak spots, rehearse out loud, and start lining up the application.'
+  if (readiness < 100) return `Almost there. What is left is polish: a test run, your stories, and the application to ${company}.`
+  return `You have cleared every gap AlgoMentor can measure for ${company}. Apply, and keep one problem a day going until you hear back.`
+}
+
 const article = (word: string) => (/^[AEIOU]|^SDE|^S[A-Z]/.test(word) && !/^Senior/.test(word) ? 'an' : 'a')
 
 /** The post text: a goal and the progress toward it, never a claim to work there. */

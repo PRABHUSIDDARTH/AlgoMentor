@@ -50,8 +50,8 @@ export function DreamLanyard({ card, steps }: { card: DreamCard; steps: string[]
             cardColor="#F7F2EB"
             finish="glossy"
             metal="silver"
-            size={0.74}
-            strapLength={0.42}
+            size={0.6}
+            strapLength={0.32}
             strapWidth={0.8}
             className="absolute inset-0"
           />

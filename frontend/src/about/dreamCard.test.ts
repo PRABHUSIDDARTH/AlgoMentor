@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_SETTINGS } from '@/practice/store'
-import { cardData, linkedInShareUrl, shareText } from './dreamCard'
+import { cardData, linkedInShareUrl, motivation, shareText } from './dreamCard'
 
 const settings = { ...DEFAULT_SETTINGS, name: 'Ana Gomez', leetcode: 'ana', github: 'anagomez', linkedin: 'ana-gomez', target: { company: 'maang' as const, role: 'sde1' as const, employer: 'meta', focus: 'backend' as const } }
 
@@ -43,5 +43,15 @@ describe('sharing', () => {
     expect(url.pathname).toBe('/feed/')
     expect(url.searchParams.get('shareActive')).toBe('true')
     expect(url.searchParams.get('text')).toBe('Hello & welcome')
+  })
+})
+
+describe('motivation', () => {
+  it('encouragesAtEveryStageWithoutPromisingAnOffer', () => {
+    const lines = [0, 9, 30, 55, 80, 95, 100].map((n) => motivation(n, 'Meta'))
+    expect(new Set(lines).size).toBe(lines.length)
+    expect(motivation(0, 'Meta')).toMatch(/Day one/)
+    expect(motivation(100, 'Meta')).toContain('Meta')
+    for (const l of lines) expect(l).not.toMatch(/guarantee|will get|you will be hired/i)
   })
 })

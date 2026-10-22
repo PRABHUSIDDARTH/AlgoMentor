@@ -1,7 +1,7 @@
 import { Settings as Gear } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { cardData, linkedInShareUrl, shareImage, shareText } from '@/about/dreamCard'
+import { cardData, linkedInShareUrl, motivation, shareImage, shareText } from '@/about/dreamCard'
 import { AppShell } from '@/components/AppShell'
 import { CompanyMark } from '@/components/about/CompanyMark'
 import { DreamLanyard } from '@/components/about/DreamLanyard'
@@ -109,6 +109,7 @@ export default function About() {
                   </div>
                 </div>
                 <ReadinessMeter value={card.readiness} label={`Readiness for ${name} ${ROLE_LABEL[settings.target.role]}`} />
+                <p className="text-[14px] leading-relaxed">{motivation(card.readiness, dream.name)}</p>
                 <p className="font-mono text-[12px] text-ink-muted">DSA {card.dsa}% · Core CS {card.core}%. The lower of the two, because interviews test both.</p>
                 {dream.profile ? (
                   <Link to={`/companies/${dream.id}`} className="justify-self-start text-[13px] underline underline-offset-[3px]">How {dream.name} hires, round by round</Link>
