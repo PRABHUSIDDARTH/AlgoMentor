@@ -14,7 +14,7 @@ export function SectionTabs() {
   // A not-found page inside a section keeps the section highlighted but has no current tab.
   if (!current) return null
   return (
-    <div className="overflow-x-auto border-t border-line px-2 py-1.5 min-[420px]:px-4 sm:px-6 lg:px-10 xl:px-14">
+    <div className="overflow-x-auto border-t md:overflow-visible border-line px-2 py-1.5 min-[420px]:px-4 sm:px-6 lg:px-10 xl:px-14">
       <Gooey
         label={`${section.label} pages`}
         items={tabs.map((t) => ({ label: t.label, href: t.to }))}

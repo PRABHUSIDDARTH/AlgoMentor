@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
+import { useNavActions, useNavHost } from '@/components/nav/NavHost'
 import { SiteNav } from '@/components/nav/SiteNav'
 import { EmptyState } from '@/components/workspace/EmptyState'
 import { JumpToProblem } from '@/components/workspace/JumpToProblem'
@@ -16,6 +17,8 @@ export default function Workspace() {
   const [jumpOpen, setJumpOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const handledQuery = useRef<string | null>(null)
+  const host = useNavHost()
+  useNavActions({ onJump: () => setJumpOpen(true), onMenu: () => setMenuOpen(true) })
 
   // Reacts to ?q= changes too (e.g. the landing page or a link), not only on first load.
   const q = params.get('q')
@@ -57,12 +60,8 @@ export default function Workspace() {
 
   const problemError = session.error?.tab === 'problem' ? session.error.message : undefined
 
-  return (
-    <div data-testid="workspace-shell" className="flex min-h-dvh flex-col bg-cream md:h-dvh md:overflow-hidden">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-cream">
-        Skip to content
-      </a>
-      <SiteNav onJump={() => setJumpOpen(true)} onMenu={() => setMenuOpen(true)} />
+  const content = (
+    <>
       <div className="grid min-h-0 flex-1 min-[1200px]:grid-cols-[220px_minmax(0,1fr)]">
         {sidebar('hidden overflow-y-auto border-r border-line min-[1200px]:grid')}
         <main id="main" className="min-h-0 min-w-0 md:overflow-hidden">
@@ -94,6 +93,17 @@ export default function Workspace() {
         onPick={(e) => void session.openEntry(e)}
         onOpenRef={(ref) => void session.openProblem(ref)}
       />
+    </>
+  )
+  // The navbar and page frame come from RootLayout when there is one.
+  if (host) return content
+  return (
+    <div data-testid="workspace-shell" className="flex min-h-dvh flex-col bg-cream md:h-dvh md:overflow-hidden">
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-cream">
+        Skip to content
+      </a>
+      <SiteNav onJump={() => setJumpOpen(true)} onMenu={() => setMenuOpen(true)} />
+      {content}
     </div>
   )
 }

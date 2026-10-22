@@ -99,3 +99,34 @@ test.describe('on a phone', () => {
     })
   }
 })
+
+// The GooeyNav animates its blob and particles from the old item to the new one, which only works if the navbar
+// is not rebuilt on every page change.
+test('the navbar is the same element after navigating from the workspace to other sections', async ({ page }) => {
+  await page.goto('/app')
+  const sections = page.getByRole('navigation', { name: 'Sections' })
+  await expect(sections.locator('canvas')).toHaveCount(1)
+  await sections.evaluate((el) => { (el as HTMLElement & { __kept?: boolean }).__kept = true })
+  for (const [name, url] of [['Learn', /\/learn$/], ['Git', /\/git$/], ['Progress', /\/level$/], ['Practice', /\/app$/]] as const) {
+    await sections.getByRole('link', { name, exact: true }).click()
+    await expect(page).toHaveURL(url)
+    await expect(sections.getByRole('link', { name, exact: true })).toHaveAttribute('aria-current', 'page')
+    expect(await sections.evaluate((el) => (el as HTMLElement & { __kept?: boolean }).__kept)).toBe(true)
+  }
+})
+
+test('the tabs row does not clip the blob particles on desktop', async ({ page }) => {
+  await page.goto('/learn')
+  const tabs = page.getByRole('navigation', { name: 'Learn pages' })
+  await expect(tabs.locator('canvas')).toHaveCount(1)
+  const clipped = await tabs.evaluate((el) => {
+    for (let e = el.parentElement; e && e.tagName !== 'BODY'; e = e.parentElement) {
+      const s = getComputedStyle(e)
+      if (s.overflowX !== 'visible' || s.overflowY !== 'visible') return `${e.tagName}.${e.className}`
+      // The page frame itself only clips at the edge of the window.
+      if (e.tagName === 'HEADER') break
+    }
+    return null
+  })
+  expect(clipped).toBeNull()
+})

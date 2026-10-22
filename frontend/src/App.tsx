@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { MotionProvider } from '@/components/MotionProvider'
+import { RootLayout } from '@/components/nav/RootLayout'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Landing from '@/pages/Landing'
@@ -30,8 +31,8 @@ export default function App() {
     <ErrorBoundary>
     <MotionProvider>
     <TooltipProvider delayDuration={300}>
-      <Suspense fallback={null}>
-        <Routes>
+      <Routes>
+        <Route element={<RootLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/app/*" element={<Workspace />} />
           <Route path="/roadmap" element={<Roadmap />} />
@@ -51,8 +52,8 @@ export default function App() {
           <Route path="/git/:challengeId" element={<GitChallenge />} />
           <Route path="/resume" element={<Resume />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
+        </Route>
+      </Routes>
       <Toaster position="bottom-right" />
     </TooltipProvider>
     </MotionProvider>
