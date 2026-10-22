@@ -5,6 +5,13 @@ const lesson: Lesson = {
   id: 'os-basics',
   title: 'What an operating system does',
   minutes: 9,
+  hook: 'A program that writes its output one byte at a time can run far slower than the same program writing the whole thing at once, even though the file ends up identical. The cost sits in the doorway every program must use to reach the hardware. This lesson covers that doorway (system calls), the kernel behind it, and the interrupts that let the kernel stay in charge.',
+  keyPoints: [
+    'The kernel runs with full hardware privilege; everything else runs in user mode, where the CPU blocks privileged instructions.',
+    'A system call is the controlled doorway from user code into the kernel, and it costs far more than a function call.',
+    'Interrupts, above all the timer interrupt, are how the kernel takes control back from running programs.',
+    'Monolithic kernels trade isolation for speed; microkernels trade speed for isolation.',
+  ],
   body: `## The program between programs and hardware
 
 An **operating system** (OS) is the software that manages the computer's hardware and gives every other program a safe, simple way to use it. Without one, each program would have to drive the disk, the network card and the display itself, and two programs running together would trample each other's memory.
@@ -21,6 +28,9 @@ It does four jobs:
 The core of the OS is the **kernel**. It runs in a privileged **kernel mode** where it may execute every CPU instruction and touch any memory. Everything else, including your browser, your editor and the shell, runs in **user mode**, where privileged instructions are blocked by the hardware itself. If user code tries one, the CPU raises a trap and the kernel takes over, usually by terminating the program.
 
 This two-mode split is the foundation of protection. It is why a bug in your program crashes your program rather than the whole machine.
+
+> [!KEY] Protection comes from the hardware
+> The OS does not check each instruction a program runs. The CPU itself refuses privileged instructions in user mode, and the only ways into kernel mode are a system call or an interrupt, which jump to entry points the kernel chose.
 
 ## System calls
 
@@ -43,15 +53,28 @@ int main(void) {
 
 A system call is far more expensive than an ordinary function call, because of the mode switch and the checks. That is one reason programs buffer their output instead of writing one byte at a time.
 
+> [!TRY] One thousand putchar calls
+> A C program calls \`putchar('x')\` 1000 times in a loop, then exits. Its standard output is redirected to a file. Roughly how many \`write\` system calls does it make?
+>
+> ---
+>
+> One. The C library collects the bytes in a buffer and, because stdout is a file and not a terminal, flushes it once at exit as a single \`write\` of 1000 bytes (checked with \`strace\` on Linux with glibc). Calling \`write\` directly for each byte would cost 1000 mode switches.
+
 ## Kernel designs
 
 - A **monolithic kernel** (Linux, classic Unix) keeps the scheduler, memory manager, file systems and drivers all in kernel space. It is fast because components call each other directly, but a bug in a driver can bring everything down.
 - A **microkernel** keeps only the essentials (scheduling, memory, messaging) in the kernel and runs drivers and file systems as user-mode servers. It is more robust and modular but pays for extra message passing.
 - A **hybrid** design, as in Windows and macOS, mixes the two.
 
+> [!GOTCHA] Monolithic does not mean frozen
+> Linux is monolithic, yet it loads and unloads modules at run time. People take that to mean a loadable driver is somehow sandboxed. It is not: a module runs in kernel mode with full privilege, so a buggy driver can still crash the whole machine.
+
 ## Interrupts
 
 Hardware does not wait politely. A keyboard press, a finished disk read or a timer tick raises an **interrupt**: the CPU stops what it is doing, saves its state, runs the kernel's handler for that event and then resumes. The **timer interrupt** matters most for the OS, because it is how the kernel regains control from a program that never gives up the CPU, which makes time-sharing possible.
+
+> [!INTERVIEW] What happens on read()
+> "What happens when you call \`read\`?" is a favourite. The interviewer is listening for the trap into kernel mode, the permission and descriptor check, the page cache lookup before any disk access, the copy into your buffer and the return to user mode. Saying that every read goes to the disk is the usual slip.
 
 ## Booting in one paragraph
 

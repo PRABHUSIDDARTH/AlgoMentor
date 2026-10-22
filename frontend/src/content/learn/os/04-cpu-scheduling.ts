@@ -6,6 +6,13 @@ const lesson: Lesson = {
   title: 'CPU scheduling',
   minutes: 12,
   diagram: 'gantt-schedule',
+  hook: 'A computer has many more runnable tasks than cores, yet the cursor still follows the mouse the instant you touch it. A scheduler makes that true by choosing, many times a second, which task runs next and for how long. Different choices give very different averages, and you can work them out on paper.',
+  keyPoints: [
+    'Preemptive schedulers can take the CPU away; non-preemptive ones let a process keep it until it finishes or blocks.',
+    'Waiting time is turnaround minus burst. Draw the Gantt chart first and read completion times off it.',
+    'FCFS suffers the convoy effect, SJF minimises average waiting but can starve long jobs, and Round Robin trades response time for switch cost.',
+    'Aging and multilevel feedback queues give fairness and quick interactive response without knowing burst times.',
+  ],
   body: `## Choosing who runs next
 
 There are usually far more ready processes than CPU cores. The **scheduler** decides which one runs, and for how long. A good policy keeps the CPU busy and makes the machine feel responsive.
@@ -28,11 +35,17 @@ For each process we measure, in the same time unit:
 
 Schedulers also care about **throughput** (jobs finished per second) and **CPU utilisation**.
 
+> [!KEY] Waiting is time spent ready
+> Waiting time is turnaround minus burst: the time a process sat ready without the CPU. Time spent blocked on I/O is not part of the CPU burst, so exercises that give only bursts treat waiting as pure queue time.
+
 ## The classic algorithms
 
 **First-Come, First-Served (FCFS)** runs processes in arrival order. It is simple and fair in a narrow sense, but suffers the **convoy effect**: one long job at the front makes every short job behind it wait.
 
 **Shortest Job First (SJF)** runs the process with the smallest burst next. It gives the minimum average waiting time of all non-preemptive algorithms, but it needs to know burst times in advance (they are only predicted in practice) and it can **starve** long jobs if short ones keep arriving. The preemptive version is **Shortest Remaining Time First**.
+
+> [!GOTCHA] SJF only sees who has arrived
+> A common exam slip is to sort every job by burst up front. Non-preemptive SJF picks the shortest job among those that have already arrived, when the CPU becomes free. A short job arriving later cannot jump in, and the answer changes if you forget that.
 
 **Round Robin (RR)** gives each ready process a fixed **time quantum**, then moves it to the back of the queue. It is preemptive and good for interactive systems, since everyone gets a turn quickly. The quantum matters: too large and RR degrades into FCFS; too small and context-switch overhead dominates.
 
@@ -50,9 +63,19 @@ Three processes arrive at time 0 with bursts P1 = 6, P2 = 2, P3 = 4.
 
 Drawing the Gantt chart first, then reading the completion times off it, is the reliable way to answer these questions in an exam.
 
+> [!TRY] Round Robin with late arrivals
+> P1 arrives at 0 with burst 5, P2 at 1 with burst 3, P3 at 2 with burst 1. Round Robin, quantum 2. A process that arrives at the moment another's quantum ends joins the queue before it. What is the average waiting time?
+>
+> ---
+>
+> Gantt chart: P1 0-2, P2 2-4, P3 4-5, P1 5-7, P2 7-8, P1 8-9. Completion times are P1 9, P2 8, P3 5. Waiting is completion minus arrival minus burst: P1 4, P2 4, P3 2. The average is 10 / 3 = 3.33. Under the opposite tie rule, the order, and so the answer, can differ.
+
 ## Which one to pick?
 
-There is no best algorithm; it is a trade-off. Batch systems favour throughput and low average turnaround (SJF-like). Interactive systems favour low response time (RR, MLFQ). Real-time systems must meet deadlines, using policies such as earliest-deadline-first. Linux's default scheduler aims for fairness by tracking how much CPU time each task has received and always running the one that has had the least.`,
+There is no best algorithm; it is a trade-off. Batch systems favour throughput and low average turnaround (SJF-like). Interactive systems favour low response time (RR, MLFQ). Real-time systems must meet deadlines, using policies such as earliest-deadline-first. Linux's default scheduler aims for fairness by tracking how much CPU time each task has received and always running the one that has had the least.
+
+> [!INTERVIEW] Name the metric you optimise
+> "Which scheduler would you pick?" has no single answer. Say what you are optimising first: throughput, response time or deadlines. Then name the algorithm and its cost, such as Round Robin giving fast response at the price of switching overhead. Interviewers score the reasoning.`,
   quiz: makeQuiz('os4', 3, [
     ['Which non-preemptive algorithm gives the minimum average waiting time?', 'Shortest Job First', ['First-Come, First-Served', 'Round Robin', 'Priority without aging'], 'Running short jobs first reduces the total time other jobs spend waiting.'],
     ['What is the convoy effect?', 'Short jobs queue behind one long job under FCFS', ['A process starving forever', 'Two processes deadlocking', 'Too many context switches'], 'One long CPU-bound job at the front delays everything behind it.'],

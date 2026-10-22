@@ -6,9 +6,19 @@ const lesson: Lesson = {
   title: 'Memory management and paging',
   minutes: 12,
   diagram: 'paging',
+  hook: 'Two programs both read from address 0x1000 and get different values, and neither can see the other\'s data. The hardware makes that work by translating every address a program uses, on every access. Paging is how the translation is organised, and the TLB is what stops it from doubling the cost of each memory access.',
+  keyPoints: [
+    'Programs use logical addresses; the MMU translates them to physical addresses using tables the OS controls.',
+    'Paging cuts memory into fixed-size pages and frames, so any page fits any free frame and external fragmentation disappears.',
+    'An address is a page number plus an offset; translation replaces the page number with a frame number and keeps the offset.',
+    'The TLB caches recent translations so most accesses avoid an extra memory read to walk the page table.',
+  ],
   body: `## Why memory needs managing
 
 Many processes share one physical memory. The OS must give each its own space, stop one from touching another's, and use memory efficiently as processes start and finish. Programs are written as if they owned a clean range of addresses starting at zero. These are **logical** (virtual) addresses. The hardware turns them into **physical** addresses in RAM, using a unit called the **memory management unit** (MMU) that the OS configures.
+
+> [!KEY] Every address is translated
+> A running program never sees a physical address. It uses logical addresses, and the MMU converts each one using tables the OS fills in. That one level of indirection gives protection, sharing and freedom to place memory anywhere.
 
 ## Early approaches and their problems
 
@@ -20,6 +30,9 @@ With **contiguous allocation**, each process gets one unbroken block of memory. 
 Compaction (sliding everything together) fixes it but is expensive.
 
 **Segmentation** divides a program into logical pieces such as code, heap and stack, each with a base and a limit. It matches how programmers think, but segments have varying sizes and so external fragmentation returns.
+
+> [!INTERVIEW] Internal versus external
+> Define each with an example and say which scheme suffers which. Internal fragmentation is waste inside an allocated block, such as the end of a page. External fragmentation is free memory split into holes too small to use, which contiguous allocation and segmentation suffer. Mixing them up is the common slip.
 
 ## Paging
 
@@ -40,6 +53,13 @@ physical address = 9 * 4096 + 0xA7C = 0x9A7C
 
 For a page size of 2^k bytes, the low k bits of an address are the offset and the remaining high bits are the page number.
 
+> [!TRY] A 1 KiB page translation
+> The page size is 1024 bytes. A process uses logical address 5300, and its page table maps page 5 to frame 2. What physical address does 5300 translate to?
+>
+> ---
+>
+> 5300 = 5 x 1024 + 180, so the page number is 5 and the offset is 180. Page 5 maps to frame 2, so the physical address is 2 x 1024 + 180 = 2228. The offset never changes; only the page number is replaced.
+
 Paging has **internal fragmentation**: the last page of a process is usually only partly used, so on average about half a page is wasted per process. Smaller pages waste less, but make page tables larger.
 
 ## Protection and sharing
@@ -57,6 +77,9 @@ EAT = hit_rate * (tlb + mem) + (1 - hit_rate) * (tlb + 2 * mem)
 \`\`\`
 
 With a 1 ns TLB, 100 ns memory and a 95% hit rate, EAT is 0.95 × 101 + 0.05 × 201 = 106 ns, so the TLB makes paging only slightly slower than raw memory access.
+
+> [!GOTCHA] Stale translations after a switch
+> A TLB entry says which frame a page maps to for one process. If the TLB is not flushed or tagged on a process switch, the new process can reuse the old one's translations and reach the wrong memory. Many CPUs tag entries with an address-space id to avoid flushing, but a flush still adds cost.
 
 ## Big address spaces
 

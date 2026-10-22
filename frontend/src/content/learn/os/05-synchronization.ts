@@ -5,6 +5,13 @@ const lesson: Lesson = {
   id: 'synchronization',
   title: 'Synchronisation',
   minutes: 13,
+  hook: 'Two threads each add 1 to a shared counter 100,000 times. The answer should be 200,000, but it can come out lower, and different on every run, because `counter += 1` is really three steps and the threads interleave them. This lesson is about making those steps indivisible, and about the vocabulary for doing it.',
+  keyPoints: [
+    'A race condition is a result that depends on how threads interleave; counter += 1 is really read, add, write.',
+    'A correct critical section gives mutual exclusion, progress and bounded waiting.',
+    'A mutex protects one critical section, while a counting semaphore limits access to N identical resources.',
+    'A thread waiting on a condition variable must re-check the condition in a loop after waking.',
+  ],
   body: `## The race condition
 
 When threads or processes share data, the result can depend on the exact order their steps interleave. That is a **race condition**. The classic example is a shared counter:
@@ -19,6 +26,9 @@ def deposit():
 \`\`\`
 
 \`counter += 1\` is really **read** the value, **add** one, **write** it back. If two threads read the same value before either writes, one update is lost. Run the code with two threads and the final value is often below 200,000, and different on each run. These bugs are hard to reproduce because they depend on timing.
+
+> [!KEY] Passing tests proves nothing
+> A race exists whenever two threads can touch the same data and at least one writes. A test that passes a thousand times does not show the code is correct, only that the bad interleaving has not happened yet.
 
 ## The critical section problem
 
@@ -45,6 +55,9 @@ def deposit():
 
 Keep critical sections short: while a thread holds the lock, everyone else waits. Locking too coarsely wastes parallelism, and locking too finely invites bugs.
 
+> [!GOTCHA] Two locks, one variable
+> Guarding the same data with different locks in different functions gives no exclusion at all: each function thinks it is protected, and both run at once. Every access to the data, reads as well as writes, must take the same lock.
+
 Hardware helps. Instructions such as **test-and-set** and **compare-and-swap** are **atomic**: the CPU performs them as one indivisible step, and locks and lock-free structures are built on them. A **spinlock** busy-waits in a loop on such an instruction, which is efficient only when the wait is very short; otherwise the thread should sleep until woken.
 
 ## Semaphores
@@ -54,9 +67,19 @@ A **semaphore** is an integer with two atomic operations: **wait** (also P or do
 - A **binary semaphore** (0 or 1) works like a mutex.
 - A **counting semaphore** limits access to a pool of N identical resources, such as database connections.
 
+> [!TRY] A semaphore starting at 2
+> A counting semaphore starts at 2. Threads A, B, C and D call \`wait\` in that order, then thread E calls \`signal\`. Who is blocked at the end?
+>
+> ---
+>
+> A and B pass straight through and bring the count to 0. C and D block. E's \`signal\` wakes exactly one of them, and the other stays blocked. Which one wakes is not guaranteed by the semaphore itself, so code must not depend on it.
+
 ## Classic problems
 
 **Producer–consumer (bounded buffer).** Producers add items to a buffer of fixed size and consumers remove them. Three things are needed: a mutex around the buffer, a semaphore counting empty slots (producers wait when it is zero), and a semaphore counting full slots (consumers wait when it is zero).
+
+> [!INTERVIEW] Order of the waits matters
+> Candidates are often asked to write the bounded buffer. Wait on the empty or full semaphore before taking the mutex. A producer that takes the mutex first and then waits on a full buffer blocks every consumer from the mutex it holds, and the program deadlocks.
 
 **Readers–writers.** Many readers may read together, but a writer needs exclusive access. The design question is who is favoured, since favouring readers can starve writers.
 

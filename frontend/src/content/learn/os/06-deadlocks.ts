@@ -6,6 +6,13 @@ const lesson: Lesson = {
   title: 'Deadlocks',
   minutes: 11,
   diagram: 'deadlock-cycle',
+  hook: 'Two threads move money between the same two accounts, one from A to B and one from B to A, and each locks its source account first. It works for months. Then each holds one lock and waits for the other, and the program hangs with no error and no crash. Deadlocks are rare, silent and permanent, so the rules for preventing them matter.',
+  keyPoints: [
+    'Deadlock needs mutual exclusion, hold and wait, no preemption and circular wait all at once.',
+    'Breaking circular wait with one global lock order is the most practical form of prevention.',
+    'A safe state has some order in which every process can finish; the banker\'s algorithm grants only requests that keep the state safe.',
+    'Deadlock is permanent blocking; starvation is being passed over repeatedly while still able to run.',
+  ],
   body: `## Stuck forever
 
 A **deadlock** is a situation in which a set of processes are each waiting for a resource held by another process in the set, so none can ever proceed. A familiar picture: two cars meet on a one-lane bridge, and neither will back up.
@@ -32,6 +39,9 @@ A deadlock can occur only if **all four** hold at once:
 
 These conditions are the key to every strategy: break any one and deadlock is impossible.
 
+> [!KEY] Remove one condition
+> Deadlock needs all four conditions together, so every cure removes exactly one of them. A global lock order removes circular wait, and it is the cure used in practice because it costs almost nothing.
+
 ## Resource allocation graphs
 
 Draw processes as circles and resources as squares. An arrow from a resource to a process means the process holds it; an arrow from a process to a resource means it is requesting it. With one instance of each resource, a **cycle means deadlock**. With several instances per resource, a cycle is necessary but not sufficient.
@@ -45,9 +55,19 @@ Design the system so that one of the four conditions can never hold.
 - Break **circular wait**: give all resources a global order and require processes to acquire them in increasing order. This is the most practical rule, and it is exactly how the two-lock example above is fixed: always take \`lock_a\` before \`lock_b\`.
 - Mutual exclusion usually cannot be removed, since some resources are inherently non-shareable.
 
+> [!INTERVIEW] Two locks, one answer
+> "How do you avoid deadlock when you need two locks?" Say lock ordering first, and explain why: with a fixed order no cycle can form. Then mention \`try_lock\` with a timeout and back-off as the fallback. Listing all four Coffman conditions without a practical fix is a weaker answer.
+
 ## Strategy 2: avoidance
 
 Allow all conditions but never enter an **unsafe state**. A state is **safe** if there is some order in which every process can finish, even if each demands its maximum. The **banker's algorithm** checks this on each request: it grants the request only if the resulting state is still safe. It needs each process's maximum demand in advance, which is rarely known, so it is mostly a teaching tool.
+
+> [!TRY] Is this state safe?
+> One resource type, 12 units in total. P0 holds 5 and may need up to 10. P1 holds 2 and may need up to 4. P2 holds 2 and may need up to 9. Three units are free. Is the state safe? Then P2 asks for one more unit: should the banker's algorithm grant it?
+>
+> ---
+>
+> Safe. P1 needs 2 more and 3 are free, so it finishes and returns its 4, leaving 5. P0 needs 5 more, finishes, and leaves 10. P2 needs 7 and finishes. One safe order is P1, P0, P2. Granting P2 one more leaves 2 free, and only P1 can then finish (it needs 2), leaving 4. P0 needs 5 and P2 needs 6, so neither can. The state is unsafe, so the request waits. Unsafe does not mean deadlocked yet; it means no guarantee.
 
 ## Strategy 3: detection and recovery
 
@@ -62,7 +82,10 @@ Most general-purpose operating systems take the **ostrich approach**: deadlocks 
 - Acquire locks in a consistent global order.
 - Hold locks for as short a time as possible and never call unknown code while holding one.
 - Use a timeout when acquiring (\`try_lock\`), and back off if it fails.
-- Prefer designs that avoid sharing, such as message passing.`,
+- Prefer designs that avoid sharing, such as message passing.
+
+> [!GOTCHA] Callbacks while holding a lock
+> Calling a listener, callback or other code you do not own while holding a lock is a classic trap. That code may take its own lock in the opposite order, and no ordering rule inside your file will show it. The result is a deadlock that appears only in production.`,
   quiz: makeQuiz('os6', 5, [
     ['Which is NOT one of the four necessary conditions for deadlock?', 'Starvation', ['Mutual exclusion', 'Hold and wait', 'Circular wait'], 'The four are mutual exclusion, hold and wait, no preemption and circular wait.'],
     ['What is the most practical way to prevent deadlock between locks?', 'Acquire locks in one global order', ['Use more threads', 'Make every lock a spinlock', 'Increase the time slice'], 'A fixed order makes a circular wait impossible.'],
