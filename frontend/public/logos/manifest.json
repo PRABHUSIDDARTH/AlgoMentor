@@ -1,5 +1,25 @@
 [
   {
+    "id": "accenture",
+    "file": "accenture.svg",
+    "source": "https://www.accenture.com/en (inline asset)",
+    "page": "https://www.accenture.com/en",
+    "brandName": "Accenture",
+    "primary": "#A100FF",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "adobe",
+    "file": "adobe.svg",
+    "source": "https://www.adobe.com/federal/site-redesign/assets/adobe-logo-black.svg",
+    "page": "https://www.adobe.com/",
+    "brandName": "Adobe",
+    "primary": "#000000",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
     "id": "airbnb",
     "file": "airbnb.svg",
     "source": "https://news.airbnb.com/images/belo.svg",
@@ -7,6 +27,16 @@
     "brandName": "About us",
     "primary": "#FF385C",
     "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "amazon",
+    "file": "amazon.svg",
+    "source": "https://m.media-amazon.com/images/G/01/sell/navigation/amazon-logo-squid-menu.svg",
+    "page": "https://sell.amazon.com/",
+    "brandName": "Amazon",
+    "primary": "#161D26",
+    "kind": "wordmark",
     "fetched": "2026-10-22"
   },
   {
@@ -21,6 +51,27 @@
     "note": "light/white artwork, intended for dark backgrounds (white fill)"
   },
   {
+    "id": "anthropic",
+    "file": "anthropic.svg",
+    "source": "https://www.anthropic.com/ (inline asset)",
+    "page": "https://www.anthropic.com/",
+    "brandName": "Anthropic",
+    "primary": "#D97757",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "rebuilt from the page's animated (Lottie) inline wordmark: same letter paths, flattened to plain static paths, fill #141413"
+  },
+  {
+    "id": "apple",
+    "file": "apple.svg",
+    "source": "https://www.apple.com/ (inline asset)",
+    "page": "https://www.apple.com/",
+    "brandName": "Apple",
+    "primary": "#000000",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
     "id": "atlassian",
     "file": "atlassian.svg",
     "source": "https://wac-cdn.atlassian.com/misc-assets/adg4-nav/AtlassianHeaderLogo.svg",
@@ -29,6 +80,17 @@
     "primary": "#1868DB",
     "kind": "wordmark",
     "fetched": "2026-10-22"
+  },
+  {
+    "id": "bytedance",
+    "file": "bytedance.svg",
+    "source": "https://www.bytedance.com/ (inline asset)",
+    "page": "https://www.bytedance.com/",
+    "brandName": "ByteDance",
+    "primary": "#3C8CFF",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "white artwork, needs a dark background"
   },
   {
     "id": "canva",
@@ -48,6 +110,16 @@
     "page": "https://www.capgemini.com/",
     "brandName": "Capgemini",
     "primary": "#0058AB",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "cisco",
+    "file": "cisco.svg",
+    "source": "https://www.cisco.com/ (inline asset)",
+    "page": "https://www.cisco.com/",
+    "brandName": "Cisco",
+    "primary": "#02C8FF",
     "kind": "wordmark",
     "fetched": "2026-10-22"
   },
@@ -72,6 +144,37 @@
     "fetched": "2026-10-22"
   },
   {
+    "id": "cred",
+    "file": "cred.svg",
+    "source": "https://cred.club/ (inline asset)",
+    "page": "https://cred.club/",
+    "brandName": "CRED",
+    "primary": null,
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "white artwork, needs a dark background"
+  },
+  {
+    "id": "databricks",
+    "file": "databricks.svg",
+    "source": "https://www.databricks.com/ (inline asset)",
+    "page": "https://www.databricks.com/",
+    "brandName": "Databricks",
+    "primary": "#EE3D2C",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "dell",
+    "file": "dell.svg",
+    "source": "https://www.dell.com/ (inline asset)",
+    "page": "https://www.dell.com/",
+    "brandName": "Dell Technologies",
+    "primary": "#0076CE",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
     "id": "deloitte",
     "file": "deloitte.svg",
     "source": "https://www.deloitte.com/content/dam/assets-shared/logos/svg/a-d/deloitte.svg",
@@ -83,6 +186,16 @@
     "note": "light/white artwork, intended for dark backgrounds (white lettering, green dot)"
   },
   {
+    "id": "figma",
+    "file": "figma.svg",
+    "source": "https://www.figma.com/ (inline asset)",
+    "page": "https://www.figma.com/",
+    "brandName": "Figma",
+    "primary": null,
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
     "id": "flipkart",
     "file": "flipkart.png",
     "source": "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/logo_lite-cbb357.png",
@@ -91,6 +204,28 @@
     "primary": "#2A55E5",
     "kind": "symbol",
     "fetched": "2026-10-22"
+  },
+  {
+    "id": "github",
+    "file": "github.svg",
+    "source": "https://github.com/ (inline asset)",
+    "page": "https://github.com/",
+    "brandName": "GitHub",
+    "primary": null,
+    "kind": "symbol",
+    "fetched": "2026-10-22",
+    "note": "white artwork, needs a dark background"
+  },
+  {
+    "id": "goldman-sachs",
+    "file": "goldman-sachs.svg",
+    "source": "https://www.goldmansachs.com/ (inline asset)",
+    "page": "https://www.goldmansachs.com/",
+    "brandName": "Goldman Sachs",
+    "primary": null,
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "black wordmark (95% opacity)"
   },
   {
     "id": "google",
@@ -113,6 +248,49 @@
     "fetched": "2026-10-22"
   },
   {
+    "id": "hcltech",
+    "file": "hcltech.svg",
+    "source": "https://www.hcltech.com/ (inline asset)",
+    "page": "https://www.hcltech.com/",
+    "brandName": "HCLTech",
+    "primary": "#0F5FDC",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "ibm",
+    "file": "ibm.svg",
+    "source": "https://www.ibm.com/ (inline asset)",
+    "page": "https://www.ibm.com/",
+    "brandName": "IBM",
+    "primary": "#1F70C1",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "colour set to IBM blue (site styled via CSS)"
+  },
+  {
+    "id": "infosys",
+    "file": "infosys.svg",
+    "source": "https://www.infosys.com/ (inline asset)",
+    "page": "https://www.infosys.com/",
+    "brandName": "Infosys",
+    "primary": null,
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "white artwork, needs a dark background"
+  },
+  {
+    "id": "intel",
+    "file": "intel.svg",
+    "source": "https://www.intel.com/content/www/us/en/homepage.html (inline asset)",
+    "page": "https://www.intel.com/content/www/us/en/homepage.html",
+    "brandName": "Intel",
+    "primary": "#0068B5",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "dot colour #00C7FD as on site; text colour set to Intel blue (site used currentColor)"
+  },
+  {
     "id": "jpmorgan",
     "file": "jpmorgan.svg",
     "source": "https://www.jpmorganchase.com/content/dam/jpmorganchase/images/logos/jpmc-logo.svg",
@@ -121,6 +299,17 @@
     "primary": "#8F5A39",
     "kind": "wordmark",
     "fetched": "2026-10-22"
+  },
+  {
+    "id": "linkedin",
+    "file": "linkedin.svg",
+    "source": "https://about.linkedin.com/ (inline asset)",
+    "page": "https://about.linkedin.com/",
+    "brandName": "LinkedIn",
+    "primary": "#0A66C2",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "page asset was a nested svg without a viewBox; same shapes re-wrapped in an outer svg with viewBox 0 0 55.2 14"
   },
   {
     "id": "ltimindtree",
@@ -183,6 +372,46 @@
     "fetched": "2026-10-22"
   },
   {
+    "id": "notion",
+    "file": "notion.svg",
+    "source": "https://www.notion.com/ (inline asset)",
+    "page": "https://www.notion.com/",
+    "brandName": "Notion",
+    "primary": "#000000",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "nvidia",
+    "file": "nvidia.svg",
+    "source": "https://www.nvidia.com/en-in/ (inline asset)",
+    "page": "https://www.nvidia.com/en-in/",
+    "brandName": "NVIDIA",
+    "primary": "#76B900",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "openai",
+    "file": "openai.svg",
+    "source": "https://openai.com/ (inline asset)",
+    "page": "https://openai.com/",
+    "brandName": "OpenAI",
+    "primary": "#000000",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "oracle",
+    "file": "oracle.svg",
+    "source": "https://www.oracle.com/a/ocom/img/customerlogo-oracle-clr.svg",
+    "page": "https://www.oracle.com/corporate/",
+    "brandName": "Oracle",
+    "primary": "#C74634",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
     "id": "paypal",
     "file": "paypal.svg",
     "source": "https://www.paypalobjects.com/marketing/web/logos/paypal-mark-color_new.svg",
@@ -213,6 +442,36 @@
     "fetched": "2026-10-22"
   },
   {
+    "id": "phonepe",
+    "file": "phonepe.svg",
+    "source": "https://www.phonepe.com/ (inline asset)",
+    "page": "https://www.phonepe.com/",
+    "brandName": "PhonePe",
+    "primary": "#5F259F",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "qualcomm",
+    "file": "qualcomm.svg",
+    "source": "https://www.qualcomm.com/ (inline asset)",
+    "page": "https://www.qualcomm.com/",
+    "brandName": "Qualcomm",
+    "primary": "#2A2AEA",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "razorpay",
+    "file": "razorpay.svg",
+    "source": "https://razorpay.com/ (inline asset)",
+    "page": "https://razorpay.com/",
+    "brandName": "Razorpay",
+    "primary": "#3395FF",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
     "id": "salesforce",
     "file": "salesforce.svg",
     "source": "https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2024/11/logo-salesforce.svg?w=1024",
@@ -223,12 +482,95 @@
     "fetched": "2026-10-22"
   },
   {
+    "id": "samsung",
+    "file": "samsung.svg",
+    "source": "https://www.samsung.com/ (inline asset)",
+    "page": "https://www.samsung.com/",
+    "brandName": "Samsung",
+    "primary": "#1428A0",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "wordmark ships without a fill (renders black); official brand blue is #1428A0"
+  },
+  {
     "id": "shopify",
     "file": "shopify.svg",
     "source": "https://cdn.shopify.com/b/shopify-brochure2-assets/d9340911ca8c679b148dd4a205ad2ffa.svg",
     "page": "https://www.shopify.com/",
     "brandName": "Shopify",
     "primary": "#010624",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "snowflake",
+    "file": "snowflake.svg",
+    "source": "https://www.snowflake.com/ (inline asset)",
+    "page": "https://www.snowflake.com/",
+    "brandName": "Snowflake",
+    "primary": "#249EDC",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "spotify",
+    "file": "spotify.svg",
+    "source": "https://www.spotify.com/ (inline asset)",
+    "page": "https://www.spotify.com/",
+    "brandName": "Spotify",
+    "primary": "#1ED760",
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "white artwork, needs a dark background; viewBox corrected from 0 0 24 24 to 0 0 88 24 to match the artwork extents"
+  },
+  {
+    "id": "stripe",
+    "file": "stripe.svg",
+    "source": "https://stripe.com/ (inline asset)",
+    "page": "https://stripe.com/",
+    "brandName": "Stripe",
+    "primary": "#533AFD",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "swiggy",
+    "file": "swiggy.svg",
+    "source": "https://www.swiggy.com/ (inline asset)",
+    "page": "https://www.swiggy.com/",
+    "brandName": "Swiggy",
+    "primary": "#FF5200",
+    "kind": "symbol",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "tcs",
+    "file": "tcs.svg",
+    "source": "https://www.tcs.com/content/dam/global-tcs/en/images/home/tcs-logo-1.svg",
+    "page": "https://www.tcs.com/",
+    "brandName": "Tata Consultancy Services",
+    "primary": null,
+    "kind": "wordmark",
+    "fetched": "2026-10-22",
+    "note": "white artwork, needs a dark background"
+  },
+  {
+    "id": "tech-mahindra",
+    "file": "tech-mahindra.svg",
+    "source": "https://www.techmahindra.com/ (inline asset)",
+    "page": "https://www.techmahindra.com/",
+    "brandName": "Tech Mahindra",
+    "primary": "#E31837",
+    "kind": "wordmark",
+    "fetched": "2026-10-22"
+  },
+  {
+    "id": "tesla",
+    "file": "tesla.svg",
+    "source": "https://www.tesla.com/ (inline asset)",
+    "page": "https://www.tesla.com/",
+    "brandName": "Tesla",
+    "primary": "#171A20",
     "kind": "wordmark",
     "fetched": "2026-10-22"
   },

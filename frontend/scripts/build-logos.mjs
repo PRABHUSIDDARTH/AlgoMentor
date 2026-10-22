@@ -8,6 +8,20 @@ const dirSrc = readFileSync(new URL('../src/content/directory.ts', import.meta.u
 const ids = new Set([...dirSrc.matchAll(/\['([a-z0-9-]+)', '[^']+', '[A-Z]{2}'/g)].map((m) => m[1]))
 const banned = /simpleicons|cdn\.jsdelivr|unpkg|iconify|wikimedia|wikipedia|logo\.dev|clearbit|brandfetch/i
 
+/** Why an image file must not be shipped, or null. SVGs may not carry scripts, embedded documents, handlers or outside references. */
+function unsafe(file) {
+  const buf = readFileSync(join(dir, file))
+  if (buf.length > 300 * 1024) return 'over 300 KB'
+  if (file.endsWith('.svg')) {
+    const t = buf.toString('utf8')
+    if (!/<svg[\s>]/i.test(t)) return 'not an svg'
+    if (/<script|<foreignObject|<iframe|<object|<embed|\son[a-z]+\s*=|javascript:/i.test(t)) return 'active content'
+    if (/(href|src)\s*=\s*["']\s*(?!#|data:image\/(png|jpeg|webp);)/i.test(t)) return 'external reference'
+    if (/@import|url\(\s*["']?https?:/i.test(t)) return 'external reference'
+  } else if (!/\.(png|webp)$/.test(file)) return 'unexpected type'
+  return null
+}
+
 const entries = new Map()
 const rejected = []
 for (const f of readdirSync(dir).filter((n) => /^manifest\.\d+\.json$/.test(n))) {
@@ -16,6 +30,7 @@ for (const f of readdirSync(dir).filter((n) => /^manifest\.\d+\.json$/.test(n)))
     if (!ids.has(e.id)) rejected.push(`${e.id}: not in the directory`)
     else if (!existsSync(join(dir, e.file))) rejected.push(`${e.id}: file ${e.file} missing`)
     else if (!/^https:\/\//.test(e.source) || banned.test(e.source)) rejected.push(`${e.id}: source ${e.source}`)
+    else if (unsafe(e.file)) rejected.push(`${e.id}: ${e.file} is not a clean image (${unsafe(e.file)})`)
     else entries.set(e.id, e)
   }
   for (const x of failed) rejected.push(`${x.id}: ${x.reason}`)
@@ -31,5 +46,7 @@ export const OFFICIAL_LOGOS: Record<string, OfficialLogo> = {
 ${body}
 }
 `)
-console.log(`${sorted.length} logos listed; ${rejected.length} not listed`)
-for (const r of rejected) console.log('  -', r)
+// A failure recorded by an earlier pass does not count once a later pass found the logo.
+const gaps = rejected.filter((r) => !entries.has(r.split(':')[0]))
+console.log(`${sorted.length} logos listed; ${gaps.length} problems`)
+for (const r of gaps) console.log('  -', r)
