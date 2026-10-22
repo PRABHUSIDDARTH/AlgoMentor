@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import { ClassObject } from './ClassObject'
+import { BPlusTree, CapTriangle, ErLibrary, JoinKinds, NormaliseSplit } from './dbms'
 import { EdgePath, LayerStack, SubnetSplit, TcpHandshake, TlsHandshake } from './cn'
 import { Composition, InheritanceTree, InterfaceImpl, UmlNotation } from './oop'
 
@@ -15,4 +16,9 @@ export const DIAGRAMS: Record<string, ComponentType> = {
   'tcp-handshake': TcpHandshake,
   'tls-handshake': TlsHandshake,
   'edge-path': EdgePath,
+  'er-library': ErLibrary,
+  'join-kinds': JoinKinds,
+  'normalise-split': NormaliseSplit,
+  'bplus-tree': BPlusTree,
+  'cap-triangle': CapTriangle,
 }
