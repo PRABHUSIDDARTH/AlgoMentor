@@ -30,17 +30,28 @@ public class StubLeetCodeConfig {
 
 	private static final Map<Integer, String> SLUGS = Map.of(1, "two-sum", 146, "lru-cache");
 
+	private static String titleOf(String slug) {
+		StringBuilder title = new StringBuilder();
+		for (String word : slug.split("-")) {
+			if (!word.isEmpty()) {
+				title.append(title.isEmpty() ? "" : " ").append(Character.toUpperCase(word.charAt(0))).append(word.substring(1));
+			}
+		}
+		return title.toString();
+	}
+
 	@Bean
 	LeetCodeClient leetCodeClient() {
 		return new LeetCodeClient(RestClient.create(), "https://leetcode.com") {
 			@Override
 			public Problem fetch(ProblemRef ref) {
 				String slug = ref.slug() != null ? ref.slug() : SLUGS.get(ref.number());
-				Problem problem = slug == null ? null : PROBLEMS.get(slug);
-				if (problem == null) {
+				if (slug == null) {
 					throw new ApiException(HttpStatus.NOT_FOUND, "Couldn't find LeetCode problem %s.".formatted(ref));
 				}
-				return problem;
+				// Any roadmap link works in browser tests: unknown slugs get a generated problem.
+				return PROBLEMS.getOrDefault(slug, new Problem("0", titleOf(slug), slug, "Medium", List.of("Array"),
+						"https://leetcode.com/problems/" + slug + "/", "Stub statement for **" + titleOf(slug) + "**."));
 			}
 		};
 	}

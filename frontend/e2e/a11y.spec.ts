@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
 for (const colorScheme of ['light', 'dark'] as const) {
-  for (const path of ['/', '/app', '/app?q=1']) {
+  for (const path of ['/', '/app', '/app?q=1', '/roadmap', '/roadmap/arrays', '/today', '/level']) {
     test(`no serious or critical axe violations on ${path} (${colorScheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' })
       await page.goto(path)

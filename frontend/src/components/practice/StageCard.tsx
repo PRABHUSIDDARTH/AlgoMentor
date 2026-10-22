@@ -52,14 +52,15 @@ export function StageCard({ stage, previousTitle, solved, total, unlocked, curre
           {!unlocked && (
             <>
               <span className="text-ink-muted">Locked · finish 70% of {previousTitle}, or</span>
-              <Button size="sm" variant="outline" className="h-7 border-ink bg-transparent text-[12px]" aria-label={`Unlock ${stage.title} anyway`} onClick={onUnlock}>
+              <Button size="sm" variant="outline" className="h-7 border-ink bg-transparent text-[12px]" aria-label={`Unlock anyway: ${stage.title}`} onClick={onUnlock}>
                 Unlock anyway
               </Button>
             </>
           )}
+          {offerKnown && <span className="text-ink-muted">Your LeetCode history covers this stage.</span>}
           {offerKnown && (
-            <Button size="sm" variant="ghost" className="h-7 text-[12px] underline underline-offset-[3px]" aria-label={`Mark ${stage.title} as known`} onClick={onKnown}>
-              Already know this? Mark as known
+            <Button size="sm" variant="ghost" className="h-7 text-[12px] underline underline-offset-[3px]" aria-label={`Mark as known: ${stage.title}`} onClick={onKnown}>
+              Mark as known
             </Button>
           )}
         </div>

@@ -84,13 +84,16 @@ export function ProfileCard({ site, username, stats, onConnect, onDisconnect }: 
       {username ? (
         <>
           {stats ? (
-            <div className="grid gap-0.5 text-[12.5px]">{statsLine(site, stats.data).map((l) => <p key={l}>{l}</p>)}</div>
+            <div className="grid gap-0.5 text-[12.5px]">
+              {statsLine(site, stats.data).map((l) => <p key={l}>{l}</p>)}
+              {stale && <p className="text-[11.5px] text-ink-muted">Last read over 6 hours ago.</p>}
+            </div>
           ) : (
             <p className="text-[12.5px] text-ink-muted">{busy ? 'Reading profile…' : 'No stats loaded yet.'}</p>
           )}
           <div className="flex gap-2">
             <Button size="sm" variant="outline" className="border-ink bg-transparent" disabled={busy} aria-label={`Refresh ${name}`} onClick={() => load(username)}>
-              {stale && stats ? 'Refresh (older than 6h)' : 'Refresh'}
+              Refresh
             </Button>
             <Button size="sm" variant="ghost" aria-label={`Disconnect ${name}`} onClick={() => { clearStats(site); onDisconnect() }}>
               Disconnect

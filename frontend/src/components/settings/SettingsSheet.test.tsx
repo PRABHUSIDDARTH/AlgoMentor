@@ -75,7 +75,10 @@ describe('Settings', () => {
     await open()
     expect(screen.getByText('312 solved · 140 Easy · 150 Medium · 22 Hard')).toBeInTheDocument()
     expect(api.fetchProfile).not.toHaveBeenCalled()
-    await userEvent.click(screen.getByRole('button', { name: 'Refresh LeetCode' }))
+    // Visible text must be part of the accessible name (WCAG 2.5.3).
+    const refresh = screen.getByRole('button', { name: 'Refresh LeetCode' })
+    expect(refresh).toHaveTextContent(/^Refresh$/)
+    await userEvent.click(refresh)
     expect(api.fetchProfile).toHaveBeenCalledOnce()
   })
 

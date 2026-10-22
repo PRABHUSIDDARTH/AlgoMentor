@@ -46,7 +46,7 @@ describe('Roadmap', () => {
     renderAt('/roadmap')
     const arrays = screen.getByRole('listitem', { name: /2\. Arrays/ })
     expect(within(arrays).getByText(/Locked/)).toBeInTheDocument()
-    await userEvent.click(within(arrays).getByRole('button', { name: 'Unlock Arrays anyway' }))
+    await userEvent.click(within(arrays).getByRole('button', { name: 'Unlock anyway: Arrays' }))
     expect(within(arrays).queryByText(/Locked/)).toBeNull()
   })
 
@@ -67,7 +67,7 @@ describe('Roadmap', () => {
     saveStats('leetcode', { username: 'demo', ranking: 1, solved: { easy: 1, medium: 1, hard: 1, total: 3 }, topics: [{ tag: 'Hash Table', solved: 15 }], recent: [] })
     renderAt('/roadmap')
     const hashing = screen.getByRole('listitem', { name: /3\. Hashing/ })
-    await userEvent.click(within(hashing).getByRole('button', { name: 'Mark Hashing as known' }))
+    await userEvent.click(within(hashing).getByRole('button', { name: 'Mark as known: Hashing' }))
     const total = STAGES[2].patterns.reduce((n, p) => n + p.problems.length, 0)
     expect(within(hashing).getByText(`${total} of ${total} solved`)).toBeInTheDocument()
   })
