@@ -20,6 +20,13 @@ jobs:
     - name: Build and test (backend + frontend unit tests)
       run: ./mvnw -B verify
 
+  git-scripts:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run the Git challenge setup scripts (bash and PowerShell) in throwaway repos
+      run: bash scripts/test-git-challenges.sh
+
   docker:
     runs-on: ubuntu-latest
     steps:
