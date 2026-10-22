@@ -5,8 +5,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { PROBLEMS } from '@/content/roadmap'
-import { TRACKS } from '@/content/learn'
-import { LEARN_KEY } from '@/learn/progress'
 import { PROGRESS_KEY } from '@/practice/progress'
 import Level from './Level'
 
@@ -32,27 +30,10 @@ describe('Level page', () => {
     }
   })
 
-  it('levelShowsBothMeters', () => {
+  it('dsaLevelPointsToCoreLevelInsteadOfShowingIt', () => {
     renderLevel()
-    expect(screen.getByRole('meter', { name: /Readiness for FAANG \/ product SDE-1/ })).toHaveAttribute('aria-valuenow', '0')
-    expect(screen.getByRole('meter', { name: 'Core CS readiness for FAANG / product' })).toHaveAttribute('aria-valuenow', '0')
-    const core = screen.getByRole('list', { name: 'Core CS: what to do next' })
-    expect(within(core).getAllByRole('listitem')).toHaveLength(3)
-    expect(within(core).getByText('OOP: finish 3 more modules')).toBeInTheDocument()
-    const breakdown = screen.getByRole('table', { name: 'Core CS breakdown' })
-    for (const row of ['Modules', 'Quizzes', 'Projects', 'Git challenges']) {
-      expect(within(breakdown).getByRole('rowheader', { name: row })).toBeInTheDocument()
-    }
-  })
-
-  it('coreMeterFollowsLearningProgress', () => {
-    const oop = Object.fromEntries(TRACKS[0].modules.map((m) => [m.id, { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: null }]))
-    localStorage.setItem(LEARN_KEY, JSON.stringify(oop))
-    renderLevel()
-    // 10 of 30 modules (13.3) + quiz 50/150 (10) = 23.3 of a 70 bar
-    expect(screen.getByRole('meter', { name: 'Core CS readiness for FAANG / product' })).toHaveAttribute('aria-valuenow', '33')
-    expect(within(screen.getByRole('table', { name: 'Core CS breakdown' })).getByText('13.3 / 40')).toBeInTheDocument()
-    expect(within(screen.getByRole('list', { name: 'Core CS: what to do next' })).getByText('Networks: finish 3 more modules')).toBeInTheDocument()
+    expect(screen.queryByRole('meter', { name: /Core CS readiness/ })).toBeNull()
+    expect(screen.getByRole('link', { name: /Core CS level/ })).toHaveAttribute('href', '/level/core')
   })
 
   it('levelUpMessageShownOnce', async () => {
