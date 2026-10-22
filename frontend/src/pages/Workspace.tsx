@@ -7,6 +7,7 @@ import { MentorPanel } from '@/components/workspace/MentorPanel'
 import { ProblemPane } from '@/components/workspace/ProblemPane'
 import { RecentSidebar } from '@/components/workspace/RecentSidebar'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
+import { PROBLEMS } from '@/content/roadmap'
 import { useMentorSession } from '@/state/useMentorSession'
 
 export default function Workspace() {
@@ -18,12 +19,13 @@ export default function Workspace() {
 
   // Reacts to ?q= changes too (e.g. the landing page or a link), not only on first load.
   const q = params.get('q')
+  const from = params.get('from') ?? undefined
   useEffect(() => {
     if (q && q !== handledQuery.current) {
       handledQuery.current = q
-      void session.openProblem(q)
+      void session.openProblem(q, { roadmapProblemId: from && PROBLEMS.has(from) ? from : undefined })
     }
-  }, [q, session.openProblem])
+  }, [q, from, session.openProblem])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { AskPayload, Problem } from '@/lib/api'
 import { loadHistory } from '@/lib/history'
+import { loadProgress } from '@/practice/progress'
 import { useMentorSession } from './useMentorSession'
 
 const api = vi.hoisted(() => ({ askStream: vi.fn(), fetchProblem: vi.fn() }))
@@ -210,6 +211,21 @@ describe('useMentorSession', () => {
     expect(sent.reduce((n, t) => n + t.text.length, 0)).toBeLessThanOrEqual(30_000)
     expect(sent[sent.length - 1].role).toBe('mentor')
     expect(sent[0].role).toBe('user')
+  })
+
+  it('markSolvedRecordsRoadmapProgress', async () => {
+    const { result } = renderHook(() => useMentorSession())
+    await act(() => result.current.openProblem('1', { roadmapProblemId: 'two-sum' }))
+    act(() => result.current.nextHint())
+    await finish(calls[0], 'h1')
+    act(() => result.current.markSolved())
+    expect(loadProgress()['two-sum']).toMatchObject({ status: 'solved', reviewStep: 0 })
+  })
+
+  it('markSolvedWithoutRoadmapIdLeavesProgressAlone', async () => {
+    const { result } = await openTwoSum()
+    act(() => result.current.markSolved())
+    expect(loadProgress()).toEqual({})
   })
 
   it('networkFailureIsFlagged', async () => {

@@ -11,6 +11,7 @@ import {
   type Turn,
 } from '@/lib/api'
 import { historyKey, loadHistory, upsertHistory, type HistoryEntry, type HistoryStatus } from '@/lib/history'
+import { recordSolve } from '@/practice/progress'
 
 export type Tab = 'explain' | 'hints' | 'solution'
 
@@ -125,6 +126,8 @@ export function useMentorSession() {
   const loading = useRef(false)
   const lastRequest = useRef<Request | null>(null)
   const stateRef = useRef(state)
+  /** Set when the problem was opened from the roadmap, so solving it counts there too. */
+  const roadmapId = useRef<string | undefined>(undefined)
   stateRef.current = state
 
   const record = useCallback((p: ProblemContext, status: HistoryStatus, hints?: string[]) => {
@@ -209,9 +212,10 @@ export function useMentorSession() {
     }
   }, [cancel, start])
 
-  const openProblem = useCallback(async (input: string) => {
+  const openProblem = useCallback(async (input: string, opts?: { roadmapProblemId?: string }) => {
     const text = input.trim()
     if (!text) return
+    roadmapId.current = opts?.roadmapProblemId
     if (looksLikeProblemRef(text)) return load(text)
     loadController.current?.abort()
     loading.current = false
@@ -306,6 +310,7 @@ export function useMentorSession() {
     if (!p) return
     dispatch({ solved: true })
     record(p, 'solved')
+    if (roadmapId.current) recordSolve(roadmapId.current, { hintsUsed: stateRef.current.hints.length })
   }, [record])
 
   const retry = useCallback(() => {
