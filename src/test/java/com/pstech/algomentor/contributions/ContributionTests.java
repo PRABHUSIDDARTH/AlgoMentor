@@ -142,6 +142,14 @@ class ContributionTests {
 	}
 
 	@Test
+	void readingThePublicListIsNotRateLimitedLikeSubmitting() throws Exception {
+		for (int i = 0; i < 10; i++) {
+			mvc.perform(get("/api/contributions")).andExpect(status().isOk());
+		}
+		mvc.perform(submit(valid())).andExpect(status().isCreated());
+	}
+
+	@Test
 	void adminEndpointsNeedTheToken() throws Exception {
 		mvc.perform(get("/api/admin/contributions")).andExpect(status().isUnauthorized());
 		mvc.perform(get("/api/admin/contributions").header("X-Admin-Token", "wrong")).andExpect(status().isUnauthorized());

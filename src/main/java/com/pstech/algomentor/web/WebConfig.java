@@ -8,6 +8,9 @@ import com.pstech.algomentor.AlgoMentorProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -55,7 +58,13 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(askGuard()).addPathPatterns("/ask", "/ask/stream");
-		registry.addInterceptor(contributionGuard()).addPathPatterns("/api/contributions");
+		// Only submitting is limited; reading the approved list is free.
+		registry.addInterceptor(new HandlerInterceptor() {
+			@Override
+			public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+				return !"POST".equals(request.getMethod()) || contributionGuard().preHandle(request, response, handler);
+			}
+		}).addPathPatterns("/api/contributions");
 		registry.addInterceptor(problemGuard()).addPathPatterns("/problem", "/profiles/**", "/git/check/**", "/git/repo-health/**");
 	}
 
