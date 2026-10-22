@@ -56,14 +56,14 @@ describe('Roadmap', () => {
   })
 
   it('targetLabelForKeyStages', () => {
-    saveSettings({ target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 })
+    saveSettings({ target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 })
     renderAt('/roadmap')
-    expect(within(screen.getByRole('listitem', { name: /14\. Graphs/ })).getByText('Key for FAANG / product')).toBeInTheDocument()
+    expect(within(screen.getByRole('listitem', { name: /14\. Graphs/ })).getByText('Key for MAANG')).toBeInTheDocument()
     expect(within(screen.getByRole('listitem', { name: /16\. Tries/ })).queryByText(/Key for/)).toBeNull()
   })
 
   it('priorKnowledgeOfferedAt15TagSolves', async () => {
-    saveSettings({ leetcode: 'demo', target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 })
+    saveSettings({ leetcode: 'demo', target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 })
     saveStats('leetcode', { username: 'demo', ranking: 1, solved: { easy: 1, medium: 1, hard: 1, total: 3 }, topics: [{ tag: 'Hash Table', solved: 15 }], recent: [] })
     renderAt('/roadmap')
     const hashing = screen.getByRole('listitem', { name: /3\. Hashing/ })

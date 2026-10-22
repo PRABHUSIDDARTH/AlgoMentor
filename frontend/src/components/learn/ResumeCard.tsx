@@ -1,7 +1,7 @@
 import { RepoHealth } from '@/components/learn/RepoHealth'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import type { ResumeProject } from '@/content/learn/resume-projects'
-import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
+import { TIER_LABEL, ROLE_LABEL } from '@/content/targets'
 
 function Bullets({ items }: { items: string[] }) {
   return (
@@ -17,7 +17,7 @@ export function ResumeCard({ project }: { project: ResumeProject }) {
       <div className="grid gap-1">
         <h2 className="text-[19px] font-semibold leading-snug">{project.title}</h2>
         <p className="font-mono text-[11.5px] text-ink-muted">
-          {project.targets.map((t) => COMPANY_LABEL[t]).join(' · ')} — {project.roles.map((r) => ROLE_LABEL[r]).join(' · ')}
+          {project.targets.map((t) => TIER_LABEL[t]).join(' · ')} — {project.roles.map((r) => ROLE_LABEL[r]).join(' · ')}
         </p>
       </div>
       <p className="max-w-[72ch] text-[14px] leading-relaxed">{project.proves}</p>

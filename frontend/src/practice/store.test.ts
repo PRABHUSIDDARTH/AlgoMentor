@@ -9,7 +9,7 @@ afterEach(() => {
 describe('settings store', () => {
   it('defaultsWhenEmpty', () => {
     expect(loadSettings()).toEqual(DEFAULT_SETTINGS)
-    expect(DEFAULT_SETTINGS).toEqual({ target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 })
+    expect(DEFAULT_SETTINGS).toEqual({ target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 })
   })
 
   it('roundTrips', () => {
@@ -22,6 +22,22 @@ describe('settings store', () => {
     expect(loadSettings()).toEqual(DEFAULT_SETTINGS)
     localStorage.setItem(SETTINGS_KEY, '{oops')
     expect(loadSettings()).toEqual(DEFAULT_SETTINGS)
+  })
+
+  it('migratesStoredFaangToMaang', () => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ dailyGoal: 3, target: { company: 'faang', role: 'sde2' } }))
+    expect(loadSettings().target).toEqual({ company: 'maang', role: 'sde2' })
+  })
+
+  it('roundTripsEmployerAndFocus', () => {
+    const settings = { target: { company: 'product' as const, role: 'sde3' as const, employer: 'atlassian', focus: 'backend' as const }, dailyGoal: 2 as const }
+    saveSettings(settings)
+    expect(loadSettings()).toEqual(settings)
+  })
+
+  it('dropsAnUnknownFocusOrMalformedEmployerButKeepsTheTarget', () => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ dailyGoal: 3, target: { company: 'startup', role: 'intern', focus: 'wizard', employer: '../../etc' } }))
+    expect(loadSettings().target).toEqual({ company: 'startup', role: 'intern' })
   })
 
   it('saveEmitsSettingsEvent', () => {

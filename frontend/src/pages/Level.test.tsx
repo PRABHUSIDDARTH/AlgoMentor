@@ -21,7 +21,7 @@ describe('Level page', () => {
   it('levelPageShowsLevelMeterGapsAndBreakdown', () => {
     renderLevel()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Level 1')
-    const meter = screen.getByRole('meter', { name: /Readiness for FAANG \/ product SDE-1/ })
+    const meter = screen.getByRole('meter', { name: /Readiness for MAANG SDE-1/ })
     expect(meter).toHaveAttribute('aria-valuenow', '0')
     expect(within(screen.getByRole('list', { name: 'What to do next' })).getAllByRole('listitem')).toHaveLength(3)
     const breakdown = screen.getByRole('table', { name: 'Score breakdown' })

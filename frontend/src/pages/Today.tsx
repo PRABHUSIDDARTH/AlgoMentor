@@ -19,7 +19,7 @@ import { dueModules } from '@/learn/progress'
 import { useCore } from '@/learn/useCore'
 import type { ProfileSettings } from '@/practice/store'
 import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
-import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
+import { ROLE_LABEL, targetName } from '@/content/targets'
 
 const PATTERNS = new Map(STAGES.flatMap((s) => s.patterns.map((p) => [p.id, { p, s }] as const)))
 
@@ -181,7 +181,7 @@ export default function Today() {
         <aside aria-label="Progress" className="grid content-start gap-5">
           <Card>
             <CardTitle>Level {level.level}</CardTitle>
-            <ReadinessMeter value={overall} label={`Readiness for ${COMPANY_LABEL[settings.target.company]} ${ROLE_LABEL[settings.target.role]}`} />
+            <ReadinessMeter value={overall} label={`Readiness for ${targetName(settings.target)} ${ROLE_LABEL[settings.target.role]}`} />
             <p className="font-mono text-[11.5px] text-ink-muted">DSA {level.readiness}% · Core CS {core.readiness}%</p>
             <CardDescription>The lower one counts, because interviews test both.</CardDescription>
             <Link to="/level" className="text-[13px] underline underline-offset-[3px]">See what to improve</Link>

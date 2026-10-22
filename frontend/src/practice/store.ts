@@ -1,8 +1,11 @@
 import type { Site } from './profileUrls'
 
-export type Company = 'faang' | 'startup' | 'service'
-export type Role = 'intern' | 'sde1' | 'sde2'
-export type Target = { company: Company; role: Role }
+export type Tier = 'maang' | 'product' | 'startup' | 'service'
+export type Role = 'intern' | 'sde1' | 'sde2' | 'sde3'
+/** What kind of engineer: changes how much each Core CS track counts. */
+export type Focus = 'general' | 'backend' | 'frontend' | 'fullstack' | 'mobile' | 'data' | 'devops' | 'sdet'
+/** `company` is the tier. `employer` is a company id from the dataset, set from the Companies pages or Settings. */
+export type Target = { company: Tier; role: Role; employer?: string; focus?: Focus }
 export type DailyGoal = 2 | 3 | 5
 export type ProfileSettings = { leetcode?: string; hackerrank?: string; gfg?: string; target: Target; dailyGoal: DailyGoal }
 
@@ -11,11 +14,13 @@ export const STATS_KEY = 'algomentor.stats.v1'
 /** Fired on window whenever settings or stats change, so every page stays in sync. */
 export const SETTINGS_EVENT = 'algomentor:settings'
 
-export const DEFAULT_SETTINGS: ProfileSettings = { target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 }
+export const DEFAULT_SETTINGS: ProfileSettings = { target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 }
 
 const USERNAME = /^[A-Za-z0-9_.-]{1,40}$/
-const COMPANIES: Company[] = ['faang', 'startup', 'service']
-const ROLES: Role[] = ['intern', 'sde1', 'sde2']
+export const TIERS: Tier[] = ['maang', 'product', 'startup', 'service']
+export const ROLES: Role[] = ['intern', 'sde1', 'sde2', 'sde3']
+export const FOCUSES: Focus[] = ['general', 'backend', 'frontend', 'fullstack', 'mobile', 'data', 'devops', 'sdet']
+const EMPLOYER_ID = /^[a-z0-9-]{1,40}$/
 const GOALS: DailyGoal[] = [2, 3, 5]
 
 function read(key: string): unknown {
@@ -41,10 +46,15 @@ export function loadSettings(): ProfileSettings {
   const v = read(SETTINGS_KEY) as Partial<ProfileSettings> | null
   if (!v || typeof v !== 'object') return DEFAULT_SETTINGS
   const t = v.target
-  if (!t || !COMPANIES.includes(t.company) || !ROLES.includes(t.role) || !GOALS.includes(v.dailyGoal as DailyGoal)) {
+  // Settings saved before the tier rename stored 'faang'.
+  const company = (t?.company as string) === 'faang' ? 'maang' : t?.company
+  if (!t || !company || !TIERS.includes(company) || !ROLES.includes(t.role) || !GOALS.includes(v.dailyGoal as DailyGoal)) {
     return DEFAULT_SETTINGS
   }
-  const out: ProfileSettings = { target: { company: t.company, role: t.role }, dailyGoal: v.dailyGoal as DailyGoal }
+  const target: Target = { company, role: t.role }
+  if (typeof t.employer === 'string' && EMPLOYER_ID.test(t.employer)) target.employer = t.employer
+  if (t.focus && FOCUSES.includes(t.focus)) target.focus = t.focus
+  const out: ProfileSettings = { target, dailyGoal: v.dailyGoal as DailyGoal }
   for (const site of ['leetcode', 'hackerrank', 'gfg'] as const) {
     const u = v[site]
     if (u !== undefined) {

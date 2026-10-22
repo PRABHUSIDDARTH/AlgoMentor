@@ -3,7 +3,7 @@ import { AppShell } from '@/components/AppShell'
 import { PageHeader } from '@/components/PageHeader'
 import { ResumeCard } from '@/components/learn/ResumeCard'
 import { matchesFilter, RESUME_PROJECTS, type CompanyFilter, type RoleFilter } from '@/content/learn/resume-projects'
-import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
+import { TIER_LABEL, ROLE_LABEL } from '@/content/targets'
 
 const SELECT = 'h-9 rounded-md border border-line-strong bg-cream px-3 text-[13.5px] text-ink focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none'
 
@@ -41,7 +41,7 @@ export default function Resume() {
               Target
               <select className={SELECT} value={company} onChange={(e) => setCompany(e.target.value as CompanyFilter)}>
                 <option value="all">Any</option>
-                {(Object.keys(COMPANY_LABEL) as (keyof typeof COMPANY_LABEL)[]).map((c) => <option key={c} value={c}>{COMPANY_LABEL[c]}</option>)}
+                {(Object.keys(TIER_LABEL) as (keyof typeof TIER_LABEL)[]).map((c) => <option key={c} value={c}>{TIER_LABEL[c]}</option>)}
               </select>
             </label>
             <label className="grid gap-1 text-[12.5px] font-medium">

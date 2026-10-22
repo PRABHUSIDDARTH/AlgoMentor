@@ -1,11 +1,11 @@
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import type { Site } from '@/practice/profileUrls'
-import type { Company, DailyGoal, Role } from '@/practice/store'
+import type { Tier, DailyGoal, Role } from '@/practice/store'
 import { useSettings, useStats } from '@/practice/useSettings'
 import { cn } from '@/lib/utils'
 import { ProfileCard } from './ProfileCard'
 
-const COMPANIES: [Company, string][] = [['faang', 'FAANG / product'], ['startup', 'Startup'], ['service', 'Service company']]
+const COMPANIES: [Tier, string][] = [['maang', 'MAANG'], ['startup', 'Startup'], ['service', 'Service company']]
 const ROLES: [Role, string][] = [['intern', 'Intern'], ['sde1', 'SDE-1'], ['sde2', 'SDE-2']]
 const GOALS: DailyGoal[] = [2, 3, 5]
 
@@ -64,7 +64,7 @@ export function SettingsSheet({ open, onOpenChange }: { open: boolean; onOpenCha
 
           <section aria-labelledby="s-target" className="grid gap-2.5">
             <h2 id="s-target" className="eyebrow">Target</h2>
-            <Choice label="Company" options={COMPANIES} value={settings.target.company} onChange={(company) => update({ ...settings, target: { ...settings.target, company } })} />
+            <Choice label="Tier" options={COMPANIES} value={settings.target.company} onChange={(company) => update({ ...settings, target: { ...settings.target, company } })} />
             <Choice label="Role" options={ROLES} value={settings.target.role} onChange={(role) => update({ ...settings, target: { ...settings.target, role } })} />
           </section>
 

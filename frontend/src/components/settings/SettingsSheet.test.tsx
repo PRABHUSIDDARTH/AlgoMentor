@@ -62,7 +62,7 @@ describe('Settings', () => {
   })
 
   it('refreshAsksTheServerToBypassItsCache', async () => {
-    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ leetcode: 'demo', target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 }))
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ leetcode: 'demo', target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 }))
     saveStats('leetcode', LC)
     await open()
     await userEvent.click(screen.getByRole('button', { name: 'Refresh LeetCode' }))
@@ -88,7 +88,7 @@ describe('Settings', () => {
   })
 
   it('usesFreshCachedStatsAndRefreshBypassesThem', async () => {
-    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ leetcode: 'demo', target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 }))
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ leetcode: 'demo', target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 }))
     saveStats('leetcode', LC)
     await open()
     expect(screen.getByText('312 solved · 140 Easy · 150 Medium · 22 Hard')).toBeInTheDocument()
@@ -101,7 +101,7 @@ describe('Settings', () => {
   })
 
   it('disconnectForgetsProfile', async () => {
-    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ leetcode: 'demo', target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 }))
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ leetcode: 'demo', target: { company: 'maang', role: 'sde1' }, dailyGoal: 3 }))
     saveStats('leetcode', LC)
     await open()
     const card = screen.getByRole('region', { name: 'LeetCode' })

@@ -1,5 +1,5 @@
 import { PROBLEMS, STAGES } from '@/content/roadmap'
-import { COMPANY_LABEL, READINESS_BAR, ROLE_MULTIPLIER, TARGET_WEIGHTS } from '@/content/targets'
+import { READINESS_BAR, ROLE_MULTIPLIER, targetName, weightsFor } from '@/content/targets'
 import type { LeetCodeProfile } from '@/lib/api'
 import { localDateKey, type Day } from './daily'
 import { isUnlocked, stageCompletion, type Progress, type ReviewOutcome } from './progress'
@@ -33,7 +33,7 @@ const clamp01 = (x: number) => Math.max(0, Math.min(1, x))
 
 function fractions(input: LevelInput): Record<Component, number> {
   const { progress, target, now } = input
-  const weights = TARGET_WEIGHTS[target.company]
+  const weights = weightsFor(target)
   let have = 0
   let want = 0
   for (const s of STAGES) {
@@ -98,7 +98,7 @@ function action(k: Component, input: LevelInput): string {
   const { progress, target, now } = input
   switch (k) {
     case 'coverage': {
-      const weights = TARGET_WEIGHTS[target.company]
+      const weights = weightsFor(target)
       // Only stages the learner can open now and hasn't reached 70% in; prefer the target's key stages.
       const open = STAGES.filter((s) => isUnlocked(s.id, progress, input.unlocks))
         .map((s) => ({ s, c: stageCompletion(s.id, progress), w: weights[s.id] ?? 0 }))
@@ -106,7 +106,7 @@ function action(k: Component, input: LevelInput): string {
       const pick = open.sort((a, b) => b.w - a.w || a.s.order - b.s.order)[0]
       if (!pick) return 'Unlock the next stage on the roadmap'
       const n = Math.max(1, Math.ceil(pick.c.total * 0.7) - pick.c.solved)
-      const key = pick.w === 3 ? ` (key for ${COMPANY_LABEL[target.company]})` : ''
+      const key = pick.w === 3 ? ` (key for ${targetName(target)})` : ''
       return `${pick.s.title}: solve ${n} more ${n === 1 ? 'problem' : 'problems'}${key}`
     }
     case 'difficulty': {

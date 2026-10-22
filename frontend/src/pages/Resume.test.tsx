@@ -131,7 +131,7 @@ describe('Resume page', () => {
   it('noAskCallsOnTheResumePage', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch')
     renderResume()
-    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'faang')
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'maang')
     expect(fetchSpy.mock.calls.filter(([u]) => String(u).includes('/ask'))).toHaveLength(0)
     expect(api.askStream).not.toHaveBeenCalled()
   })

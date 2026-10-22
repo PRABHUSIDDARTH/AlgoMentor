@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { AppShell } from '@/components/AppShell'
 import { PageHeader } from '@/components/PageHeader'
 import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
-import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
+import { ROLE_LABEL, targetName } from '@/content/targets'
 import { WEIGHTS, type Component } from '@/practice/level'
 import { useLevel } from '@/practice/useLevel'
 
@@ -41,7 +41,7 @@ export function useLevelUpNotice(level: number) {
 export default function Level() {
   const { level, total, parts, readiness, gaps, input } = useLevel()
   useLevelUpNotice(level)
-  const targetLabel = `${COMPANY_LABEL[input.target.company]} ${ROLE_LABEL[input.target.role]}`
+  const targetLabel = `${targetName(input.target)} ${ROLE_LABEL[input.target.role]}`
   return (
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:px-20">

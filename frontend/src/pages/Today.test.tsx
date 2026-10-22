@@ -105,7 +105,7 @@ describe('Today page', () => {
     const [, dsa, core] = /DSA (\d+)% · Core CS (\d+)%/.exec(sub.textContent ?? '')!.map(Number)
     expect(core).toBe(25)
     expect(dsa).toBeGreaterThan(25)
-    expect(screen.getByRole('meter', { name: 'Readiness for FAANG / product SDE-1' })).toHaveAttribute('aria-valuenow', '25')
+    expect(screen.getByRole('meter', { name: 'Readiness for MAANG SDE-1' })).toHaveAttribute('aria-valuenow', '25')
     expect(screen.getByText(/The lower one counts/)).toBeInTheDocument()
   })
 
@@ -113,7 +113,7 @@ describe('Today page', () => {
     localStorage.setItem(LEARN_KEY, JSON.stringify(modules([0, 1, 2])))
     renderToday()
     expect(screen.getByText(/^DSA 0% · Core CS \d+%$/)).toBeInTheDocument()
-    expect(screen.getByRole('meter', { name: 'Readiness for FAANG / product SDE-1' })).toHaveAttribute('aria-valuenow', '0')
+    expect(screen.getByRole('meter', { name: 'Readiness for MAANG SDE-1' })).toHaveAttribute('aria-valuenow', '0')
   })
 
   it('planIsATimelineWithADayProgressBar', async () => {

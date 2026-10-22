@@ -1,5 +1,5 @@
 import { STAGES, type RoadmapProblem } from '@/content/roadmap'
-import { TARGET_WEIGHTS } from '@/content/targets'
+import { weightsFor } from '@/content/targets'
 import type { LeetCodeProfile } from '@/lib/api'
 import { isUnlocked, stageCompletion, type Progress } from './progress'
 import type { Target } from './store'
@@ -12,7 +12,7 @@ export function currentStageId(progress: Progress, unlocks: string[]): string {
 }
 
 export function isKeyStage(stageId: string, target: Target): boolean {
-  return TARGET_WEIGHTS[target.company][stageId] === 3
+  return weightsFor(target)[stageId] === 3
 }
 
 /** Solved count across a stage's LeetCode topics, from the connected profile. */

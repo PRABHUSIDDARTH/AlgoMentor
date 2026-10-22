@@ -1,9 +1,9 @@
-import type { Company, Role } from '@/practice/store'
+import type { Tier, Role } from '@/practice/store'
 
 export type ResumeProject = {
   id: string
   title: string
-  targets: Company[]
+  targets: Tier[]
   roles: Role[]
   /** What building it shows a recruiter or interviewer. */
   proves: string
@@ -18,7 +18,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'collab-editor',
     title: 'Real-time collaborative editor',
-    targets: ['faang', 'startup'],
+    targets: ['maang', 'startup'],
     roles: ['sde1', 'sde2'],
     proves: 'You can reason about concurrent edits and convergence: the hard problem behind shared documents, whiteboards and design tools.',
     core: [
@@ -38,7 +38,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'url-shortener',
     title: 'URL shortener with analytics',
-    targets: ['startup', 'service', 'faang'],
+    targets: ['startup', 'service', 'maang'],
     roles: ['intern', 'sde1'],
     proves: 'You can build a complete, small web service end to end: API, data model, caching, a redirect that must be fast, and numbers about how it is used.',
     core: [
@@ -58,7 +58,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'rate-limiter',
     title: 'Distributed rate limiter',
-    targets: ['faang', 'startup'],
+    targets: ['maang', 'startup'],
     roles: ['sde1', 'sde2'],
     proves: 'You understand algorithms for limiting traffic, and what changes when the limiter itself runs on many servers.',
     core: [
@@ -78,7 +78,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'job-queue',
     title: 'Job queue with retries',
-    targets: ['startup', 'service', 'faang'],
+    targets: ['startup', 'service', 'maang'],
     roles: ['intern', 'sde1', 'sde2'],
     proves: 'You know how background work is done reliably: acknowledgements, retries with backoff, idempotency and what happens when workers crash.',
     core: [
@@ -98,7 +98,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'search-engine',
     title: 'Search engine over a dataset',
-    targets: ['faang'],
+    targets: ['maang'],
     roles: ['sde1', 'sde2'],
     proves: 'You can build the core of information retrieval: indexing, ranking and query processing, and you can measure whether the results are any good.',
     core: [
@@ -138,7 +138,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'mini-git',
     title: 'Mini Git',
-    targets: ['faang'],
+    targets: ['maang'],
     roles: ['sde1', 'sde2'],
     proves: 'You understand how a tool you use every day works inside: content-addressed storage, a commit graph, and diffs.',
     core: [
@@ -158,7 +158,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'code-runner',
     title: 'Sandboxed code runner',
-    targets: ['faang'],
+    targets: ['maang'],
     roles: ['sde1', 'sde2'],
     proves: 'You know how untrusted code is run safely: process isolation, resource limits and timeouts, the same ideas as online judges.',
     core: [
@@ -218,7 +218,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'metrics-pipeline',
     title: 'Metrics and log pipeline with a dashboard',
-    targets: ['faang', 'service'],
+    targets: ['maang', 'service'],
     roles: ['sde1', 'sde2'],
     proves: 'You can move and summarise a large stream of data: ingestion, aggregation, storage and a way for people to see it.',
     core: [
@@ -238,7 +238,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   {
     id: 'mini-redis',
     title: 'Mini Redis: an in-memory data store',
-    targets: ['faang', 'startup'],
+    targets: ['maang', 'startup'],
     roles: ['sde1', 'sde2'],
     proves: 'You can build a networked server with a real protocol, rich data structures, expiry and eviction, and you can reason about its performance.',
     core: [
@@ -257,7 +257,7 @@ export const RESUME_PROJECTS: ResumeProject[] = [
   },
 ]
 
-export type CompanyFilter = Company | 'all'
+export type CompanyFilter = Tier | 'all'
 export type RoleFilter = Role | 'all'
 
 export function matchesFilter(p: ResumeProject, company: CompanyFilter, role: RoleFilter): boolean {

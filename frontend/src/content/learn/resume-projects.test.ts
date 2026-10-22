@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { RESUME_PROJECTS, matchesFilter } from './resume-projects'
 
-const COMPANIES = ['faang', 'startup', 'service'] as const
+const COMPANIES = ['maang', 'startup', 'service'] as const
 const ROLES = ['intern', 'sde1', 'sde2'] as const
 
 describe('resume projects content', () => {
