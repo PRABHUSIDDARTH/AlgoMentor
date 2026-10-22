@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SpaController {
 
-	@GetMapping({ "/app", "/app/**" })
+	@GetMapping({ "/app", "/app/**", "/roadmap", "/roadmap/**", "/today", "/test/**", "/level", "/learn", "/learn/**" })
 	public String app() {
 		return "forward:/index.html";
 	}

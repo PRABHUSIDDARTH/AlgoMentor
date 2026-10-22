@@ -36,7 +36,7 @@ export function Nav() {
 
   return (
     <header className={cn('sticky top-0 z-40 border-b bg-cream/95 backdrop-blur-[2px] transition-[border-color]', scrolled ? 'border-line' : 'border-transparent')}>
-      <div className="flex items-center gap-6 px-6 py-3 text-[13.5px] sm:px-10 lg:px-16 xl:px-24">
+      <div className="flex items-center gap-6 py-3 pr-16 pl-6 text-[13.5px] sm:pl-10 lg:pl-16 xl:pr-20 xl:pl-24">
         <Logo />
         {/* GooeyNav sets its own display, so the responsive hiding lives on a wrapper. */}
         <div className="hidden md:block">

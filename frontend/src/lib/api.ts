@@ -100,3 +100,22 @@ export function looksLikeProblemRef(input: string): boolean {
   if (number) return Number(number[1]) > 0
   return PROBLEM_URL.test(text)
 }
+
+export type ProfileSite = 'leetcode' | 'hackerrank' | 'gfg'
+export interface LeetCodeProfile {
+  username: string
+  ranking: number | null
+  solved: { easy: number; medium: number; hard: number; total: number }
+  topics: { tag: string; solved: number }[]
+  recent: { slug: string; title: string; solvedAt: number }[]
+}
+export interface HackerRankProfile { username: string; badges: { name: string; stars: number; level: number; solved: number }[] }
+export interface GfgProfile { username: string; solved: number; score: number; instituteRank: number | null; streak: number | null }
+export type ProfileFor<S extends ProfileSite> = S extends 'leetcode' ? LeetCodeProfile : S extends 'hackerrank' ? HackerRankProfile : GfgProfile
+
+/** Public profile stats, read by the backend (cached there for 6 hours). */
+export async function fetchProfile<S extends ProfileSite>(site: S, user: string, signal?: AbortSignal): Promise<ProfileFor<S>> {
+  const res = await fetch(`/profiles/${site}/${encodeURIComponent(user)}`, { signal })
+  if (!res.ok) throw await errorFrom(res)
+  return res.json()
+}

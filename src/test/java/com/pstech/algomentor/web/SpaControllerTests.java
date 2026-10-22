@@ -25,6 +25,13 @@ class SpaControllerTests {
 	}
 
 	@Test
+	void forwardsPracticeRoutes() throws Exception {
+		for (String path : new String[] { "/roadmap", "/roadmap/arrays", "/today", "/test/abc", "/level", "/learn", "/learn/oop" }) {
+			mvc.perform(get(path)).andExpect(status().isOk()).andExpect(forwardedUrl("/index.html"));
+		}
+	}
+
+	@Test
 	void leavesApiAlone() throws Exception {
 		mvc.perform(get("/problem")).andExpect(status().isBadRequest()).andExpect(jsonPath("$.error").exists());
 	}
