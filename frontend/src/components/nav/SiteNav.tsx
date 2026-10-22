@@ -10,7 +10,6 @@ import { useActiveSection } from '@/hooks/useActiveSection'
 import { cn } from '@/lib/utils'
 import { SECTIONS, sectionFor } from '@/nav/sections'
 import { Gooey } from './Gooey'
-import { MobileMenu } from './MobileMenu'
 import { SectionTabs } from './SectionTabs'
 
 interface Props {
@@ -30,7 +29,6 @@ const LANDING_LINKS = [
 ]
 const LANDING_IDS = LANDING_LINKS.map((l) => l.id)
 const LANDING_ITEMS: GooeyNavItem[] = LANDING_LINKS.map((l) => ({ label: l.label, href: `#${l.id}` }))
-const PAGE_LINKS = LANDING_LINKS.map((l) => ({ label: l.label, href: `#${l.id}` }))
 const SECTION_ITEMS: GooeyNavItem[] = SECTIONS.map((s) => ({ label: s.label, href: s.to }))
 
 function SectionLinks() {
@@ -39,7 +37,7 @@ function SectionLinks() {
   const index = Math.max(0, SECTIONS.findIndex((s) => s.id === sectionFor(pathname)))
   return (
     <Gooey
-      className="hidden md:block"
+      className="order-last max-w-full basis-full overflow-x-auto md:order-none md:basis-auto md:overflow-visible"
       label="Sections"
       items={SECTION_ITEMS}
       activeIndex={index}
@@ -52,7 +50,7 @@ function SectionLinks() {
 }
 
 function LandingLinks() {
-  return <Gooey className="hidden md:block" label="Page" items={LANDING_ITEMS} activeIndex={useActiveSection(LANDING_IDS)} size="md" frame particleCount={15} />
+  return <Gooey className="order-last max-w-full basis-full overflow-x-auto md:order-none md:basis-auto md:overflow-visible" label="Page" items={LANDING_ITEMS} activeIndex={useActiveSection(LANDING_IDS)} size="md" frame particleCount={15} />
 }
 
 /** The navbar for every page: logo, sections (GooeyNav), search, theme and settings, with the section's pages beneath. */
@@ -68,7 +66,7 @@ export function SiteNav({ landing = false, onJump, onMenu }: Props) {
 
   return (
     <header className={cn('z-40 border-b bg-cream/95 backdrop-blur-[2px] transition-[border-color]', landing && 'sticky top-0', landing && !scrolled ? 'border-transparent' : 'border-line')}>
-      <div className="flex items-center gap-1.5 py-2.5 pr-16 pl-2 text-[13.5px] min-[420px]:gap-3 min-[420px]:pl-4 sm:gap-5 sm:pl-6 lg:pl-10 xl:pl-14">
+      <div className="flex flex-wrap items-center gap-1.5 py-2.5 pr-16 pl-2 text-[13.5px] min-[420px]:gap-3 min-[420px]:pl-4 sm:gap-5 sm:pl-6 lg:pl-10 xl:pl-14">
         {onMenu && (
           <Button variant="ghost" size="icon" aria-label="Recent problems" onClick={onMenu} className="min-[1200px]:hidden">
             <Menu className="size-4" aria-hidden="true" />
@@ -98,7 +96,6 @@ export function SiteNav({ landing = false, onJump, onMenu }: Props) {
           </Button>
         )}
         <ThemeToggle />
-        <MobileMenu pageLinks={landing ? PAGE_LINKS : undefined} />
         {/* Fixed top-right on screen; placed last so it follows the nav in keyboard order. */}
         <SettingsButton />
       </div>

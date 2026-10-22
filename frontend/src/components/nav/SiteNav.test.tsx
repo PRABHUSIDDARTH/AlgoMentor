@@ -51,13 +51,11 @@ describe('SiteNav', () => {
     expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
   })
 
-  it('lists every page in the mobile menu', async () => {
+  it('shows the gooey navigation on every screen size, with no separate menu button', () => {
     renderAt('/today')
-    await userEvent.click(screen.getByRole('button', { name: 'Menu' }))
-    const menu = await screen.findByRole('dialog')
-    for (const name of ['Workspace', 'Roadmap', 'Today', 'Tests', 'Overview', 'OOP', 'Networks', 'DBMS', 'OS', 'Projects', 'Challenges', 'Repo health', 'DSA level', 'Core CS level', 'Resume projects']) {
-      expect(within(menu).getByRole('link', { name })).toBeInTheDocument()
-    }
+    expect(screen.queryByRole('button', { name: 'Menu' })).toBeNull()
+    expect(screen.getByRole('navigation', { name: 'Sections' })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Practice pages' })).toBeInTheDocument()
   })
 
   it('shows page links, not sections, on the landing page', () => {

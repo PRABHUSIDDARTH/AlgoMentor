@@ -61,17 +61,21 @@ test('Settings is the last control in keyboard order', async ({ page }) => {
 test.describe('on a phone', () => {
   test.use({ viewport: { width: 390, height: 800 } })
 
-  test('the menu reaches every page and nothing scrolls sideways', async ({ page }) => {
+  test('the gooey navbar is visible and reaches every section and page', async ({ page }) => {
     await page.goto('/learn')
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
-    await page.getByRole('button', { name: 'Menu' }).click()
-    const menu = page.getByRole('dialog')
-    for (const name of ['Workspace', 'Tests', 'Networks', 'Projects', 'Repo health', 'Core CS level', 'Resume projects']) {
-      await expect(menu.getByRole('link', { name, exact: true })).toBeVisible()
-    }
-    await menu.getByRole('link', { name: 'Repo health', exact: true }).click()
+    await expect(page.getByRole('button', { name: 'Menu' })).toHaveCount(0)
+    const sections = page.getByRole('navigation', { name: 'Sections' })
+    for (const name of ['Practice', 'Learn', 'Git', 'Progress']) await expect(sections.getByRole('link', { name, exact: true })).toBeVisible()
+    await sections.getByRole('link', { name: 'Git', exact: true }).click()
+    await expect(page).toHaveURL(/\/git$/)
+    const tabs = page.getByRole('navigation', { name: 'Git pages' })
+    await tabs.getByRole('link', { name: 'Repo health', exact: true }).click()
     await expect(page).toHaveURL(/\/git\/health$/)
-    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: 'Progress', exact: true }).click()
+    await page.getByRole('navigation', { name: 'Progress pages' }).getByRole('link', { name: 'Resume projects', exact: true }).scrollIntoViewIfNeeded()
+    await page.getByRole('navigation', { name: 'Progress pages' }).getByRole('link', { name: 'Resume projects', exact: true }).click()
+    await expect(page).toHaveURL(/\/resume$/)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
   })
 
   for (const path of ['/', '/learn', '/learn/os/processes', '/today']) {
