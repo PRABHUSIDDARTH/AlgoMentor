@@ -26,5 +26,8 @@ export const READINESS_BAR: Record<Company, Record<Role, number>> = {
   service: { sde1: 50, intern: 40, sde2: 60 },
 }
 
+/** Spec §7 (Learning hub): the Core CS score that counts as fully ready, by company type. */
+export const CORE_BAR: Record<Company, number> = { faang: 70, startup: 60, service: 75 }
+
 export const COMPANY_LABEL: Record<Company, string> = { faang: 'FAANG / product', startup: 'Startup', service: 'Service company' }
 export const ROLE_LABEL: Record<Role, string> = { intern: 'Intern', sde1: 'SDE-1', sde2: 'SDE-2' }

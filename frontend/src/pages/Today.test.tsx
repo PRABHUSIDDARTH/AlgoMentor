@@ -6,7 +6,9 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { STAGES } from '@/content/roadmap'
 import { loadProgress, recordSolve } from '@/practice/progress'
 import { TRACKS } from '@/content/learn'
-import { loadLearn } from '@/learn/progress'
+import { LEARN_KEY, loadLearn } from '@/learn/progress'
+import { PROBLEMS } from '@/content/roadmap'
+import { PROGRESS_KEY } from '@/practice/progress'
 import Today from './Today'
 
 function Probe() {
@@ -90,5 +92,27 @@ describe('Today page', () => {
     expect(within(box).getByRole('status')).toHaveTextContent('3 of 3 correct')
     expect(loadLearn()[m.id].reviewStep).toBe(1)
     expect(within(box).getByText('Refreshed')).toBeInTheDocument()
+  })
+
+  const allSolved = () => localStorage.setItem(PROGRESS_KEY, JSON.stringify(Object.fromEntries([...PROBLEMS.keys()].map((id) => [id, { status: 'solved', reviewStep: 1, nextReviewAt: null }]))))
+  const modules = (tracks: number[]) => Object.fromEntries(tracks.flatMap((i) => TRACKS[i].modules.map((m) => [m.id, { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: null }])))
+
+  it('todayShowsLowerReadiness', () => {
+    allSolved()
+    localStorage.setItem(LEARN_KEY, JSON.stringify(modules([0]))) // core readiness 33%
+    renderToday()
+    const sub = screen.getByText(/^DSA \d+% · Core CS \d+%$/)
+    const [, dsa, core] = /DSA (\d+)% · Core CS (\d+)%/.exec(sub.textContent ?? '')!.map(Number)
+    expect(core).toBe(33)
+    expect(dsa).toBeGreaterThan(33)
+    expect(screen.getByRole('meter', { name: 'Readiness for FAANG / product SDE-1' })).toHaveAttribute('aria-valuenow', '33')
+    expect(screen.getByText(/The lower one counts/)).toBeInTheDocument()
+  })
+
+  it('todayReadinessIsHeldDownByDsaToo', () => {
+    localStorage.setItem(LEARN_KEY, JSON.stringify(modules([0, 1, 2])))
+    renderToday()
+    expect(screen.getByText(/^DSA 0% · Core CS \d+%$/)).toBeInTheDocument()
+    expect(screen.getByRole('meter', { name: 'Readiness for FAANG / product SDE-1' })).toHaveAttribute('aria-valuenow', '0')
   })
 })

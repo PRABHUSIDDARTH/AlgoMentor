@@ -12,6 +12,7 @@ import { useLevel } from '@/practice/useLevel'
 import { useSettings } from '@/practice/useSettings'
 import { ModuleRefresher } from '@/components/learn/ModuleRefresher'
 import { dueModules } from '@/learn/progress'
+import { useCore } from '@/learn/useCore'
 import type { ProfileSettings } from '@/practice/store'
 import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
 import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
@@ -51,6 +52,9 @@ export default function Today() {
   const [settings] = useSettings()
   const navigate = useNavigate()
   const level = useLevel()
+  const core = useCore()
+  // Interviews test both, so the overall figure is the lower of the two.
+  const overall = Math.min(level.readiness, core.readiness)
   const [day, setDay] = useState<Day>(() => planFor(todayKey, settings))
   const [days, setDays] = useState(loadDays)
 
@@ -165,7 +169,9 @@ export default function Today() {
         <aside aria-label="Progress" className="grid content-start gap-5">
           <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
             <p className="text-[15px] font-semibold">Level {level.level}</p>
-            <ReadinessMeter value={level.readiness} label={`Readiness for ${COMPANY_LABEL[settings.target.company]} ${ROLE_LABEL[settings.target.role]}`} />
+            <ReadinessMeter value={overall} label={`Readiness for ${COMPANY_LABEL[settings.target.company]} ${ROLE_LABEL[settings.target.role]}`} />
+            <p className="font-mono text-[11.5px] text-ink-muted">DSA {level.readiness}% · Core CS {core.readiness}%</p>
+            <p className="text-[12px] leading-relaxed text-ink-muted">The lower one counts, because interviews test both.</p>
             <Link to="/level" className="text-[13px] underline underline-offset-[3px]">See what to improve</Link>
           </div>
           <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
