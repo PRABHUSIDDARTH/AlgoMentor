@@ -32,9 +32,18 @@ describe('settings store', () => {
     expect(listener).toHaveBeenCalledOnce()
   })
 
+  it('dropsMalformedStats', () => {
+    localStorage.setItem('algomentor.stats.v1', JSON.stringify({
+      leetcode: { data: {}, fetchedAt: 1 },
+      hackerrank: { data: { username: 'x', badges: 'nope' }, fetchedAt: 1 },
+      gfg: { data: { username: 'x', solved: 3, score: 4, instituteRank: null, streak: null }, fetchedAt: 1 },
+    }))
+    expect(Object.keys(loadStats())).toEqual(['gfg'])
+  })
+
   it('statsCarryFetchTime', () => {
     vi.spyOn(Date, 'now').mockReturnValue(1000)
-    saveStats('gfg', { username: 'x', solved: 1, score: 2 })
-    expect(loadStats().gfg).toEqual({ data: { username: 'x', solved: 1, score: 2 }, fetchedAt: 1000 })
+    saveStats('gfg', { username: 'x', solved: 1, score: 2, instituteRank: null, streak: null })
+    expect(loadStats().gfg).toEqual({ data: { username: 'x', solved: 1, score: 2, instituteRank: null, streak: null }, fetchedAt: 1000 })
   })
 })

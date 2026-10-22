@@ -56,9 +56,23 @@ function Runner({ testId }: { testId: string }) {
   const current = test?.problems[selected]
   const entry = current ? PROBLEMS.get(current.problemId) : undefined
 
+  // Which test problem the session has finished opening; until then its state belongs to the last one.
+  const [openedFor, setOpenedFor] = useState<string | null>(null)
   useEffect(() => {
-    if (entry && !test?.finishedAt) void session.openProblem(entry.problem.url)
+    if (!entry || test?.finishedAt) return
+    const id = entry.problem.id
+    setOpenedFor(null)
+    void session.openProblem(entry.problem.url).then(() => setOpenedFor(id))
   }, [entry?.problem.url]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // The session only knows the open problem, so remember help per test problem as soon as it's seen.
+  const assistedNow = !!current && openedFor === current.problemId && session.assisted
+  useEffect(() => {
+    if (!test || !assistedNow || test.problems[selected]?.assisted) return
+    const next = { ...test, problems: test.problems.map((p, i) => (i === selected ? { ...p, assisted: true } : p)) }
+    saveTest(next)
+    setTest(next)
+  }, [assistedNow, selected, test])
 
   if (!test) {
     return (
@@ -118,7 +132,7 @@ function Runner({ testId }: { testId: string }) {
           <div className="flex flex-wrap items-center gap-2 border-b border-line px-5 py-3">
             <span className="text-[13px] text-ink-muted">Problem {selected + 1} of {test.problems.length}</span>
             <span className="flex-1" />
-            <Button className="bg-ink text-cream hover:bg-ink/90" onClick={() => record(session.hints.length ? 'hinted' : 'solved')}>Mark solved</Button>
+            <Button className="bg-ink text-cream hover:bg-ink/90" onClick={() => record(current?.assisted || assistedNow ? 'hinted' : 'solved')}>Mark solved</Button>
             <Button variant="ghost" onClick={() => record('skipped')}>Skip</Button>
           </div>
           {session.problem ? (

@@ -18,7 +18,7 @@ function session(overrides: Partial<MentorSession> = {}): MentorSession {
   const base = {
     problem, tab: 'hints', hints: [], streaming: null, explain: undefined, solution: {}, language: 'python',
     followups: [], solutionRevealed: false, solved: false, status: 'ready', error: undefined, cooldownUntil: undefined,
-    history: [], hintsRemaining: 4,
+    history: [], hintsRemaining: 4, assisted: false,
     openProblem: vi.fn(), openEntry: vi.fn(), editStatement: vi.fn(), setTab: vi.fn(), explainProblem: vi.fn(),
     nextHint: vi.fn(), revealSolution: vi.fn(), setLanguage: vi.fn(), askFollowUp: vi.fn(), markSolved: vi.fn(),
     retry: vi.fn(), reset: vi.fn(), requestSolution: vi.fn(),

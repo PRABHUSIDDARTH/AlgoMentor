@@ -19,7 +19,7 @@ const RULES: Record<Site, { host: RegExp; example: string; prefixes: string[]; r
     reserved: ['domains', 'contests', 'challenges', 'dashboard', 'skills-verification', 'interview', 'certify', 'leaderboard', 'jobs', 'apply', 'auth', 'work', 'products'],
   },
   gfg: {
-    host: /^(www\.)?geeksforgeeks\.org$/,
+    host: /^(www\.|auth\.)?geeksforgeeks\.org$/,
     example: 'geeksforgeeks.org/user/yourname',
     prefixes: ['user', 'profile'],
     reserved: [],

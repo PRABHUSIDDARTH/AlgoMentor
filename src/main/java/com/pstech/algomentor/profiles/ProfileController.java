@@ -10,6 +10,7 @@ import com.pstech.algomentor.web.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /** Public profile stats for LeetCode, HackerRank and GeeksforGeeks, cached for six hours. */
@@ -37,18 +38,18 @@ public class ProfileController {
 	}
 
 	@GetMapping("/profiles/leetcode/{user}")
-	public Profiles.LeetCodeProfile leetCode(@PathVariable String user) {
-		return cached("leetcode", user, leetCode::fetch);
+	public Profiles.LeetCodeProfile leetCode(@PathVariable String user, @RequestParam(defaultValue = "false") boolean refresh) {
+		return cached("leetcode", user, refresh, leetCode::fetch);
 	}
 
 	@GetMapping("/profiles/hackerrank/{user}")
-	public Profiles.HackerRankProfile hackerRank(@PathVariable String user) {
-		return cached("hackerrank", user, hackerRank::fetch);
+	public Profiles.HackerRankProfile hackerRank(@PathVariable String user, @RequestParam(defaultValue = "false") boolean refresh) {
+		return cached("hackerrank", user, refresh, hackerRank::fetch);
 	}
 
 	@GetMapping("/profiles/gfg/{user}")
-	public Profiles.GfgProfile gfg(@PathVariable String user) {
-		return cached("gfg", user, gfg::fetch);
+	public Profiles.GfgProfile gfg(@PathVariable String user, @RequestParam(defaultValue = "false") boolean refresh) {
+		return cached("gfg", user, refresh, gfg::fetch);
 	}
 
 	/** For tests. */
@@ -57,11 +58,18 @@ public class ProfileController {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T cached(String site, String user, Function<String, T> fetch) {
+	private <T> T cached(String site, String user, boolean refresh, Function<String, T> fetch) {
 		if (!USERNAME.matcher(user).matches()) {
 			throw new ApiException(HttpStatus.BAD_REQUEST, "That doesn't look like a username. Use letters, digits, _ . or -.");
 		}
-		return (T) cache.get(site + ":" + user.toLowerCase(), key -> fetch.apply(user));
+		String key = site + ":" + user.toLowerCase();
+		if (refresh) {
+			// "Refresh" in Settings: read the site again (still rate-limited), and keep the new result.
+			T fresh = fetch.apply(user);
+			cache.put(key, fresh);
+			return fresh;
+		}
+		return (T) cache.get(key, k -> fetch.apply(user));
 	}
 
 }

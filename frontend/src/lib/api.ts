@@ -114,8 +114,8 @@ export interface GfgProfile { username: string; solved: number; score: number; i
 export type ProfileFor<S extends ProfileSite> = S extends 'leetcode' ? LeetCodeProfile : S extends 'hackerrank' ? HackerRankProfile : GfgProfile
 
 /** Public profile stats, read by the backend (cached there for 6 hours). */
-export async function fetchProfile<S extends ProfileSite>(site: S, user: string, signal?: AbortSignal): Promise<ProfileFor<S>> {
-  const res = await fetch(`/profiles/${site}/${encodeURIComponent(user)}`, { signal })
+export async function fetchProfile<S extends ProfileSite>(site: S, user: string, signal?: AbortSignal, opts?: { refresh?: boolean }): Promise<ProfileFor<S>> {
+  const res = await fetch(`/profiles/${site}/${encodeURIComponent(user)}${opts?.refresh ? '?refresh=true' : ''}`, { signal })
   if (!res.ok) throw await errorFrom(res)
   return res.json()
 }

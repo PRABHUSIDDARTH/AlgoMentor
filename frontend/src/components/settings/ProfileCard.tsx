@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { ApiError, fetchProfile, type GfgProfile, type HackerRankProfile, type LeetCodeProfile } from '@/lib/api'
+import { syncFromLeetCode } from '@/practice/progress'
 import { parseProfileUrl, SITE_NAMES, type Site } from '@/practice/profileUrls'
 import { clearStats, saveStats, type StatsEntry } from '@/practice/store'
 
@@ -41,19 +42,25 @@ export function ProfileCard({ site, username, stats, onConnect, onDisconnect }: 
   const [url, setUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [synced, setSynced] = useState<string | null>(null)
   const inflight = useRef<AbortController | null>(null)
   useEffect(() => () => inflight.current?.abort(), [])
 
-  async function load(user: string) {
+  async function load(user: string, refresh = false) {
     inflight.current?.abort()
     const ac = new AbortController()
     inflight.current = ac
     setBusy(true)
     setError(null)
     try {
-      const data = await fetchProfile(site, user, ac.signal)
+      const data = refresh ? await fetchProfile(site, user, ac.signal, { refresh: true }) : await fetchProfile(site, user, ac.signal)
       if (ac.signal.aborted) return false
       saveStats(site, data)
+      if (site === 'leetcode') {
+        // Recent accepted problems that are on the roadmap count as solved there too.
+        const n = syncFromLeetCode((data as LeetCodeProfile).recent)
+        setSynced(n ? `${n} recent ${n === 1 ? 'solve' : 'solves'} added to your roadmap` : null)
+      }
       return true
     } catch (e) {
       if (ac.signal.aborted) return false
@@ -92,7 +99,7 @@ export function ProfileCard({ site, username, stats, onConnect, onDisconnect }: 
             <p className="text-[12.5px] text-ink-muted">{busy ? 'Reading profile…' : 'No stats loaded yet.'}</p>
           )}
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" className="border-ink bg-transparent" disabled={busy} aria-label={`Refresh ${name}`} onClick={() => load(username)}>
+            <Button size="sm" variant="outline" className="border-ink bg-transparent" disabled={busy} aria-label={`Refresh ${name}`} onClick={() => load(username, true)}>
               Refresh
             </Button>
             <Button size="sm" variant="ghost" aria-label={`Disconnect ${name}`} onClick={() => { clearStats(site); onDisconnect() }}>
@@ -114,6 +121,7 @@ export function ProfileCard({ site, username, stats, onConnect, onDisconnect }: 
           </Button>
         </form>
       )}
+      {synced && <p role="status" className="text-[12px] text-ink-muted">{synced}</p>}
       {error && <p role="alert" className="text-[12px] text-danger">{error}</p>}
     </section>
   )

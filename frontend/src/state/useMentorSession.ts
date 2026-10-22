@@ -223,6 +223,7 @@ export function useMentorSession() {
   }, [cancel, load, start])
 
   const openEntry = useCallback(async (entry: HistoryEntry) => {
+    roadmapId.current = undefined
     if (entry.source === 'custom' && entry.statement) {
       cancel()
       return start(fromText(entry.statement), entry)
@@ -310,7 +311,9 @@ export function useMentorSession() {
     if (!p) return
     dispatch({ solved: true })
     record(p, 'solved')
-    if (roadmapId.current) recordSolve(roadmapId.current, { hintsUsed: stateRef.current.hints.length })
+    // Seeing the solution counts like a hint: a review isn't passed by reading the answer.
+    const { hints, solutionRevealed } = stateRef.current
+    if (roadmapId.current) recordSolve(roadmapId.current, { hintsUsed: hints.length + (solutionRevealed ? 1 : 0) })
   }, [record])
 
   const retry = useCallback(() => {
@@ -321,6 +324,7 @@ export function useMentorSession() {
 
   /** Back to the empty state ("New problem"); history and language are kept. */
   const reset = useCallback(() => {
+    roadmapId.current = undefined
     cancel()
     loadController.current?.abort()
     loading.current = false
@@ -332,6 +336,8 @@ export function useMentorSession() {
     ...state,
     history,
     hintsRemaining: MAX_HINTS - state.hints.length,
+    /** The learner had help on this problem: a hint or the revealed solution. */
+    assisted: state.hints.length > 0 || state.solutionRevealed,
     openProblem, openEntry, editStatement, setTab, explainProblem, nextHint, revealSolution, setLanguage,
     askFollowUp, markSolved, retry, reset, requestSolution: fetchCurrentSolution,
   }

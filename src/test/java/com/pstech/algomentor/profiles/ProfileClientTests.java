@@ -67,6 +67,15 @@ class ProfileClientTests {
 		}
 
 		@Test
+		void nonNumericTimestampIsBadGatewayNot500() {
+			server.expect(requestTo("https://lc.test/graphql")).andRespond(withSuccess(
+					"{\"data\":{\"matchedUser\":{\"username\":\"x\",\"profile\":{\"ranking\":1},\"submitStatsGlobal\":{\"acSubmissionNum\":[]},"
+							+ "\"tagProblemCounts\":{}},\"recentAcSubmissionList\":[{\"title\":\"T\",\"titleSlug\":\"t\",\"timestamp\":\"yesterday\"}]}}",
+					MediaType.APPLICATION_JSON));
+			assertStatus(() -> client.fetch("x"), HttpStatus.BAD_GATEWAY);
+		}
+
+		@Test
 		void unexpectedShapeIsBadGateway() {
 			server.expect(requestTo("https://lc.test/graphql"))
 				.andRespond(withSuccess("{\"data\":{\"matchedUser\":{\"username\":\"x\",\"submitStatsGlobal\":null}}}", MediaType.APPLICATION_JSON));

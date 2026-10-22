@@ -21,6 +21,7 @@ describe('parseProfileUrl', () => {
   it.each([
     ['https://www.geeksforgeeks.org/user/nishant_raj/', 'nishant_raj'],
     ['geeksforgeeks.org/profile/x.y'],
+    ['https://auth.geeksforgeeks.org/user/x.y/practice/'],
   ])('parsesProfileUrlVariants gfg %s', (input, user = 'x.y') => {
     expect(parseProfileUrl('gfg', input)).toEqual({ username: user })
   })

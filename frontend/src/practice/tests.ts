@@ -8,7 +8,8 @@ export type PracticeTest = {
   seed: number
   createdAt: number
   durationMin: 60
-  problems: { problemId: string; kind: 'revision' | 'new'; result?: TestResult }[]
+  /** `assisted`: a hint or the solution was seen for this problem during the test. */
+  problems: { problemId: string; kind: 'revision' | 'new'; result?: TestResult; assisted?: boolean }[]
   finishedAt?: number
 }
 
@@ -143,7 +144,8 @@ function validTest(t: unknown): t is PracticeTest {
   const v = t as PracticeTest
   return !!v && typeof v.id === 'string' && typeof v.seed === 'number' && typeof v.createdAt === 'number' && Array.isArray(v.problems)
     && v.problems.every((p) => p && PROBLEMS.has(p.problemId) && (p.kind === 'revision' || p.kind === 'new')
-      && (p.result === undefined || ['solved', 'hinted', 'skipped'].includes(p.result)))
+      && (p.result === undefined || ['solved', 'hinted', 'skipped'].includes(p.result))
+      && (p.assisted === undefined || typeof p.assisted === 'boolean'))
 }
 
 export function loadTests(): Record<string, PracticeTest> {

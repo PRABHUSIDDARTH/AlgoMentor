@@ -43,6 +43,15 @@ describe('Today page', () => {
     expect(screen.getByText('1 of 3 done')).toBeInTheDocument()
   })
 
+  it('ticksItemsSolvedWhileAway', () => {
+    const { unmount } = renderToday()
+    unmount() // e.g. Solve → workspace → "I solved it" → back to Today
+    recordSolve(first[0].id, { hintsUsed: 0 })
+    renderToday()
+    expect(screen.getByRole('checkbox', { name: `${first[0].title} done` })).toBeChecked()
+    expect(screen.getByText('1 of 3 done')).toBeInTheDocument()
+  })
+
   it('manualTickPersistsAndRecordsTheSolve', async () => {
     const { unmount } = renderToday()
     await userEvent.click(screen.getByRole('checkbox', { name: `${first[1].title} done` }))

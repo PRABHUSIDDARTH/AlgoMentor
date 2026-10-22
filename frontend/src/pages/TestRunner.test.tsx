@@ -72,6 +72,30 @@ describe('TestRunner', () => {
     expect(items[1]).toHaveTextContent('Skipped')
   })
 
+  it('revealingTheSolutionScoresAsWithHints', async () => {
+    renderRunner()
+    await screen.findByRole('heading', { level: 1 })
+    await userEvent.click(screen.getByRole('button', { name: 'Reveal solution' }))
+    await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Reveal solution' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Mark solved' }))
+    expect(within(screen.getByRole('list', { name: 'Test problems' })).getAllByRole('listitem')[0]).toHaveTextContent('With hints')
+  })
+
+  it('hintsFollowTheProblemAcrossSwitches', async () => {
+    api.askStream.mockImplementation(async (_p: unknown, onChunk: (t: string) => void) => { onChunk('**Hint 1:** x'); return '**Hint 1:** x' })
+    renderRunner()
+    await screen.findByRole('heading', { level: 1 })
+    await userEvent.click(screen.getByRole('button', { name: 'Next hint' }))
+    await screen.findByText('read', {}, { timeout: 100 }).catch(() => null)
+    const rail = () => within(screen.getByRole('list', { name: 'Test problems' })).getAllByRole('button')
+    await userEvent.click(rail()[1])
+    await screen.findByRole('heading', { level: 1 })
+    await userEvent.click(rail()[0])
+    await screen.findByRole('heading', { level: 1 })
+    await userEvent.click(screen.getByRole('button', { name: 'Mark solved' }))
+    expect(within(screen.getByRole('list', { name: 'Test problems' })).getAllByRole('listitem')[0]).toHaveTextContent('With hints')
+  })
+
   it('finishShowsReport', async () => {
     renderRunner()
     await userEvent.click(screen.getByRole('button', { name: 'Mark solved' }))

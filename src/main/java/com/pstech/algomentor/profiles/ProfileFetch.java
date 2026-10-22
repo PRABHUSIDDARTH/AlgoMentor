@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -39,7 +37,7 @@ final class ProfileFetch {
 		catch (HttpClientErrorException.NotFound ex) {
 			throw notFound(site, user);
 		}
-		catch (RestClientException | JacksonException | IllegalStateException | NullPointerException | ClassCastException ex) {
+		catch (RuntimeException ex) {
 			log.warn("{} profile read failed for {}", site, user, ex);
 			throw unreadable(site);
 		}

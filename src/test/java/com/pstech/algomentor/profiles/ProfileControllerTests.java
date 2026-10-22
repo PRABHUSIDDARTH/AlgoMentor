@@ -82,6 +82,14 @@ class ProfileControllerTests {
 	}
 
 	@Test
+	void refreshBypassesTheCache() throws Exception {
+		mvc.perform(get("/profiles/gfg/demo")).andExpect(status().isOk());
+		mvc.perform(get("/profiles/gfg/demo").param("refresh", "true")).andExpect(status().isOk());
+		mvc.perform(get("/profiles/gfg/demo")).andExpect(status().isOk());
+		verify(gfg, times(2)).fetch(anyString());
+	}
+
+	@Test
 	void doesNotCacheErrors() throws Exception {
 		given(hackerRank.fetch(anyString())).willThrow(new ApiException(HttpStatus.BAD_GATEWAY, "Couldn't read HackerRank right now."));
 		mvc.perform(get("/profiles/hackerrank/demo")).andExpect(status().isBadGateway())

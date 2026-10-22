@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { loadProgress } from '@/practice/progress'
 import { loadSettings, saveStats } from '@/practice/store'
 import { SettingsButton } from './SettingsButton'
 
@@ -49,6 +50,23 @@ describe('Settings', () => {
     expect(api.fetchProfile).toHaveBeenCalledWith('leetcode', 'demo', expect.anything())
     expect(await screen.findByText('312 solved · 140 Easy · 150 Medium · 22 Hard')).toBeInTheDocument()
     expect(loadSettings().leetcode).toBe('demo')
+  })
+
+  it('connectingLeetCodeSyncsRecentSolvesIntoTheRoadmap', async () => {
+    api.fetchProfile.mockResolvedValue({ ...LC, recent: [{ slug: 'two-sum', title: 'Two Sum', solvedAt: 1_790_000_000 }, { slug: 'not-on-roadmap', title: 'x', solvedAt: 1 }] })
+    await open()
+    await userEvent.type(screen.getByRole('textbox', { name: 'LeetCode profile URL' }), 'leetcode.com/u/demo')
+    await userEvent.click(screen.getByRole('button', { name: 'Connect LeetCode' }))
+    expect(await screen.findByText('1 recent solve added to your roadmap')).toBeInTheDocument()
+    expect(loadProgress()['two-sum']?.status).toBe('solved')
+  })
+
+  it('refreshAsksTheServerToBypassItsCache', async () => {
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ leetcode: 'demo', target: { company: 'faang', role: 'sde1' }, dailyGoal: 3 }))
+    saveStats('leetcode', LC)
+    await open()
+    await userEvent.click(screen.getByRole('button', { name: 'Refresh LeetCode' }))
+    expect(api.fetchProfile).toHaveBeenCalledWith('leetcode', 'demo', expect.anything(), { refresh: true })
   })
 
   it('profileErrorShowsOnCard', async () => {

@@ -61,13 +61,26 @@ export function saveSettings(settings: ProfileSettings): void {
 
 export type StatsEntry = { data: unknown; fetchedAt: number }
 
+const num = (x: unknown) => typeof x === 'number' && Number.isFinite(x)
+const numOrNull = (x: unknown) => x === null || x === undefined || num(x)
+const str = (x: unknown) => typeof x === 'string'
+
+/** Shape checks per site, so stats saved by an older version (or edited by hand) can't crash a page. */
+const VALID: Record<Site, (d: any) => boolean> = { // eslint-disable-line @typescript-eslint/no-explicit-any
+  leetcode: (d) => str(d.username) && numOrNull(d.ranking) && d.solved && ['easy', 'medium', 'hard', 'total'].every((k) => num(d.solved[k]))
+    && Array.isArray(d.topics) && d.topics.every((t: any) => t && str(t.tag) && num(t.solved)) // eslint-disable-line @typescript-eslint/no-explicit-any
+    && Array.isArray(d.recent) && d.recent.every((r: any) => r && str(r.slug) && str(r.title) && num(r.solvedAt)), // eslint-disable-line @typescript-eslint/no-explicit-any
+  hackerrank: (d) => str(d.username) && Array.isArray(d.badges) && d.badges.every((b: any) => b && str(b.name) && num(b.stars) && num(b.level) && num(b.solved)), // eslint-disable-line @typescript-eslint/no-explicit-any
+  gfg: (d) => str(d.username) && num(d.solved) && num(d.score) && numOrNull(d.instituteRank) && numOrNull(d.streak),
+}
+
 export function loadStats(): Partial<Record<Site, StatsEntry>> {
   const v = read(STATS_KEY)
   if (!v || typeof v !== 'object') return {}
   const out: Partial<Record<Site, StatsEntry>> = {}
   for (const site of ['leetcode', 'hackerrank', 'gfg'] as const) {
     const e = (v as Record<string, StatsEntry>)[site]
-    if (e && typeof e === 'object' && typeof e.fetchedAt === 'number' && e.data && typeof e.data === 'object') out[site] = e
+    if (e && typeof e === 'object' && typeof e.fetchedAt === 'number' && e.data && typeof e.data === 'object' && VALID[site](e.data)) out[site] = e
   }
   return out
 }

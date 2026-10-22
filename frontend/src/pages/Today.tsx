@@ -10,6 +10,7 @@ import { loadProgress, loadUnlocks, PROGRESS_EVENT, recordReviewFailed, recordSo
 import { solveHref } from '@/practice/roadmapView'
 import { useLevel } from '@/practice/useLevel'
 import { useSettings } from '@/practice/useSettings'
+import type { ProfileSettings } from '@/practice/store'
 import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
 import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
 
@@ -25,17 +26,35 @@ function useTodayKey(): string {
   return key
 }
 
+/** Ticks items whose problem was solved (or reviewed) today while this page wasn't open. */
+function reconcile(todayKey: string, day: Day): Day {
+  const progress = loadProgress()
+  const [y, m, d] = todayKey.split('-').map(Number)
+  const start = new Date(y, m - 1, d).getTime()
+  let latest = day
+  for (const item of day.items) {
+    const p = item.problemId ? progress[item.problemId] : undefined
+    if (!p || p.status !== 'solved' || day.completedIds.includes(item.id)) continue
+    const at = item.kind === 'new' ? p.firstSolvedAt : p.lastReviewedAt
+    if (at !== undefined && at >= start) latest = markItem(todayKey, item.id, true) ?? latest
+  }
+  return latest
+}
+
+const planFor = (todayKey: string, settings: ProfileSettings) =>
+  reconcile(todayKey, getDay(todayKey, () => buildPlan(todayKey, settings, loadProgress(), loadUnlocks(), Date.now())))
+
 export default function Today() {
   const todayKey = useTodayKey()
   const [settings] = useSettings()
   const navigate = useNavigate()
   const level = useLevel()
-  const [day, setDay] = useState<Day>(() => getDay(todayKey, () => buildPlan(todayKey, settings, loadProgress(), loadUnlocks(), Date.now())))
+  const [day, setDay] = useState<Day>(() => planFor(todayKey, settings))
   const [days, setDays] = useState(loadDays)
 
   // New day while the page is open: build (or load) that day's plan.
   useEffect(() => {
-    setDay(getDay(todayKey, () => buildPlan(todayKey, settings, loadProgress(), loadUnlocks(), Date.now())))
+    setDay(planFor(todayKey, settings))
     setDays(loadDays())
   }, [todayKey]) // settings changes apply from the next day; today's plan stays stable
 

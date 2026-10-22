@@ -222,6 +222,31 @@ describe('useMentorSession', () => {
     expect(loadProgress()['two-sum']).toMatchObject({ status: 'solved', reviewStep: 0 })
   })
 
+  it('openingARecentProblemForgetsTheRoadmapId', async () => {
+    const { result } = renderHook(() => useMentorSession())
+    await act(() => result.current.openProblem('1', { roadmapProblemId: 'two-sum' }))
+    await act(() => result.current.openEntry({ key: 'custom:1', source: 'custom', title: 'Custom: x', statement: 'Merge intervals.', status: 'started', hintsUsed: 0, hints: [], updatedAt: 1 }))
+    act(() => result.current.markSolved())
+    expect(loadProgress()).toEqual({})
+    await act(() => result.current.openProblem('1', { roadmapProblemId: 'two-sum' }))
+    act(() => result.current.reset())
+    await act(() => result.current.openProblem('Some pasted problem text that is long enough.'))
+    act(() => result.current.markSolved())
+    expect(loadProgress()).toEqual({})
+  })
+
+  it('revealedSolutionCountsAsAssisted', async () => {
+    const { result } = renderHook(() => useMentorSession())
+    // Solved two days ago, so today's solve is a due review.
+    localStorage.setItem('algomentor.progress.v1', JSON.stringify({ 'two-sum': { status: 'solved', firstSolvedAt: 1, reviewStep: 2, nextReviewAt: Date.now() - 86_400_000 } }))
+    await act(() => result.current.openProblem('1', { roadmapProblemId: 'two-sum' }))
+    act(() => result.current.revealSolution())
+    await finish(calls[0], 'answer')
+    act(() => result.current.markSolved())
+    expect(loadProgress()['two-sum'].reviewStep).toBe(0)
+    expect(result.current.assisted).toBe(true)
+  })
+
   it('markSolvedWithoutRoadmapIdLeavesProgressAlone', async () => {
     const { result } = await openTwoSum()
     act(() => result.current.markSolved())
