@@ -5,6 +5,7 @@ const ROUTES = [
   '/', '/app', '/app?q=1', '/roadmap', '/roadmap/arrays', '/today', '/level',
   '/learn', '/learn/oop', '/learn/oop/classes-objects', '/learn/cn/tcp-udp', '/learn/dbms/indexing',
   '/projects/library-manager', '/git', '/git/merge-conflict', '/resume',
+  '/tests', '/projects', '/git/health', '/level/core',
 ]
 
 for (const colorScheme of ['light', 'dark'] as const) {

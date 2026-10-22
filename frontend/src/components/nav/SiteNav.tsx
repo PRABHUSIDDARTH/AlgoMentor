@@ -90,7 +90,7 @@ export function SiteNav({ landing = false, onJump, onMenu }: Props) {
 
   return (
     <header className={cn('z-40 border-b bg-cream/95 backdrop-blur-[2px] transition-[border-color]', landing && 'sticky top-0', landing && !scrolled ? 'border-transparent' : 'border-line')}>
-      <div className="flex items-center gap-3 py-2.5 pr-16 pl-4 text-[13.5px] sm:gap-5 sm:pl-6 lg:pl-10 xl:pl-14">
+      <div className="flex items-center gap-1.5 py-2.5 pr-16 pl-2 text-[13.5px] min-[420px]:gap-3 min-[420px]:pl-4 sm:gap-5 sm:pl-6 lg:pl-10 xl:pl-14">
         {onMenu && (
           <Button variant="ghost" size="icon" aria-label="Recent problems" onClick={onMenu} className="min-[1200px]:hidden">
             <Menu className="size-4" aria-hidden="true" />
