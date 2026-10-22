@@ -12,6 +12,7 @@ const Workspace = lazy(() => import('@/pages/Workspace'))
 const ComingSoon = lazy(() => import('@/pages/ComingSoon'))
 const Roadmap = lazy(() => import('@/pages/Roadmap'))
 const RoadmapStage = lazy(() => import('@/pages/RoadmapStage'))
+const Today = lazy(() => import('@/pages/Today'))
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
           <Route path="/app/*" element={<Workspace />} />
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/roadmap/:stageId" element={<RoadmapStage />} />
-          <Route path="/today" element={<ComingSoon title="Today" />} />
+          <Route path="/today" element={<Today />} />
           <Route path="/test/:testId" element={<ComingSoon title="Test" />} />
           <Route path="/level" element={<ComingSoon title="Level" />} />
           <Route path="/learn/*" element={<ComingSoon title="Learn" />} />
