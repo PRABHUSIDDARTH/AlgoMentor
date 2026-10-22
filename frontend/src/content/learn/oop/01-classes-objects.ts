@@ -5,11 +5,21 @@ const lesson: Lesson = {
   title: 'Classes & objects',
   minutes: 8,
   diagram: 'class-object',
+  hook: 'A library app misbehaves at 2 a.m.: one `Book` is marked on loan with no borrower, and nobody can say which of forty files flipped the flag. Classes exist so a bug like that has exactly one place to live, right next to the data it protects.',
+  keyPoints: [
+    'A class is the blueprint; an object is one thing built from it, with its own field values.',
+    'Fields hold per-object state. Methods are shared code that runs on whichever object you call it on.',
+    'A constructor should leave the object valid, so it refuses bad input early.',
+    'Two objects can be equal in value yet still be different objects. Know which one you are asking about.',
+  ],
   body: `## A class is a blueprint
 
 A **class** describes a kind of thing: the data each one holds (its *fields*) and what it can do (its *methods*). An **object** is one concrete thing made from that blueprint, with its own field values.
 
 A library has thousands of books. You don't write code for each book. You write one \`Book\` class and make as many \`Book\` objects as you need. The class is written once, at design time; objects are created while the program runs, as many as the data calls for.
+
+> [!KEY] One blueprint, many objects
+> Write \`Book\` once. A running program might hold ten thousand \`Book\` objects, each with its own title and loan status. If you catch yourself copy-pasting a class to make a second book, you wanted a second object, not a second class.
 
 ## Fields hold state, methods hold behaviour
 
@@ -17,11 +27,28 @@ Every object carries its own copy of the fields. Changing \`book1.title\` doesn'
 
 That split is the heart of object-oriented design. The data that describes one book and the rules for changing it live side by side. Code elsewhere asks the book to do something (\`book.borrow()\`) instead of reaching in and flipping a flag itself.
 
+> [!TRY] Two books, one change
+> Both books have the same title. What does the last line print?
+>
+> \`\`\`python
+> a = Book("Dune")
+> b = Book("Dune")
+> a.borrow()
+> print(b.on_loan)
+> \`\`\`
+>
+> ---
+>
+> It prints \`False\`. \`a\` and \`b\` are separate objects, each with its own \`on_loan\` field, so borrowing \`a\` leaves \`b\` alone. Sharing a title does not make them one book.
+
 ## Constructors set up a valid object
 
 A **constructor** runs when an object is created. Its job is to leave the object in a usable state, so it should take everything the object can't work without. A book without an ISBN is a bug waiting to happen, so the constructor asks for it.
 
 Good constructors check their arguments and refuse bad ones early. If a title can't be empty, throw an error in the constructor rather than discovering the empty title three screens later. Fields that never change after construction can be marked \`final\` (Java) or \`const\` (C++), which documents the intent and lets the compiler hold you to it.
+
+> [!GOTCHA] The object that looks valid but is not
+> An empty constructor plus setters feels flexible, but every caller can forget a setter, and you end up with a \`Book\` that has a title and no ISBN. Nothing complains until the loan screen. Put what the object cannot live without in the constructor and the half-built object can never exist.
 
 ## Instance members and class members
 
@@ -33,9 +60,15 @@ Use static members sparingly. Shared mutable state is hard to test and easy to c
 
 Two objects can hold identical values and still be different objects. \`new Book("Dune", "978-0441")\` called twice gives two books that are *equal* in content but not the *same* object: borrowing one doesn't borrow the other. Languages separate the two questions: Java has \`==\` (same object) and \`equals()\` (same value); Python has \`is\` and \`==\`. Knowing which one you mean avoids a whole family of bugs.
 
+> [!STORY] A bug you will meet
+> A shop keeps carts in a set. Two carts holding the same items compare equal, so the second customer's cart quietly vanishes. The fix is not a cleverer set. It is deciding whether a cart's identity is its contents or its owner, then writing \`equals\` to say so.
+
 ## How to think about it in practice
 
-When you start a design, read the problem statement and underline the nouns: member, book, loan, fine. Those are candidate classes. The verbs (borrow, return, renew) become methods on the class that owns the data the verb changes. You will refine this list, but it is a reliable first step and it is exactly how interviewers expect you to begin.`,
+When you start a design, read the problem statement and underline the nouns: member, book, loan, fine. Those are candidate classes. The verbs (borrow, return, renew) become methods on the class that owns the data the verb changes. You will refine this list, but it is a reliable first step and it is exactly how interviewers expect you to begin.
+
+> [!INTERVIEW] Say the nouns out loud
+> In a design round, underline the nouns and verbs before you touch the keyboard, and say them as you go: member, book, loan are candidate classes; borrow, return, renew belong to the class that owns the data each one changes. That narration is most of the first five minutes, and it is what the interviewer is scoring.`,
   code: {
     java: `public class Book {
     private static int created = 0;

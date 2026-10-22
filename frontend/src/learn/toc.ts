@@ -6,7 +6,7 @@ export function slug(text: string): string {
 }
 
 /** Repeated headings get -2, -3 ... so every id on the page stays unique. */
-function unique(base: string, seen: Map<string, number>): string {
+export function uniqueSlug(base: string, seen: Map<string, number>): string {
   const n = (seen.get(base) ?? 0) + 1
   seen.set(base, n)
   return n === 1 ? base : `${base}-${n}`
@@ -22,7 +22,7 @@ export function extractToc(markdown: string): TocItem[] {
     const m = !fenced && /^## (.+)$/.exec(line)
     if (!m) continue
     const text = m[1].replace(/[`*]/g, '').trim()
-    items.push({ id: unique(slug(text), seen), text })
+    items.push({ id: uniqueSlug(slug(text), seen), text })
   }
   return items
 }
@@ -33,6 +33,6 @@ const ENTITIES: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>
 export function addHeadingIds(html: string, seen: Map<string, number> = new Map()): string {
   return html.replace(/<h2>([\s\S]*?)<\/h2>/g, (_, inner: string) => {
     const text = inner.replace(/<[^>]+>/g, '').replace(/&(amp|lt|gt|quot|#39);/g, (e) => ENTITIES[e])
-    return `<h2 id="${unique(slug(text), seen)}">${inner}</h2>`
+    return `<h2 id="${uniqueSlug(slug(text), seen)}">${inner}</h2>`
   })
 }

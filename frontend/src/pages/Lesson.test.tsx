@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { TRACKS } from '@/content/learn'
 import { LEARN_KEY, loadLearn } from '@/learn/progress'
+import { parseLesson } from '@/learn/lessonBlocks'
 import { extractToc } from '@/learn/toc'
 import Learn from './Learn'
 import LearnTrack from './LearnTrack'
@@ -119,6 +120,41 @@ describe('Lesson page', () => {
   it('unknownModuleShowsNotFound', () => {
     renderAt('/learn/oop/nope')
     expect(screen.getByRole('heading', { name: 'Lesson not found' })).toBeInTheDocument()
+  })
+})
+
+describe('Lesson layout', () => {
+  it('opensWithTheHookAndKeyPoints', () => {
+    renderAt(`/learn/oop/${first.id}`)
+    const why = screen.getByRole('region', { name: 'Why this matters' })
+    expect(why).toHaveTextContent('A library app misbehaves at 2 a.m.')
+    const points = within(screen.getByRole('list', { name: 'Key points' })).getAllByRole('listitem')
+    expect(points).toHaveLength(first.keyPoints!.length)
+    expect(why.querySelector('code')).not.toBeNull()
+  })
+
+  it('putsEachCalloutInTheSectionItBelongsTo', () => {
+    renderAt(`/learn/oop/${first.id}`)
+    const { sections } = parseLesson(first.body)
+    expect(screen.getAllByRole('note')).toHaveLength(sections.flatMap((s) => s.callouts).length)
+    for (const s of sections.filter((x) => x.callouts.length > 0)) {
+      const el = document.getElementById(s.id)!.closest('section')!
+      expect(within(el).getAllByRole('note'), s.title).toHaveLength(s.callouts.length)
+    }
+  })
+
+  it('theTryCalloutHidesItsAnswerUntilAsked', async () => {
+    renderAt(`/learn/oop/${first.id}`)
+    const note = screen.getByRole('note', { name: 'Two books, one change' })
+    expect(within(note).getByText(/separate objects/)).not.toBeVisible()
+    await userEvent.click(within(note).getByRole('button', { name: 'Show the answer' }))
+    expect(within(note).getByText(/separate objects/)).toBeVisible()
+  })
+
+  it('theLessonIsNotCappedToANarrowColumn', () => {
+    renderAt(`/learn/oop/${first.id}`)
+    expect(document.querySelector('article')?.className).not.toMatch(/72ch/)
+    expect(document.querySelector('figure')?.className).not.toMatch(/72ch/)
   })
 })
 

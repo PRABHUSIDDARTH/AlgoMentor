@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { splitMarkdown } from './markdown'
+import { inlineMarkdown, splitMarkdown } from './markdown'
 
 describe('splitMarkdown', () => {
   it('extractsComplexity', () => {
@@ -25,5 +25,15 @@ describe('splitMarkdown', () => {
     expect(html).not.toMatch(/onerror/i)
     expect(html).not.toMatch(/<script/i)
     expect(html).not.toMatch(/javascript:/i)
+  })
+})
+
+describe('inlineMarkdown', () => {
+  it('rendersCodeAndEmphasisWithoutWrappingParagraphs', () => {
+    expect(inlineMarkdown('Use `final` and **never** mutate')).toBe('Use <code>final</code> and <strong>never</strong> mutate')
+  })
+
+  it('stripsScriptsAndHandlers', () => {
+    expect(inlineMarkdown('a <img src=x onerror=alert(1)> <script>x</script>b')).not.toMatch(/onerror|<script/)
   })
 })

@@ -6,7 +6,14 @@ export type Lesson = {
   id: string
   title: string
   minutes: number
-  /** Markdown, rendered through the app's sanitising renderer. */
+  /** A short, concrete reason to care, shown first. Inline markdown. */
+  hook?: string
+  /** Three or four things to take away, shown beside the hook. Inline markdown. */
+  keyPoints?: string[]
+  /**
+   * Markdown, rendered through the app's sanitising renderer. Blockquotes that start with
+   * [!KEY], [!GOTCHA], [!INTERVIEW], [!TRY] or [!STORY] become callouts beside their section.
+   */
   body: string
   /** Key into the diagram registry (components/learn/diagrams). */
   diagram?: string
