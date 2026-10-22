@@ -22,6 +22,8 @@ const ROUTES: [string, string, string][] = [
   ['/resume', 'Progress', 'Resume projects'],
   ['/companies', 'Progress', 'Companies'],
   ['/companies/meta', 'Progress', 'Companies'],
+  ['/about', 'About', 'Profile'],
+  ['/about/settings', 'About', 'Settings'],
 ]
 
 for (const [path, section, tab] of ROUTES) {
@@ -31,7 +33,6 @@ for (const [path, section, tab] of ROUTES) {
     await expect(sections.getByRole('link', { name: section, exact: true })).toHaveAttribute('aria-current', 'page')
     const tabs = page.getByRole('navigation', { name: `${section} pages` })
     await expect(tabs.getByRole('link', { name: tab, exact: true })).toHaveAttribute('aria-current', 'page')
-    await expect(page.getByRole('button', { name: 'Settings' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Theme' })).toBeVisible()
     // Both rows are the React Bits GooeyNav, which draws its blob on a canvas.
     await expect(sections.locator('canvas')).toHaveCount(1)
@@ -67,10 +68,11 @@ test('a section link navigates without a full reload and its tabs reach every pa
   await expect(page.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible()
 })
 
-test('Settings is the last control in keyboard order', async ({ page }) => {
+test('the theme toggle is the last control in the navbar and there is no floating settings button', async ({ page }) => {
   await page.goto('/learn')
   const names = await page.getByRole('banner').getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label') ?? e.textContent ?? ''))
-  expect(names[names.length - 1]).toBe('Settings')
+  expect(names[names.length - 1]).toBe('Theme')
+  await expect(page.getByRole('button', { name: 'Settings' })).toHaveCount(0)
 })
 
 test.describe('on a phone', () => {

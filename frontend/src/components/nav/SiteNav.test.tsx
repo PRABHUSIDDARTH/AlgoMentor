@@ -44,11 +44,19 @@ describe('SiteNav', () => {
     expect(screen.getByTestId('at')).toHaveTextContent('/git')
   })
 
-  it('has the search, theme and settings controls where asked', () => {
+  it('has the search and theme controls where asked, and About as a section', () => {
     renderAt('/app', { onJump: () => {} })
     expect(screen.getAllByRole('button', { name: 'Jump to problem' }).length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: 'Theme' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Settings' })).toBeNull()
+    expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about')
+  })
+
+  it('shows the About tabs on the settings page', () => {
+    renderAt('/about/settings')
+    const tabs = screen.getByRole('navigation', { name: 'About pages' })
+    expect(within(tabs).getByRole('link', { name: 'Settings' })).toHaveAttribute('aria-current', 'page')
+    expect(within(tabs).getByRole('link', { name: 'Profile' })).not.toHaveAttribute('aria-current')
   })
 
   it('shows the gooey navigation on every screen size, with no separate menu button', () => {

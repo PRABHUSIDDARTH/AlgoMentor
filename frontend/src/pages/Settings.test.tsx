@@ -1,11 +1,11 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { loadProgress } from '@/practice/progress'
 import { loadSettings, saveStats } from '@/practice/store'
-import { SettingsButton } from './SettingsButton'
+import Settings from './Settings'
 
 const api = vi.hoisted(() => ({ fetchProfile: vi.fn() }))
 vi.mock('@/lib/api', async (importOriginal) => ({ ...(await importOriginal<typeof import('@/lib/api')>()), ...api }))
@@ -13,9 +13,14 @@ const { ApiError } = await import('@/lib/api')
 
 const LC = { username: 'demo', ranking: 250000, solved: { easy: 140, medium: 150, hard: 22, total: 312 }, topics: [], recent: [] }
 
-function open() {
-  render(<TooltipProvider><MemoryRouter><SettingsButton /></MemoryRouter></TooltipProvider>)
-  return userEvent.click(screen.getByRole('button', { name: 'Settings' }))
+async function open() {
+  render(
+    <TooltipProvider>
+      <MemoryRouter initialEntries={['/about/settings']}>
+        <Routes><Route path="/about/settings" element={<Settings />} /></Routes>
+      </MemoryRouter>
+    </TooltipProvider>,
+  )
 }
 
 beforeEach(() => {
@@ -27,12 +32,10 @@ afterEach(() => {
 })
 
 describe('Settings', () => {
-  it('opensFromFixedGear', async () => {
-    render(<TooltipProvider><MemoryRouter><SettingsButton /></MemoryRouter></TooltipProvider>)
-    const gear = screen.getByRole('button', { name: 'Settings' })
-    expect(gear.className).toMatch(/\bfixed\b/)
-    await userEvent.click(gear)
-    expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument()
+  it('isAPageWithASettingsHeading', async () => {
+    await open()
+    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeInTheDocument()
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('invalidUrlShowsFormat', async () => {
@@ -126,20 +129,49 @@ describe('Settings', () => {
     expect(within(screen.getByRole('group', { name: 'Focus' })).getByRole('button', { name: 'Backend' })).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('companyListOnlyHasTheTiersCompaniesAndIsSaved', async () => {
+  it('theDreamCompanyPickerFindsAnyCompanyAndSetsItsTier', async () => {
     await open()
-    const select = screen.getByRole('combobox', { name: 'Target company' })
-    expect(within(select).getAllByRole('option').map((o) => o.textContent)).toEqual(['Any MAANG company', 'Google', 'Meta', 'Amazon', 'Apple', 'Netflix'])
-    await userEvent.selectOptions(select, 'Meta')
-    expect(loadSettings().target.employer).toBe('meta')
+    await userEvent.type(screen.getByRole('combobox', { name: 'Dream company' }), 'flip')
+    await userEvent.click(await screen.findByRole('option', { name: /Flipkart/ }))
+    expect(loadSettings().target).toMatchObject({ company: 'product', employer: 'flipkart' })
+    expect(screen.getByText('Dream company: Flipkart')).toBeInTheDocument()
   })
 
   it('changingTierDropsAnEmployerFromAnotherTier', async () => {
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ target: { company: 'maang', role: 'sde1', employer: 'meta' }, dailyGoal: 3 }))
     await open()
-    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target company' }), 'Meta')
     await userEvent.click(screen.getByRole('button', { name: 'Startups' }))
     expect(loadSettings().target).toMatchObject({ company: 'startup' })
     expect(loadSettings().target.employer).toBeUndefined()
-    expect(within(screen.getByRole('combobox', { name: 'Target company' })).getAllByRole('option').map((o) => o.textContent)).toEqual(['Any startup', 'Razorpay'])
+  })
+
+  it('clearingTheDreamCompanyKeepsTheTier', async () => {
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ target: { company: 'maang', role: 'sde1', employer: 'meta' }, dailyGoal: 3 }))
+    await open()
+    await userEvent.click(screen.getByRole('button', { name: 'Clear dream company' }))
+    expect(loadSettings().target).toEqual({ company: 'maang', role: 'sde1' })
+  })
+
+  it('savesNameEmailAndLinkedIn', async () => {
+    await open()
+    await userEvent.type(screen.getByRole('textbox', { name: 'Name on your card' }), 'Ana Gomez')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Email' }), 'ana@example.com')
+    await userEvent.type(screen.getByRole('textbox', { name: 'LinkedIn profile URL' }), 'https://www.linkedin.com/in/ana-gomez/')
+    await userEvent.click(screen.getByRole('button', { name: 'Save details' }))
+    expect(loadSettings()).toMatchObject({ name: 'Ana Gomez', email: 'ana@example.com', linkedin: 'ana-gomez' })
+    expect(screen.getByRole('status')).toHaveTextContent('Saved')
+  })
+
+  it('explainsABadLinkedInLinkAndSavesNothing', async () => {
+    await open()
+    await userEvent.type(screen.getByRole('textbox', { name: 'LinkedIn profile URL' }), 'https://www.linkedin.com/company/acme')
+    await userEvent.click(screen.getByRole('button', { name: 'Save details' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('linkedin.com/in/yourname')
+    expect(loadSettings().linkedin).toBeUndefined()
+  })
+
+  it('hasAGitHubProfileCard', async () => {
+    await open()
+    expect(screen.getByRole('textbox', { name: 'GitHub profile URL' })).toBeInTheDocument()
   })
 })

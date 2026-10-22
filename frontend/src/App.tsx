@@ -27,6 +27,8 @@ const GitHealth = lazy(() => import('@/pages/GitHealth'))
 const LevelCore = lazy(() => import('@/pages/LevelCore'))
 const Companies = lazy(() => import('@/pages/Companies'))
 const Company = lazy(() => import('@/pages/Company'))
+const About = lazy(() => import('@/pages/About'))
+const Settings = lazy(() => import('@/pages/Settings'))
 
 export default function App() {
   return (
@@ -55,6 +57,8 @@ export default function App() {
           <Route path="/resume" element={<Resume />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies/:companyId" element={<Company />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/about/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
