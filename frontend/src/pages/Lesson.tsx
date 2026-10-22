@@ -6,12 +6,14 @@ import { DIAGRAMS } from '@/components/learn/diagrams'
 import { InterviewQuestions } from '@/components/learn/InterviewQuestions'
 import { ModuleList } from '@/components/learn/ModuleList'
 import { Quiz } from '@/components/learn/Quiz'
+import { ReadingProgress } from '@/components/learn/ReadingProgress'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CodeBlock } from '@/components/workspace/CodeBlock'
 import { MODULES } from '@/content/learn'
 import { markModuleComplete, PASS_SCORE, recordQuiz } from '@/learn/progress'
 import { useLearn } from '@/learn/useLearn'
+import { addHeadingIds, extractToc } from '@/learn/toc'
 import { splitMarkdown } from '@/lib/markdown'
 
 const LANGS = [
@@ -25,7 +27,12 @@ export default function Lesson() {
   const { trackId = '', moduleId = '' } = useParams()
   const entry = MODULES.get(moduleId)
   const progress = useLearn()
-  const segments = useMemo(() => (entry ? splitMarkdown(entry.lesson.body).segments : []), [entry])
+  const segments = useMemo(() => {
+    if (!entry) return []
+    const seen = new Map<string, number>()
+    return splitMarkdown(entry.lesson.body).segments.map((s) => (s.kind === 'html' ? { ...s, html: addHeadingIds(s.html, seen) } : s))
+  }, [entry])
+  const toc = useMemo(() => (entry ? extractToc(entry.lesson.body) : []), [entry])
 
   if (!entry || entry.track.id !== trackId) {
     return (
@@ -48,6 +55,7 @@ export default function Lesson() {
 
   return (
     <AppShell>
+      <ReadingProgress />
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_300px] xl:px-20">
         <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-7">
           <PageHeader
@@ -111,9 +119,19 @@ export default function Lesson() {
           </nav>
         </article>
 
-        <aside aria-label="Track" className="hidden content-start gap-3 xl:grid xl:sticky xl:top-6 xl:self-start">
-          <p className="eyebrow">{track.title}</p>
-          <ModuleList track={track} progress={progress} currentId={lesson.id} compact />
+        <aside aria-label="Track" className="hidden content-start gap-6 xl:grid xl:sticky xl:top-6 xl:self-start">
+          {toc.length > 0 && (
+            <nav aria-label="On this page" className="grid gap-1.5">
+              <p className="eyebrow">On this page</p>
+              {toc.map((t) => (
+                <a key={t.id} href={`#${t.id}`} className="border-l border-line-strong py-0.5 pl-3 text-[12.5px] leading-snug text-ink-muted hover:border-ink hover:text-ink">{t.text}</a>
+              ))}
+            </nav>
+          )}
+          <div className="grid gap-3">
+            <p className="eyebrow">{track.title}</p>
+            <ModuleList track={track} progress={progress} currentId={lesson.id} compact />
+          </div>
         </aside>
       </div>
     </AppShell>
