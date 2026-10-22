@@ -1,0 +1,1979 @@
+{
+ "checkedAt": "2026-10-22T00:51:26.481Z",
+ "problems": {
+  "palindrome-number": {
+   "ok": true,
+   "title": "Palindrome Number",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "add-digits": {
+   "ok": true,
+   "title": "Add Digits",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "count-the-digits-that-divide-a-number": {
+   "ok": true,
+   "title": "Count the Digits That Divide a Number",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "reverse-integer": {
+   "ok": true,
+   "title": "Reverse Integer",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-greatest-common-divisor-of-array": {
+   "ok": true,
+   "title": "Find Greatest Common Divisor of Array",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "ugly-number": {
+   "ok": true,
+   "title": "Ugly Number",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "power-of-three": {
+   "ok": true,
+   "title": "Power of Three",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "count-primes": {
+   "ok": true,
+   "title": "Count Primes",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "fizz-buzz": {
+   "ok": true,
+   "title": "Fizz Buzz",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "running-sum-of-1d-array": {
+   "ok": true,
+   "title": "Running Sum of 1d Array",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "richest-customer-wealth": {
+   "ok": true,
+   "title": "Richest Customer Wealth",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "sqrtx": {
+   "ok": true,
+   "title": "Sqrt(x)",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "valid-perfect-square": {
+   "ok": true,
+   "title": "Valid Perfect Square",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "powx-n": {
+   "ok": true,
+   "title": "Pow(x, n)",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "remove-duplicates-from-sorted-array": {
+   "ok": true,
+   "title": "Remove Duplicates from Sorted Array",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "move-zeroes": {
+   "ok": true,
+   "title": "Move Zeroes",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "best-time-to-buy-and-sell-stock": {
+   "ok": true,
+   "title": "Best Time to Buy and Sell Stock",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "rotate-array": {
+   "ok": true,
+   "title": "Rotate Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "two-sum-ii-input-array-is-sorted": {
+   "ok": true,
+   "title": "Two Sum II - Input Array Is Sorted",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "3sum": {
+   "ok": true,
+   "title": "3Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "container-with-most-water": {
+   "ok": true,
+   "title": "Container With Most Water",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "trapping-rain-water": {
+   "ok": true,
+   "title": "Trapping Rain Water",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "range-sum-query-immutable": {
+   "ok": true,
+   "title": "Range Sum Query - Immutable",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "find-pivot-index": {
+   "ok": true,
+   "title": "Find Pivot Index",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "left-and-right-sum-differences": {
+   "ok": true,
+   "title": "Left and Right Sum Differences",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "product-of-array-except-self": {
+   "ok": true,
+   "title": "Product of Array Except Self",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-subarray": {
+   "ok": true,
+   "title": "Maximum Subarray",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-product-subarray": {
+   "ok": true,
+   "title": "Maximum Product Subarray",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-sum-circular-subarray": {
+   "ok": true,
+   "title": "Maximum Sum Circular Subarray",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-absolute-sum-of-any-subarray": {
+   "ok": true,
+   "title": "Maximum Absolute Sum of Any Subarray",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "majority-element": {
+   "ok": true,
+   "title": "Majority Element",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "sort-colors": {
+   "ok": true,
+   "title": "Sort Colors",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "majority-element-ii": {
+   "ok": true,
+   "title": "Majority Element II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "next-permutation": {
+   "ok": true,
+   "title": "Next Permutation",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "transpose-matrix": {
+   "ok": true,
+   "title": "Transpose Matrix",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "spiral-matrix": {
+   "ok": true,
+   "title": "Spiral Matrix",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "rotate-image": {
+   "ok": true,
+   "title": "Rotate Image",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "set-matrix-zeroes": {
+   "ok": true,
+   "title": "Set Matrix Zeroes",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "two-sum": {
+   "ok": true,
+   "title": "Two Sum",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "contains-duplicate": {
+   "ok": true,
+   "title": "Contains Duplicate",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "contains-duplicate-ii": {
+   "ok": true,
+   "title": "Contains Duplicate II",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "longest-consecutive-sequence": {
+   "ok": true,
+   "title": "Longest Consecutive Sequence",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "valid-anagram": {
+   "ok": true,
+   "title": "Valid Anagram",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "first-unique-character-in-a-string": {
+   "ok": true,
+   "title": "First Unique Character in a String",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "ransom-note": {
+   "ok": true,
+   "title": "Ransom Note",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "sort-characters-by-frequency": {
+   "ok": true,
+   "title": "Sort Characters By Frequency",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "isomorphic-strings": {
+   "ok": true,
+   "title": "Isomorphic Strings",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "word-pattern": {
+   "ok": true,
+   "title": "Word Pattern",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "find-common-characters": {
+   "ok": true,
+   "title": "Find Common Characters",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "group-anagrams": {
+   "ok": true,
+   "title": "Group Anagrams",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "subarray-sum-equals-k": {
+   "ok": true,
+   "title": "Subarray Sum Equals K",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "contiguous-array": {
+   "ok": true,
+   "title": "Contiguous Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "continuous-subarray-sum": {
+   "ok": true,
+   "title": "Continuous Subarray Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "subarray-sums-divisible-by-k": {
+   "ok": true,
+   "title": "Subarray Sums Divisible by K",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "reverse-string": {
+   "ok": true,
+   "title": "Reverse String",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "valid-palindrome": {
+   "ok": true,
+   "title": "Valid Palindrome",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "longest-common-prefix": {
+   "ok": true,
+   "title": "Longest Common Prefix",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "reverse-words-in-a-string": {
+   "ok": true,
+   "title": "Reverse Words in a String",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "valid-palindrome-ii": {
+   "ok": true,
+   "title": "Valid Palindrome II",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "longest-palindromic-substring": {
+   "ok": true,
+   "title": "Longest Palindromic Substring",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "palindromic-substrings": {
+   "ok": true,
+   "title": "Palindromic Substrings",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "roman-to-integer": {
+   "ok": true,
+   "title": "Roman to Integer",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "string-to-integer-atoi": {
+   "ok": true,
+   "title": "String to Integer (atoi)",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "zigzag-conversion": {
+   "ok": true,
+   "title": "Zigzag Conversion",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "integer-to-roman": {
+   "ok": true,
+   "title": "Integer to Roman",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-the-index-of-the-first-occurrence-in-a-string": {
+   "ok": true,
+   "title": "Find the Index of the First Occurrence in a String",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "repeated-substring-pattern": {
+   "ok": true,
+   "title": "Repeated Substring Pattern",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "rotate-string": {
+   "ok": true,
+   "title": "Rotate String",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "shortest-palindrome": {
+   "ok": true,
+   "title": "Shortest Palindrome",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "merge-sorted-array": {
+   "ok": true,
+   "title": "Merge Sorted Array",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "squares-of-a-sorted-array": {
+   "ok": true,
+   "title": "Squares of a Sorted Array",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "sort-an-array": {
+   "ok": true,
+   "title": "Sort an Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "largest-number": {
+   "ok": true,
+   "title": "Largest Number",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "binary-search": {
+   "ok": true,
+   "title": "Binary Search",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "search-insert-position": {
+   "ok": true,
+   "title": "Search Insert Position",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "first-bad-version": {
+   "ok": true,
+   "title": "First Bad Version",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "guess-number-higher-or-lower": {
+   "ok": true,
+   "title": "Guess Number Higher or Lower",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "find-smallest-letter-greater-than-target": {
+   "ok": true,
+   "title": "Find Smallest Letter Greater Than Target",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "find-first-and-last-position-of-element-in-sorted-array": {
+   "ok": true,
+   "title": "Find First and Last Position of Element in Sorted Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "single-element-in-a-sorted-array": {
+   "ok": true,
+   "title": "Single Element in a Sorted Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-peak-element": {
+   "ok": true,
+   "title": "Find Peak Element",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "search-in-rotated-sorted-array": {
+   "ok": true,
+   "title": "Search in Rotated Sorted Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-minimum-in-rotated-sorted-array": {
+   "ok": true,
+   "title": "Find Minimum in Rotated Sorted Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "search-in-rotated-sorted-array-ii": {
+   "ok": true,
+   "title": "Search in Rotated Sorted Array II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "koko-eating-bananas": {
+   "ok": true,
+   "title": "Koko Eating Bananas",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "capacity-to-ship-packages-within-d-days": {
+   "ok": true,
+   "title": "Capacity To Ship Packages Within D Days",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "minimum-number-of-days-to-make-m-bouquets": {
+   "ok": true,
+   "title": "Minimum Number of Days to Make m Bouquets",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "split-array-largest-sum": {
+   "ok": true,
+   "title": "Split Array Largest Sum",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "median-of-two-sorted-arrays": {
+   "ok": true,
+   "title": "Median of Two Sorted Arrays",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "search-a-2d-matrix": {
+   "ok": true,
+   "title": "Search a 2D Matrix",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "search-a-2d-matrix-ii": {
+   "ok": true,
+   "title": "Search a 2D Matrix II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "kth-smallest-element-in-a-sorted-matrix": {
+   "ok": true,
+   "title": "Kth Smallest Element in a Sorted Matrix",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "fibonacci-number": {
+   "ok": true,
+   "title": "Fibonacci Number",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "power-of-four": {
+   "ok": true,
+   "title": "Power of Four",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "k-th-symbol-in-grammar": {
+   "ok": true,
+   "title": "K-th Symbol in Grammar",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-the-winner-of-the-circular-game": {
+   "ok": true,
+   "title": "Find the Winner of the Circular Game",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "subsets": {
+   "ok": true,
+   "title": "Subsets",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "subsets-ii": {
+   "ok": true,
+   "title": "Subsets II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "combinations": {
+   "ok": true,
+   "title": "Combinations",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "combination-sum": {
+   "ok": true,
+   "title": "Combination Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "combination-sum-ii": {
+   "ok": true,
+   "title": "Combination Sum II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "combination-sum-iii": {
+   "ok": true,
+   "title": "Combination Sum III",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "letter-combinations-of-a-phone-number": {
+   "ok": true,
+   "title": "Letter Combinations of a Phone Number",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "permutations": {
+   "ok": true,
+   "title": "Permutations",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "permutations-ii": {
+   "ok": true,
+   "title": "Permutations II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "generate-parentheses": {
+   "ok": true,
+   "title": "Generate Parentheses",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "word-search": {
+   "ok": true,
+   "title": "Word Search",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "n-queens": {
+   "ok": true,
+   "title": "N-Queens",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "sudoku-solver": {
+   "ok": true,
+   "title": "Sudoku Solver",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "middle-of-the-linked-list": {
+   "ok": true,
+   "title": "Middle of the Linked List",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "remove-linked-list-elements": {
+   "ok": true,
+   "title": "Remove Linked List Elements",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "delete-node-in-a-linked-list": {
+   "ok": true,
+   "title": "Delete Node in a Linked List",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "design-linked-list": {
+   "ok": true,
+   "title": "Design Linked List",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "linked-list-cycle": {
+   "ok": true,
+   "title": "Linked List Cycle",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "palindrome-linked-list": {
+   "ok": true,
+   "title": "Palindrome Linked List",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "linked-list-cycle-ii": {
+   "ok": true,
+   "title": "Linked List Cycle II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "remove-nth-node-from-end-of-list": {
+   "ok": true,
+   "title": "Remove Nth Node From End of List",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "reverse-linked-list": {
+   "ok": true,
+   "title": "Reverse Linked List",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "reverse-linked-list-ii": {
+   "ok": true,
+   "title": "Reverse Linked List II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "swap-nodes-in-pairs": {
+   "ok": true,
+   "title": "Swap Nodes in Pairs",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "reverse-nodes-in-k-group": {
+   "ok": true,
+   "title": "Reverse Nodes in k-Group",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "merge-two-sorted-lists": {
+   "ok": true,
+   "title": "Merge Two Sorted Lists",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "add-two-numbers": {
+   "ok": true,
+   "title": "Add Two Numbers",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "merge-in-between-linked-lists": {
+   "ok": true,
+   "title": "Merge In Between Linked Lists",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "sort-list": {
+   "ok": true,
+   "title": "Sort List",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "intersection-of-two-linked-lists": {
+   "ok": true,
+   "title": "Intersection of Two Linked Lists",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "copy-list-with-random-pointer": {
+   "ok": true,
+   "title": "Copy List with Random Pointer",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "odd-even-linked-list": {
+   "ok": true,
+   "title": "Odd Even Linked List",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "lru-cache": {
+   "ok": true,
+   "title": "LRU Cache",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "design-browser-history": {
+   "ok": true,
+   "title": "Design Browser History",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "flatten-a-multilevel-doubly-linked-list": {
+   "ok": true,
+   "title": "Flatten a Multilevel Doubly Linked List",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "all-oone-data-structure": {
+   "ok": true,
+   "title": "All O`one Data Structure",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "valid-parentheses": {
+   "ok": true,
+   "title": "Valid Parentheses",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "implement-queue-using-stacks": {
+   "ok": true,
+   "title": "Implement Queue using Stacks",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "implement-stack-using-queues": {
+   "ok": true,
+   "title": "Implement Stack using Queues",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "min-stack": {
+   "ok": true,
+   "title": "Min Stack",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "next-greater-element-i": {
+   "ok": true,
+   "title": "Next Greater Element I",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "daily-temperatures": {
+   "ok": true,
+   "title": "Daily Temperatures",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "next-greater-element-ii": {
+   "ok": true,
+   "title": "Next Greater Element II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "sum-of-subarray-minimums": {
+   "ok": true,
+   "title": "Sum of Subarray Minimums",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "largest-rectangle-in-histogram": {
+   "ok": true,
+   "title": "Largest Rectangle in Histogram",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "evaluate-reverse-polish-notation": {
+   "ok": true,
+   "title": "Evaluate Reverse Polish Notation",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "decode-string": {
+   "ok": true,
+   "title": "Decode String",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "basic-calculator-ii": {
+   "ok": true,
+   "title": "Basic Calculator II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "basic-calculator": {
+   "ok": true,
+   "title": "Basic Calculator",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "remove-all-adjacent-duplicates-in-string": {
+   "ok": true,
+   "title": "Remove All Adjacent Duplicates In String",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "asteroid-collision": {
+   "ok": true,
+   "title": "Asteroid Collision",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "simplify-path": {
+   "ok": true,
+   "title": "Simplify Path",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "remove-k-digits": {
+   "ok": true,
+   "title": "Remove K Digits",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "number-of-recent-calls": {
+   "ok": true,
+   "title": "Number of Recent Calls",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "time-needed-to-buy-tickets": {
+   "ok": true,
+   "title": "Time Needed to Buy Tickets",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "design-circular-queue": {
+   "ok": true,
+   "title": "Design Circular Queue",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "dota2-senate": {
+   "ok": true,
+   "title": "Dota2 Senate",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-average-subarray-i": {
+   "ok": true,
+   "title": "Maximum Average Subarray I",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "find-all-anagrams-in-a-string": {
+   "ok": true,
+   "title": "Find All Anagrams in a String",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "permutation-in-string": {
+   "ok": true,
+   "title": "Permutation in String",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-points-you-can-obtain-from-cards": {
+   "ok": true,
+   "title": "Maximum Points You Can Obtain from Cards",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "longest-substring-without-repeating-characters": {
+   "ok": true,
+   "title": "Longest Substring Without Repeating Characters",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "minimum-size-subarray-sum": {
+   "ok": true,
+   "title": "Minimum Size Subarray Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "longest-repeating-character-replacement": {
+   "ok": true,
+   "title": "Longest Repeating Character Replacement",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "max-consecutive-ones-iii": {
+   "ok": true,
+   "title": "Max Consecutive Ones III",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "fruit-into-baskets": {
+   "ok": true,
+   "title": "Fruit Into Baskets",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "count-number-of-nice-subarrays": {
+   "ok": true,
+   "title": "Count Number of Nice Subarrays",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "number-of-substrings-containing-all-three-characters": {
+   "ok": true,
+   "title": "Number of Substrings Containing All Three Characters",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "subarrays-with-k-different-integers": {
+   "ok": true,
+   "title": "Subarrays with K Different Integers",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "minimum-window-substring": {
+   "ok": true,
+   "title": "Minimum Window Substring",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "sliding-window-maximum": {
+   "ok": true,
+   "title": "Sliding Window Maximum",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "substring-with-concatenation-of-all-words": {
+   "ok": true,
+   "title": "Substring with Concatenation of All Words",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "binary-tree-inorder-traversal": {
+   "ok": true,
+   "title": "Binary Tree Inorder Traversal",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "binary-tree-preorder-traversal": {
+   "ok": true,
+   "title": "Binary Tree Preorder Traversal",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "binary-tree-postorder-traversal": {
+   "ok": true,
+   "title": "Binary Tree Postorder Traversal",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "maximum-depth-of-binary-tree": {
+   "ok": true,
+   "title": "Maximum Depth of Binary Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "same-tree": {
+   "ok": true,
+   "title": "Same Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "average-of-levels-in-binary-tree": {
+   "ok": true,
+   "title": "Average of Levels in Binary Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "binary-tree-level-order-traversal": {
+   "ok": true,
+   "title": "Binary Tree Level Order Traversal",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "binary-tree-zigzag-level-order-traversal": {
+   "ok": true,
+   "title": "Binary Tree Zigzag Level Order Traversal",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "binary-tree-right-side-view": {
+   "ok": true,
+   "title": "Binary Tree Right Side View",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-width-of-binary-tree": {
+   "ok": true,
+   "title": "Maximum Width of Binary Tree",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "diameter-of-binary-tree": {
+   "ok": true,
+   "title": "Diameter of Binary Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "balanced-binary-tree": {
+   "ok": true,
+   "title": "Balanced Binary Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "path-sum": {
+   "ok": true,
+   "title": "Path Sum",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "path-sum-ii": {
+   "ok": true,
+   "title": "Path Sum II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "binary-tree-maximum-path-sum": {
+   "ok": true,
+   "title": "Binary Tree Maximum Path Sum",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "invert-binary-tree": {
+   "ok": true,
+   "title": "Invert Binary Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "symmetric-tree": {
+   "ok": true,
+   "title": "Symmetric Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "subtree-of-another-tree": {
+   "ok": true,
+   "title": "Subtree of Another Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "flatten-binary-tree-to-linked-list": {
+   "ok": true,
+   "title": "Flatten Binary Tree to Linked List",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "lowest-common-ancestor-of-a-binary-tree": {
+   "ok": true,
+   "title": "Lowest Common Ancestor of a Binary Tree",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "all-nodes-distance-k-in-binary-tree": {
+   "ok": true,
+   "title": "All Nodes Distance K in Binary Tree",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "vertical-order-traversal-of-a-binary-tree": {
+   "ok": true,
+   "title": "Vertical Order Traversal of a Binary Tree",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "construct-binary-tree-from-preorder-and-inorder-traversal": {
+   "ok": true,
+   "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "construct-binary-tree-from-inorder-and-postorder-traversal": {
+   "ok": true,
+   "title": "Construct Binary Tree from Inorder and Postorder Traversal",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "serialize-and-deserialize-binary-tree": {
+   "ok": true,
+   "title": "Serialize and Deserialize Binary Tree",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "search-in-a-binary-search-tree": {
+   "ok": true,
+   "title": "Search in a Binary Search Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "minimum-absolute-difference-in-bst": {
+   "ok": true,
+   "title": "Minimum Absolute Difference in BST",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "insert-into-a-binary-search-tree": {
+   "ok": true,
+   "title": "Insert into a Binary Search Tree",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "delete-node-in-a-bst": {
+   "ok": true,
+   "title": "Delete Node in a BST",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "validate-binary-search-tree": {
+   "ok": true,
+   "title": "Validate Binary Search Tree",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "kth-smallest-element-in-a-bst": {
+   "ok": true,
+   "title": "Kth Smallest Element in a BST",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "binary-search-tree-iterator": {
+   "ok": true,
+   "title": "Binary Search Tree Iterator",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "recover-binary-search-tree": {
+   "ok": true,
+   "title": "Recover Binary Search Tree",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "convert-sorted-array-to-binary-search-tree": {
+   "ok": true,
+   "title": "Convert Sorted Array to Binary Search Tree",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "two-sum-iv-input-is-a-bst": {
+   "ok": true,
+   "title": "Two Sum IV - Input is a BST",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "lowest-common-ancestor-of-a-binary-search-tree": {
+   "ok": true,
+   "title": "Lowest Common Ancestor of a Binary Search Tree",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "construct-binary-search-tree-from-preorder-traversal": {
+   "ok": true,
+   "title": "Construct Binary Search Tree from Preorder Traversal",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "kth-largest-element-in-a-stream": {
+   "ok": true,
+   "title": "Kth Largest Element in a Stream",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "last-stone-weight": {
+   "ok": true,
+   "title": "Last Stone Weight",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "kth-largest-element-in-an-array": {
+   "ok": true,
+   "title": "Kth Largest Element in an Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "top-k-frequent-elements": {
+   "ok": true,
+   "title": "Top K Frequent Elements",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "k-closest-points-to-origin": {
+   "ok": true,
+   "title": "K Closest Points to Origin",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-k-pairs-with-smallest-sums": {
+   "ok": true,
+   "title": "Find K Pairs with Smallest Sums",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "merge-k-sorted-lists": {
+   "ok": true,
+   "title": "Merge k Sorted Lists",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "smallest-range-covering-elements-from-k-lists": {
+   "ok": true,
+   "title": "Smallest Range Covering Elements from K Lists",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "find-median-from-data-stream": {
+   "ok": true,
+   "title": "Find Median from Data Stream",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "sliding-window-median": {
+   "ok": true,
+   "title": "Sliding Window Median",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "ipo": {
+   "ok": true,
+   "title": "IPO",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "task-scheduler": {
+   "ok": true,
+   "title": "Task Scheduler",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "reorganize-string": {
+   "ok": true,
+   "title": "Reorganize String",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "furthest-building-you-can-reach": {
+   "ok": true,
+   "title": "Furthest Building You Can Reach",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "single-threaded-cpu": {
+   "ok": true,
+   "title": "Single-Threaded CPU",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "assign-cookies": {
+   "ok": true,
+   "title": "Assign Cookies",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "lemonade-change": {
+   "ok": true,
+   "title": "Lemonade Change",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "jump-game": {
+   "ok": true,
+   "title": "Jump Game",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "jump-game-ii": {
+   "ok": true,
+   "title": "Jump Game II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "gas-station": {
+   "ok": true,
+   "title": "Gas Station",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "boats-to-save-people": {
+   "ok": true,
+   "title": "Boats to Save People",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "minimum-number-of-arrows-to-burst-balloons": {
+   "ok": true,
+   "title": "Minimum Number of Arrows to Burst Balloons",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "partition-labels": {
+   "ok": true,
+   "title": "Partition Labels",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "candy": {
+   "ok": true,
+   "title": "Candy",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "merge-intervals": {
+   "ok": true,
+   "title": "Merge Intervals",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "insert-interval": {
+   "ok": true,
+   "title": "Insert Interval",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "non-overlapping-intervals": {
+   "ok": true,
+   "title": "Non-overlapping Intervals",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "interval-list-intersections": {
+   "ok": true,
+   "title": "Interval List Intersections",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "remove-covered-intervals": {
+   "ok": true,
+   "title": "Remove Covered Intervals",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "flood-fill": {
+   "ok": true,
+   "title": "Flood Fill",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "number-of-islands": {
+   "ok": true,
+   "title": "Number of Islands",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "max-area-of-island": {
+   "ok": true,
+   "title": "Max Area of Island",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "number-of-provinces": {
+   "ok": true,
+   "title": "Number of Provinces",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "surrounded-regions": {
+   "ok": true,
+   "title": "Surrounded Regions",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "clone-graph": {
+   "ok": true,
+   "title": "Clone Graph",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "rotting-oranges": {
+   "ok": true,
+   "title": "Rotting Oranges",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "01-matrix": {
+   "ok": true,
+   "title": "01 Matrix",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "shortest-path-in-binary-matrix": {
+   "ok": true,
+   "title": "Shortest Path in Binary Matrix",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "word-ladder": {
+   "ok": true,
+   "title": "Word Ladder",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "course-schedule": {
+   "ok": true,
+   "title": "Course Schedule",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "course-schedule-ii": {
+   "ok": true,
+   "title": "Course Schedule II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-eventual-safe-states": {
+   "ok": true,
+   "title": "Find Eventual Safe States",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-all-possible-recipes-from-given-supplies": {
+   "ok": true,
+   "title": "Find All Possible Recipes from Given Supplies",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "parallel-courses-iii": {
+   "ok": true,
+   "title": "Parallel Courses III",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "redundant-connection": {
+   "ok": true,
+   "title": "Redundant Connection",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "number-of-operations-to-make-network-connected": {
+   "ok": true,
+   "title": "Number of Operations to Make Network Connected",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "accounts-merge": {
+   "ok": true,
+   "title": "Accounts Merge",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "min-cost-to-connect-all-points": {
+   "ok": true,
+   "title": "Min Cost to Connect All Points",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "network-delay-time": {
+   "ok": true,
+   "title": "Network Delay Time",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "path-with-minimum-effort": {
+   "ok": true,
+   "title": "Path With Minimum Effort",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "cheapest-flights-within-k-stops": {
+   "ok": true,
+   "title": "Cheapest Flights Within K Stops",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance": {
+   "ok": true,
+   "title": "Find the City With the Smallest Number of Neighbors at a Threshold Distance",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "find-if-path-exists-in-graph": {
+   "ok": true,
+   "title": "Find if Path Exists in Graph",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "is-graph-bipartite": {
+   "ok": true,
+   "title": "Is Graph Bipartite?",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "possible-bipartition": {
+   "ok": true,
+   "title": "Possible Bipartition",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "climbing-stairs": {
+   "ok": true,
+   "title": "Climbing Stairs",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "min-cost-climbing-stairs": {
+   "ok": true,
+   "title": "Min Cost Climbing Stairs",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "house-robber": {
+   "ok": true,
+   "title": "House Robber",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "house-robber-ii": {
+   "ok": true,
+   "title": "House Robber II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "decode-ways": {
+   "ok": true,
+   "title": "Decode Ways",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "word-break": {
+   "ok": true,
+   "title": "Word Break",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "unique-paths": {
+   "ok": true,
+   "title": "Unique Paths",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "unique-paths-ii": {
+   "ok": true,
+   "title": "Unique Paths II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "minimum-path-sum": {
+   "ok": true,
+   "title": "Minimum Path Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "triangle": {
+   "ok": true,
+   "title": "Triangle",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximal-square": {
+   "ok": true,
+   "title": "Maximal Square",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "longest-common-subsequence": {
+   "ok": true,
+   "title": "Longest Common Subsequence",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "longest-palindromic-subsequence": {
+   "ok": true,
+   "title": "Longest Palindromic Subsequence",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "edit-distance": {
+   "ok": true,
+   "title": "Edit Distance",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "distinct-subsequences": {
+   "ok": true,
+   "title": "Distinct Subsequences",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "wildcard-matching": {
+   "ok": true,
+   "title": "Wildcard Matching",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "partition-equal-subset-sum": {
+   "ok": true,
+   "title": "Partition Equal Subset Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "target-sum": {
+   "ok": true,
+   "title": "Target Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "coin-change": {
+   "ok": true,
+   "title": "Coin Change",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "coin-change-ii": {
+   "ok": true,
+   "title": "Coin Change II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "last-stone-weight-ii": {
+   "ok": true,
+   "title": "Last Stone Weight II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "longest-increasing-subsequence": {
+   "ok": true,
+   "title": "Longest Increasing Subsequence",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "number-of-longest-increasing-subsequence": {
+   "ok": true,
+   "title": "Number of Longest Increasing Subsequence",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "largest-divisible-subset": {
+   "ok": true,
+   "title": "Largest Divisible Subset",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "russian-doll-envelopes": {
+   "ok": true,
+   "title": "Russian Doll Envelopes",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "best-time-to-buy-and-sell-stock-ii": {
+   "ok": true,
+   "title": "Best Time to Buy and Sell Stock II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "best-time-to-buy-and-sell-stock-with-cooldown": {
+   "ok": true,
+   "title": "Best Time to Buy and Sell Stock with Cooldown",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "best-time-to-buy-and-sell-stock-with-transaction-fee": {
+   "ok": true,
+   "title": "Best Time to Buy and Sell Stock with Transaction Fee",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "best-time-to-buy-and-sell-stock-iii": {
+   "ok": true,
+   "title": "Best Time to Buy and Sell Stock III",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "partition-array-for-maximum-sum": {
+   "ok": true,
+   "title": "Partition Array for Maximum Sum",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "palindrome-partitioning-ii": {
+   "ok": true,
+   "title": "Palindrome Partitioning II",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "burst-balloons": {
+   "ok": true,
+   "title": "Burst Balloons",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "minimum-cost-to-cut-a-stick": {
+   "ok": true,
+   "title": "Minimum Cost to Cut a Stick",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "unique-binary-search-trees": {
+   "ok": true,
+   "title": "Unique Binary Search Trees",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "house-robber-iii": {
+   "ok": true,
+   "title": "House Robber III",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "binary-tree-cameras": {
+   "ok": true,
+   "title": "Binary Tree Cameras",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "implement-trie-prefix-tree": {
+   "ok": true,
+   "title": "Implement Trie (Prefix Tree)",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "design-add-and-search-words-data-structure": {
+   "ok": true,
+   "title": "Design Add and Search Words Data Structure",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "replace-words": {
+   "ok": true,
+   "title": "Replace Words",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "map-sum-pairs": {
+   "ok": true,
+   "title": "Map Sum Pairs",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "word-search-ii": {
+   "ok": true,
+   "title": "Word Search II",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "concatenated-words": {
+   "ok": true,
+   "title": "Concatenated Words",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "stream-of-characters": {
+   "ok": true,
+   "title": "Stream of Characters",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "maximum-xor-of-two-numbers-in-an-array": {
+   "ok": true,
+   "title": "Maximum XOR of Two Numbers in an Array",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-xor-with-an-element-from-array": {
+   "ok": true,
+   "title": "Maximum XOR With an Element From Array",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "count-pairs-with-xor-in-a-range": {
+   "ok": true,
+   "title": "Count Pairs With XOR in a Range",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "number-of-1-bits": {
+   "ok": true,
+   "title": "Number of 1 Bits",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "counting-bits": {
+   "ok": true,
+   "title": "Counting Bits",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "reverse-bits": {
+   "ok": true,
+   "title": "Reverse Bits",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "single-number": {
+   "ok": true,
+   "title": "Single Number",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "missing-number": {
+   "ok": true,
+   "title": "Missing Number",
+   "difficulty": "Easy",
+   "paidOnly": false
+  },
+  "single-number-ii": {
+   "ok": true,
+   "title": "Single Number II",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "single-number-iii": {
+   "ok": true,
+   "title": "Single Number III",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "sum-of-two-integers": {
+   "ok": true,
+   "title": "Sum of Two Integers",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "minimum-flips-to-make-a-or-b-equal-to-c": {
+   "ok": true,
+   "title": "Minimum Flips to Make a OR b Equal to c",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "bitwise-and-of-numbers-range": {
+   "ok": true,
+   "title": "Bitwise AND of Numbers Range",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "maximum-product-of-word-lengths": {
+   "ok": true,
+   "title": "Maximum Product of Word Lengths",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "smallest-sufficient-team": {
+   "ok": true,
+   "title": "Smallest Sufficient Team",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "insert-delete-getrandom-o1": {
+   "ok": true,
+   "title": "Insert Delete GetRandom O(1)",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "time-based-key-value-store": {
+   "ok": true,
+   "title": "Time Based Key-Value Store",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "design-twitter": {
+   "ok": true,
+   "title": "Design Twitter",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "lfu-cache": {
+   "ok": true,
+   "title": "LFU Cache",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "find-the-duplicate-number": {
+   "ok": true,
+   "title": "Find the Duplicate Number",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "game-of-life": {
+   "ok": true,
+   "title": "Game of Life",
+   "difficulty": "Medium",
+   "paidOnly": false
+  },
+  "first-missing-positive": {
+   "ok": true,
+   "title": "First Missing Positive",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "text-justification": {
+   "ok": true,
+   "title": "Text Justification",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "regular-expression-matching": {
+   "ok": true,
+   "title": "Regular Expression Matching",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "maximal-rectangle": {
+   "ok": true,
+   "title": "Maximal Rectangle",
+   "difficulty": "Hard",
+   "paidOnly": false
+  },
+  "the-skyline-problem": {
+   "ok": true,
+   "title": "The Skyline Problem",
+   "difficulty": "Hard",
+   "paidOnly": false
+  }
+ }
+}

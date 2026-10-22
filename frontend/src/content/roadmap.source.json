@@ -1,0 +1,1641 @@
+{
+ "stages": [
+  {
+   "id": "basics",
+   "order": 1,
+   "title": "Complexity & maths basics",
+   "summary": "Learn to read a problem's limits and estimate time and space before writing code, using small number puzzles to practise.",
+   "concepts": [
+    "Big-O, Theta and Omega",
+    "Counting loop iterations",
+    "Digits, divisors and primes",
+    "Integer overflow"
+   ],
+   "leetcodeTags": [
+    "Math"
+   ],
+   "patterns": [
+    {
+     "id": "basics.digits",
+     "title": "Working with digits",
+     "idea": "Peel digits off with % 10 and / 10; most digit problems are a loop over that pair.",
+     "seeAlso": {
+      "striver": "Step 1",
+      "gfg": "Fundamentals"
+     },
+     "slugs": [
+      "palindrome-number",
+      "add-digits",
+      "count-the-digits-that-divide-a-number",
+      "reverse-integer"
+     ]
+    },
+    {
+     "id": "basics.primes-gcd",
+     "title": "Divisors, primes and GCD",
+     "idea": "Check divisors only up to the square root, and use Euclid's algorithm for GCD in logarithmic time.",
+     "seeAlso": {
+      "striver": "Step 1",
+      "gfg": "Fundamentals"
+     },
+     "slugs": [
+      "find-greatest-common-divisor-of-array",
+      "ugly-number",
+      "power-of-three",
+      "count-primes"
+     ]
+    },
+    {
+     "id": "basics.simulation",
+     "title": "Simple loops and simulation",
+     "idea": "Translate the statement into a loop exactly; these warm-ups train careful reading and edge cases.",
+     "seeAlso": {
+      "striver": "Step 1",
+      "gfg": "Fundamentals"
+     },
+     "slugs": [
+      "fizz-buzz",
+      "running-sum-of-1d-array",
+      "richest-customer-wealth"
+     ]
+    },
+    {
+     "id": "basics.math-tricks",
+     "title": "Fast arithmetic",
+     "idea": "Halve the search or the exponent each step: binary search for square roots, repeated squaring for powers.",
+     "seeAlso": {
+      "striver": "Step 1",
+      "gfg": "Fundamentals"
+     },
+     "slugs": [
+      "sqrtx",
+      "valid-perfect-square",
+      "powx-n"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "arrays",
+   "order": 2,
+   "title": "Arrays",
+   "summary": "Arrays reward scanning once and remembering the right thing: a pointer, a running sum or the best answer so far.",
+   "concepts": [
+    "In-place updates",
+    "Two pointers",
+    "Prefix sums",
+    "Kadane's algorithm"
+   ],
+   "leetcodeTags": [
+    "Array",
+    "Two Pointers",
+    "Prefix Sum",
+    "Matrix"
+   ],
+   "patterns": [
+    {
+     "id": "arrays.traversal",
+     "title": "Single pass and in-place",
+     "idea": "Keep a write pointer and overwrite as you read, so the array is fixed up in one pass with O(1) extra space.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Two-Pointer",
+      "gfg": "Array"
+     },
+     "slugs": [
+      "remove-duplicates-from-sorted-array",
+      "move-zeroes",
+      "best-time-to-buy-and-sell-stock",
+      "rotate-array"
+     ]
+    },
+    {
+     "id": "arrays.two-pointers",
+     "title": "Two pointers from both ends",
+     "idea": "On sorted data, move the left or right pointer depending on whether the current sum is too small or too big.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Two-Pointer",
+      "gfg": "Array"
+     },
+     "slugs": [
+      "two-sum-ii-input-array-is-sorted",
+      "3sum",
+      "container-with-most-water",
+      "trapping-rain-water"
+     ]
+    },
+    {
+     "id": "arrays.prefix-sum",
+     "title": "Prefix sums",
+     "idea": "Precompute running totals so any range sum is one subtraction, turning repeated O(n) work into O(1).",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Prefix Sum",
+      "gfg": "Array"
+     },
+     "slugs": [
+      "range-sum-query-immutable",
+      "find-pivot-index",
+      "left-and-right-sum-differences",
+      "product-of-array-except-self"
+     ]
+    },
+    {
+     "id": "arrays.kadane",
+     "title": "Best subarray (Kadane)",
+     "idea": "At each index decide: extend the previous run or start fresh here. Track the best seen.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Kadane's Algorithm",
+      "gfg": "Array"
+     },
+     "slugs": [
+      "maximum-subarray",
+      "maximum-product-subarray",
+      "maximum-sum-circular-subarray",
+      "maximum-absolute-sum-of-any-subarray"
+     ]
+    },
+    {
+     "id": "arrays.partitioning",
+     "title": "Counting and partitioning",
+     "idea": "Voting and three-way partitioning solve majority and colour-sorting problems in one pass.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Two-Pointer",
+      "gfg": "Array"
+     },
+     "slugs": [
+      "majority-element",
+      "sort-colors",
+      "majority-element-ii",
+      "next-permutation"
+     ]
+    },
+    {
+     "id": "arrays.matrix",
+     "title": "2D arrays",
+     "idea": "Walk a matrix by layers or swap across the diagonal; most matrix tricks are index arithmetic done carefully.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "gfg": "Array"
+     },
+     "slugs": [
+      "transpose-matrix",
+      "spiral-matrix",
+      "rotate-image",
+      "set-matrix-zeroes"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hashing",
+   "order": 3,
+   "title": "Hashing",
+   "summary": "Trade memory for speed: a hash map answers 'have I seen this?' in constant time.",
+   "concepts": [
+    "Hash maps and sets",
+    "Frequency counting",
+    "Complement lookup",
+    "Prefix sum + map"
+   ],
+   "leetcodeTags": [
+    "Hash Table",
+    "Counting"
+   ],
+   "patterns": [
+    {
+     "id": "hashing.lookup",
+     "title": "Seen-before lookups",
+     "idea": "Store what you have visited; the moment you need its partner, look it up instead of searching.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Frequency Map / Counting",
+      "gfg": "Hashing"
+     },
+     "slugs": [
+      "two-sum",
+      "contains-duplicate",
+      "contains-duplicate-ii",
+      "longest-consecutive-sequence"
+     ]
+    },
+    {
+     "id": "hashing.frequency",
+     "title": "Frequency counting",
+     "idea": "Count characters or values into a map, then compare or sort the counts.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Frequency Map / Counting",
+      "gfg": "Hashing"
+     },
+     "slugs": [
+      "valid-anagram",
+      "first-unique-character-in-a-string",
+      "ransom-note",
+      "sort-characters-by-frequency"
+     ]
+    },
+    {
+     "id": "hashing.grouping",
+     "title": "Grouping by a key",
+     "idea": "Pick a key that is identical for items that belong together, like sorted letters, then bucket by it.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Frequency Map / Counting",
+      "gfg": "Hashing"
+     },
+     "slugs": [
+      "isomorphic-strings",
+      "word-pattern",
+      "find-common-characters",
+      "group-anagrams"
+     ]
+    },
+    {
+     "id": "hashing.prefix-map",
+     "title": "Prefix sums with a map",
+     "idea": "Store how often each running sum has appeared; a target subarray exists when sum - k was seen before.",
+     "seeAlso": {
+      "striver": "Step 3",
+      "risingbrain": "Prefix-Sum with Map",
+      "gfg": "Hashing"
+     },
+     "slugs": [
+      "subarray-sum-equals-k",
+      "contiguous-array",
+      "continuous-subarray-sum",
+      "subarray-sums-divisible-by-k"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "strings",
+   "order": 4,
+   "title": "Strings",
+   "summary": "Strings are arrays of characters, plus parsing: most tasks combine two pointers, counting and careful building.",
+   "concepts": [
+    "Immutability and builders",
+    "Palindromes",
+    "Parsing",
+    "Pattern matching (KMP idea)"
+   ],
+   "leetcodeTags": [
+    "String",
+    "String Matching"
+   ],
+   "patterns": [
+    {
+     "id": "strings.basics",
+     "title": "String basics",
+     "idea": "Reverse, compare and split with indices rather than repeated concatenation, which is quadratic.",
+     "seeAlso": {
+      "striver": "Step 5",
+      "gfg": "String"
+     },
+     "slugs": [
+      "reverse-string",
+      "valid-palindrome",
+      "longest-common-prefix",
+      "reverse-words-in-a-string"
+     ]
+    },
+    {
+     "id": "strings.palindromes",
+     "title": "Palindromes",
+     "idea": "Expand around every centre, odd and even, to find palindromic pieces in O(n\u00b2) without extra space.",
+     "seeAlso": {
+      "striver": "Step 5",
+      "risingbrain": "Two-Pointer (Palindrome)",
+      "gfg": "String"
+     },
+     "slugs": [
+      "valid-palindrome-ii",
+      "longest-palindromic-substring",
+      "palindromic-substrings"
+     ]
+    },
+    {
+     "id": "strings.parsing",
+     "title": "Parsing and building",
+     "idea": "Handle signs, spaces and overflow explicitly, and build output with a list or builder.",
+     "seeAlso": {
+      "striver": "Step 5",
+      "gfg": "String"
+     },
+     "slugs": [
+      "roman-to-integer",
+      "string-to-integer-atoi",
+      "zigzag-conversion",
+      "integer-to-roman"
+     ]
+    },
+    {
+     "id": "strings.matching",
+     "title": "Pattern matching",
+     "idea": "Know the brute-force search first, then how prefix tables (KMP) avoid re-checking characters.",
+     "seeAlso": {
+      "striver": "Step 5",
+      "gfg": "String"
+     },
+     "slugs": [
+      "find-the-index-of-the-first-occurrence-in-a-string",
+      "repeated-substring-pattern",
+      "rotate-string",
+      "shortest-palindrome"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "search-sort",
+   "order": 5,
+   "title": "Sorting & binary search",
+   "summary": "Sorted order unlocks binary search: discard half the candidates with every comparison.",
+   "concepts": [
+    "Merge and quick sort",
+    "Lower and upper bounds",
+    "Rotated arrays",
+    "Binary search on the answer"
+   ],
+   "leetcodeTags": [
+    "Sorting",
+    "Binary Search"
+   ],
+   "patterns": [
+    {
+     "id": "search-sort.sorting",
+     "title": "Sorting as a tool",
+     "idea": "Sort first when order makes the rest easy, and know merge sort well enough to write it from memory.",
+     "seeAlso": {
+      "striver": "Step 2 and Step 4",
+      "gfg": "Searching and Sorting"
+     },
+     "slugs": [
+      "merge-sorted-array",
+      "squares-of-a-sorted-array",
+      "sort-an-array",
+      "largest-number"
+     ]
+    },
+    {
+     "id": "search-sort.classic",
+     "title": "Classic binary search",
+     "idea": "Keep an invariant on [lo, hi] and shrink it every step; most bugs are in the loop condition.",
+     "seeAlso": {
+      "striver": "Step 2 and Step 4",
+      "risingbrain": "Classic Binary Search",
+      "gfg": "Searching and Sorting"
+     },
+     "slugs": [
+      "binary-search",
+      "search-insert-position",
+      "first-bad-version",
+      "guess-number-higher-or-lower"
+     ]
+    },
+    {
+     "id": "search-sort.bounds",
+     "title": "First and last positions",
+     "idea": "Search for the first index where a condition becomes true; that one template covers bounds and peaks.",
+     "seeAlso": {
+      "striver": "Step 2 and Step 4",
+      "risingbrain": "Lower / Upper Bound",
+      "gfg": "Searching and Sorting"
+     },
+     "slugs": [
+      "find-smallest-letter-greater-than-target",
+      "find-first-and-last-position-of-element-in-sorted-array",
+      "single-element-in-a-sorted-array",
+      "find-peak-element"
+     ]
+    },
+    {
+     "id": "search-sort.rotated",
+     "title": "Rotated sorted arrays",
+     "idea": "One half is always sorted; check whether the target falls inside it and discard the other half.",
+     "seeAlso": {
+      "striver": "Step 2 and Step 4",
+      "risingbrain": "Classic Binary Search",
+      "gfg": "Searching and Sorting"
+     },
+     "slugs": [
+      "search-in-rotated-sorted-array",
+      "find-minimum-in-rotated-sorted-array",
+      "search-in-rotated-sorted-array-ii"
+     ]
+    },
+    {
+     "id": "search-sort.on-answer",
+     "title": "Binary search on the answer",
+     "idea": "When you can check 'is answer x feasible?' quickly, binary search over x instead of over the array.",
+     "seeAlso": {
+      "striver": "Step 2 and Step 4",
+      "risingbrain": "Binary Search on Answers",
+      "gfg": "Searching and Sorting"
+     },
+     "slugs": [
+      "koko-eating-bananas",
+      "capacity-to-ship-packages-within-d-days",
+      "minimum-number-of-days-to-make-m-bouquets",
+      "split-array-largest-sum",
+      "median-of-two-sorted-arrays"
+     ]
+    },
+    {
+     "id": "search-sort.matrix",
+     "title": "Searching a 2D matrix",
+     "idea": "Treat a sorted matrix as one long array, or walk from a corner where one move always rules out a row or column.",
+     "seeAlso": {
+      "striver": "Step 2 and Step 4",
+      "risingbrain": "Search in 2D Matrix",
+      "gfg": "Searching and Sorting"
+     },
+     "slugs": [
+      "search-a-2d-matrix",
+      "search-a-2d-matrix-ii",
+      "kth-smallest-element-in-a-sorted-matrix"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "recursion",
+   "order": 6,
+   "title": "Recursion & backtracking basics",
+   "summary": "Recursion solves a problem through a smaller copy of itself; backtracking explores choices and undoes them.",
+   "concepts": [
+    "Base cases and the call stack",
+    "Choose, explore, unchoose",
+    "Pruning",
+    "Subsets and permutations"
+   ],
+   "leetcodeTags": [
+    "Recursion",
+    "Backtracking"
+   ],
+   "patterns": [
+    {
+     "id": "recursion.linear",
+     "title": "Thinking recursively",
+     "idea": "Trust the smaller call: define what it returns, handle the base case, combine one step.",
+     "seeAlso": {
+      "striver": "Step 7",
+      "risingbrain": "Linear Recursion",
+      "gfg": "Recursion"
+     },
+     "slugs": [
+      "fibonacci-number",
+      "power-of-four",
+      "k-th-symbol-in-grammar",
+      "find-the-winner-of-the-circular-game"
+     ]
+    },
+    {
+     "id": "recursion.subsets",
+     "title": "Subsets and subsequences",
+     "idea": "At every element choose to take it or skip it; skip duplicates at the same depth to avoid repeats.",
+     "seeAlso": {
+      "striver": "Step 7",
+      "risingbrain": "Subsequences",
+      "gfg": "Recursion"
+     },
+     "slugs": [
+      "subsets",
+      "subsets-ii",
+      "combinations"
+     ]
+    },
+    {
+     "id": "recursion.combination-sum",
+     "title": "Combinations with a target",
+     "idea": "Recurse with the remaining target and stop early once it goes negative.",
+     "seeAlso": {
+      "striver": "Step 7",
+      "risingbrain": "Choice-Based Backtracking",
+      "gfg": "Recursion"
+     },
+     "slugs": [
+      "combination-sum",
+      "combination-sum-ii",
+      "combination-sum-iii",
+      "letter-combinations-of-a-phone-number"
+     ]
+    },
+    {
+     "id": "recursion.permutations",
+     "title": "Permutations and generation",
+     "idea": "Build answers position by position, marking what is used and undoing the mark on the way back.",
+     "seeAlso": {
+      "striver": "Step 7",
+      "risingbrain": "Decision Tree / Sequence Generation",
+      "gfg": "Recursion"
+     },
+     "slugs": [
+      "permutations",
+      "permutations-ii",
+      "generate-parentheses"
+     ]
+    },
+    {
+     "id": "recursion.grid",
+     "title": "Backtracking on grids and boards",
+     "idea": "Mark a cell as visited, explore its neighbours, then unmark; prune as soon as a constraint breaks.",
+     "seeAlso": {
+      "striver": "Step 7",
+      "risingbrain": "Grid / Path Backtracking",
+      "gfg": "Recursion"
+     },
+     "slugs": [
+      "word-search",
+      "n-queens",
+      "sudoku-solver"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "linked-lists",
+   "order": 7,
+   "title": "Linked lists",
+   "summary": "Linked lists test pointer discipline: draw the nodes and update links in the right order.",
+   "concepts": [
+    "Dummy head nodes",
+    "Fast and slow pointers",
+    "In-place reversal",
+    "Doubly linked lists"
+   ],
+   "leetcodeTags": [
+    "Linked List"
+   ],
+   "patterns": [
+    {
+     "id": "linked-lists.basics",
+     "title": "Basic operations",
+     "idea": "A dummy node before the head removes most special cases when inserting or deleting.",
+     "seeAlso": {
+      "striver": "Step 6",
+      "risingbrain": "Basic Operations",
+      "gfg": "Linked List"
+     },
+     "slugs": [
+      "middle-of-the-linked-list",
+      "remove-linked-list-elements",
+      "delete-node-in-a-linked-list",
+      "design-linked-list"
+     ]
+    },
+    {
+     "id": "linked-lists.fast-slow",
+     "title": "Fast and slow pointers",
+     "idea": "Move one pointer twice as fast: they meet inside a cycle, and the slow one stops at the middle.",
+     "seeAlso": {
+      "striver": "Step 6",
+      "risingbrain": "Fast and Slow Pointers",
+      "gfg": "Linked List"
+     },
+     "slugs": [
+      "linked-list-cycle",
+      "palindrome-linked-list",
+      "linked-list-cycle-ii",
+      "remove-nth-node-from-end-of-list"
+     ]
+    },
+    {
+     "id": "linked-lists.reversal",
+     "title": "Reversal",
+     "idea": "Reverse with three pointers (prev, cur, next); reversing a section is the same loop with careful reconnection.",
+     "seeAlso": {
+      "striver": "Step 6",
+      "risingbrain": "Reversal Pattern",
+      "gfg": "Linked List"
+     },
+     "slugs": [
+      "reverse-linked-list",
+      "reverse-linked-list-ii",
+      "swap-nodes-in-pairs",
+      "reverse-nodes-in-k-group"
+     ]
+    },
+    {
+     "id": "linked-lists.merge",
+     "title": "Merging and sorting",
+     "idea": "Merge two sorted lists with a dummy tail; merge sort on lists needs no extra array.",
+     "seeAlso": {
+      "striver": "Step 6",
+      "risingbrain": "Merge / Sort",
+      "gfg": "Linked List"
+     },
+     "slugs": [
+      "merge-two-sorted-lists",
+      "add-two-numbers",
+      "merge-in-between-linked-lists",
+      "sort-list"
+     ]
+    },
+    {
+     "id": "linked-lists.with-maps",
+     "title": "Lists with maps and stacks",
+     "idea": "A map from old node to new node makes deep copies easy; caches pair a list with a map.",
+     "seeAlso": {
+      "striver": "Step 6",
+      "risingbrain": "LinkedList with Stack/HashMap",
+      "gfg": "Linked List"
+     },
+     "slugs": [
+      "intersection-of-two-linked-lists",
+      "copy-list-with-random-pointer",
+      "odd-even-linked-list",
+      "lru-cache"
+     ]
+    },
+    {
+     "id": "linked-lists.doubly",
+     "title": "Doubly linked lists",
+     "idea": "Keep both prev and next correct on every insert and delete; draw before and after states.",
+     "seeAlso": {
+      "striver": "Step 6",
+      "risingbrain": "Basic DLL Operations",
+      "gfg": "Linked List"
+     },
+     "slugs": [
+      "design-browser-history",
+      "flatten-a-multilevel-doubly-linked-list",
+      "all-oone-data-structure"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "stacks-queues",
+   "order": 8,
+   "title": "Stacks & queues",
+   "summary": "Stacks remember the most recent unfinished thing; queues process work in arrival order.",
+   "concepts": [
+    "LIFO and FIFO",
+    "Monotonic stacks",
+    "Expression evaluation",
+    "Deques"
+   ],
+   "leetcodeTags": [
+    "Stack",
+    "Queue",
+    "Monotonic Stack"
+   ],
+   "patterns": [
+    {
+     "id": "stacks-queues.basics",
+     "title": "Stack and queue basics",
+     "idea": "Use a stack whenever the latest item must be matched or undone first, as with brackets.",
+     "seeAlso": {
+      "striver": "Step 9",
+      "risingbrain": "Stack Simulation / Undo Operation",
+      "gfg": "Stack and Queue"
+     },
+     "slugs": [
+      "valid-parentheses",
+      "implement-queue-using-stacks",
+      "implement-stack-using-queues",
+      "min-stack"
+     ]
+    },
+    {
+     "id": "stacks-queues.monotonic",
+     "title": "Monotonic stacks",
+     "idea": "Keep the stack sorted; popping finds each element's next greater or smaller value in O(n) overall.",
+     "seeAlso": {
+      "striver": "Step 9",
+      "risingbrain": "Monotonic Stack",
+      "gfg": "Stack and Queue"
+     },
+     "slugs": [
+      "next-greater-element-i",
+      "daily-temperatures",
+      "next-greater-element-ii",
+      "sum-of-subarray-minimums",
+      "largest-rectangle-in-histogram"
+     ]
+    },
+    {
+     "id": "stacks-queues.expressions",
+     "title": "Expressions and decoding",
+     "idea": "Push numbers and pending operators, and resolve them when precedence or a closing bracket says so.",
+     "seeAlso": {
+      "striver": "Step 9",
+      "risingbrain": "Expression Evaluation",
+      "gfg": "Stack and Queue"
+     },
+     "slugs": [
+      "evaluate-reverse-polish-notation",
+      "decode-string",
+      "basic-calculator-ii",
+      "basic-calculator"
+     ]
+    },
+    {
+     "id": "stacks-queues.simulation",
+     "title": "Stack simulation",
+     "idea": "Let the stack hold survivors: compare each new item with the top and pop while it loses.",
+     "seeAlso": {
+      "striver": "Step 9",
+      "risingbrain": "Stack + Greedy",
+      "gfg": "Stack and Queue"
+     },
+     "slugs": [
+      "remove-all-adjacent-duplicates-in-string",
+      "asteroid-collision",
+      "simplify-path",
+      "remove-k-digits"
+     ]
+    },
+    {
+     "id": "stacks-queues.queues",
+     "title": "Queues and circular buffers",
+     "idea": "A fixed array with head and tail indices that wrap around gives an O(1) queue with no shifting.",
+     "seeAlso": {
+      "striver": "Step 9",
+      "risingbrain": "Queue Implementation & Circular Queue",
+      "gfg": "Stack and Queue"
+     },
+     "slugs": [
+      "number-of-recent-calls",
+      "time-needed-to-buy-tickets",
+      "design-circular-queue",
+      "dota2-senate"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sliding-window",
+   "order": 9,
+   "title": "Sliding window",
+   "summary": "Grow a window on the right and shrink it on the left so every element enters and leaves once.",
+   "concepts": [
+    "Fixed-size windows",
+    "Variable windows",
+    "'At most k' counting",
+    "Window state in maps"
+   ],
+   "leetcodeTags": [
+    "Sliding Window"
+   ],
+   "patterns": [
+    {
+     "id": "sliding-window.fixed",
+     "title": "Fixed-size windows",
+     "idea": "Add the element entering and remove the one leaving instead of recomputing the whole window.",
+     "seeAlso": {
+      "striver": "Step 10",
+      "risingbrain": "Sliding Window",
+      "gfg": "Window Sliding"
+     },
+     "slugs": [
+      "maximum-average-subarray-i",
+      "find-all-anagrams-in-a-string",
+      "permutation-in-string",
+      "maximum-points-you-can-obtain-from-cards"
+     ]
+    },
+    {
+     "id": "sliding-window.variable",
+     "title": "Variable-size windows",
+     "idea": "Expand until the window breaks the rule, then shrink from the left until it is valid again.",
+     "seeAlso": {
+      "striver": "Step 10",
+      "risingbrain": "Sliding Window",
+      "gfg": "Window Sliding"
+     },
+     "slugs": [
+      "longest-substring-without-repeating-characters",
+      "minimum-size-subarray-sum",
+      "longest-repeating-character-replacement",
+      "max-consecutive-ones-iii",
+      "fruit-into-baskets"
+     ]
+    },
+    {
+     "id": "sliding-window.counting",
+     "title": "Counting subarrays",
+     "idea": "Count windows with 'at most k' and subtract to get 'exactly k'.",
+     "seeAlso": {
+      "striver": "Step 10",
+      "risingbrain": "Sliding Window",
+      "gfg": "Window Sliding"
+     },
+     "slugs": [
+      "count-number-of-nice-subarrays",
+      "number-of-substrings-containing-all-three-characters",
+      "subarrays-with-k-different-integers"
+     ]
+    },
+    {
+     "id": "sliding-window.hard",
+     "title": "Harder windows",
+     "idea": "Track what the window still needs with a counter map, or keep window maxima in a deque.",
+     "seeAlso": {
+      "striver": "Step 10",
+      "risingbrain": "Sliding Window (String)",
+      "gfg": "Window Sliding"
+     },
+     "slugs": [
+      "minimum-window-substring",
+      "sliding-window-maximum",
+      "substring-with-concatenation-of-all-words"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "trees",
+   "order": 10,
+   "title": "Trees",
+   "summary": "Most tree problems are one traversal where each node combines what its children return.",
+   "concepts": [
+    "DFS orders",
+    "BFS by level",
+    "Height and paths",
+    "Building and serialising trees"
+   ],
+   "leetcodeTags": [
+    "Tree",
+    "Binary Tree",
+    "Depth-First Search",
+    "Breadth-First Search"
+   ],
+   "patterns": [
+    {
+     "id": "trees.dfs",
+     "title": "DFS traversals",
+     "idea": "Write preorder, inorder and postorder recursively and with an explicit stack.",
+     "seeAlso": {
+      "striver": "Step 13",
+      "risingbrain": "DFS Traversals",
+      "gfg": "Tree"
+     },
+     "slugs": [
+      "binary-tree-inorder-traversal",
+      "binary-tree-preorder-traversal",
+      "binary-tree-postorder-traversal",
+      "maximum-depth-of-binary-tree",
+      "same-tree"
+     ]
+    },
+    {
+     "id": "trees.bfs",
+     "title": "Level order (BFS)",
+     "idea": "Process the queue one level at a time by noting its size before the inner loop.",
+     "seeAlso": {
+      "striver": "Step 13",
+      "risingbrain": "BFS / Level-Order",
+      "gfg": "Tree"
+     },
+     "slugs": [
+      "average-of-levels-in-binary-tree",
+      "binary-tree-level-order-traversal",
+      "binary-tree-zigzag-level-order-traversal",
+      "binary-tree-right-side-view",
+      "maximum-width-of-binary-tree"
+     ]
+    },
+    {
+     "id": "trees.paths",
+     "title": "Heights and paths",
+     "idea": "Return the best path through a child to the parent, and update a global best with both children.",
+     "seeAlso": {
+      "striver": "Step 13",
+      "risingbrain": "DFS Traversals",
+      "gfg": "Tree"
+     },
+     "slugs": [
+      "diameter-of-binary-tree",
+      "balanced-binary-tree",
+      "path-sum",
+      "path-sum-ii",
+      "binary-tree-maximum-path-sum"
+     ]
+    },
+    {
+     "id": "trees.structure",
+     "title": "Comparing and reshaping",
+     "idea": "Recurse on both subtrees at once to compare or mirror them.",
+     "seeAlso": {
+      "striver": "Step 13",
+      "risingbrain": "DFS Traversals",
+      "gfg": "Tree"
+     },
+     "slugs": [
+      "invert-binary-tree",
+      "symmetric-tree",
+      "subtree-of-another-tree",
+      "flatten-binary-tree-to-linked-list"
+     ]
+    },
+    {
+     "id": "trees.ancestors",
+     "title": "Ancestors and views",
+     "idea": "Find the lowest common ancestor where the two targets split; record coordinates for vertical views.",
+     "seeAlso": {
+      "striver": "Step 13",
+      "risingbrain": "Lowest Common Ancestor",
+      "gfg": "Tree"
+     },
+     "slugs": [
+      "lowest-common-ancestor-of-a-binary-tree",
+      "all-nodes-distance-k-in-binary-tree",
+      "vertical-order-traversal-of-a-binary-tree"
+     ]
+    },
+    {
+     "id": "trees.construction",
+     "title": "Building and serialising",
+     "idea": "The root comes first in preorder; its position in inorder splits the left and right subtrees.",
+     "seeAlso": {
+      "striver": "Step 13",
+      "risingbrain": "Serialization / Construction",
+      "gfg": "Tree"
+     },
+     "slugs": [
+      "construct-binary-tree-from-preorder-and-inorder-traversal",
+      "construct-binary-tree-from-inorder-and-postorder-traversal",
+      "serialize-and-deserialize-binary-tree"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bst",
+   "order": 11,
+   "title": "Binary search trees",
+   "summary": "Use the ordering: every decision goes left or right, so operations cost the tree's height.",
+   "concepts": [
+    "BST property",
+    "Inorder gives sorted order",
+    "Insert and delete",
+    "Balanced construction"
+   ],
+   "leetcodeTags": [
+    "Binary Search Tree"
+   ],
+   "patterns": [
+    {
+     "id": "bst.operations",
+     "title": "Search, insert, delete",
+     "idea": "Walk down comparing with each node; deleting a node with two children swaps in its successor.",
+     "seeAlso": {
+      "striver": "Step 14",
+      "risingbrain": "BST",
+      "gfg": "Binary Search Tree"
+     },
+     "slugs": [
+      "search-in-a-binary-search-tree",
+      "minimum-absolute-difference-in-bst",
+      "insert-into-a-binary-search-tree",
+      "delete-node-in-a-bst"
+     ]
+    },
+    {
+     "id": "bst.ordering",
+     "title": "Validation and order",
+     "idea": "An inorder walk visits values in sorted order, so validation and k-th smallest follow directly.",
+     "seeAlso": {
+      "striver": "Step 14",
+      "risingbrain": "BST",
+      "gfg": "Binary Search Tree"
+     },
+     "slugs": [
+      "validate-binary-search-tree",
+      "kth-smallest-element-in-a-bst",
+      "binary-search-tree-iterator",
+      "recover-binary-search-tree"
+     ]
+    },
+    {
+     "id": "bst.construction",
+     "title": "Building BSTs",
+     "idea": "Choose the middle as root to stay balanced; use value bounds to rebuild from a preorder walk.",
+     "seeAlso": {
+      "striver": "Step 14",
+      "risingbrain": "BST",
+      "gfg": "Binary Search Tree"
+     },
+     "slugs": [
+      "convert-sorted-array-to-binary-search-tree",
+      "two-sum-iv-input-is-a-bst",
+      "lowest-common-ancestor-of-a-binary-search-tree",
+      "construct-binary-search-tree-from-preorder-traversal"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "heaps",
+   "order": 12,
+   "title": "Heaps",
+   "summary": "A heap keeps the smallest or largest item ready in O(log n), ideal for top-k and scheduling.",
+   "concepts": [
+    "Binary heap operations",
+    "Top-k with a size-k heap",
+    "Two heaps for medians",
+    "Greedy scheduling"
+   ],
+   "leetcodeTags": [
+    "Heap (Priority Queue)"
+   ],
+   "patterns": [
+    {
+     "id": "heaps.top-k",
+     "title": "Top-k elements",
+     "idea": "Keep a heap of size k: the k best survive and the root is the k-th best.",
+     "seeAlso": {
+      "striver": "Step 11",
+      "risingbrain": "Top-K Elements",
+      "gfg": "Heap"
+     },
+     "slugs": [
+      "kth-largest-element-in-a-stream",
+      "last-stone-weight",
+      "kth-largest-element-in-an-array",
+      "top-k-frequent-elements",
+      "k-closest-points-to-origin"
+     ]
+    },
+    {
+     "id": "heaps.merge-k",
+     "title": "Merging k sorted sources",
+     "idea": "Put the head of each source in a min-heap and repeatedly take the smallest.",
+     "seeAlso": {
+      "striver": "Step 11",
+      "risingbrain": "Merge K Sorted",
+      "gfg": "Heap"
+     },
+     "slugs": [
+      "find-k-pairs-with-smallest-sums",
+      "merge-k-sorted-lists",
+      "smallest-range-covering-elements-from-k-lists"
+     ]
+    },
+    {
+     "id": "heaps.two-heaps",
+     "title": "Two heaps",
+     "idea": "A max-heap for the lower half and a min-heap for the upper half keep the median at the tops.",
+     "seeAlso": {
+      "striver": "Step 11",
+      "risingbrain": "Top-K Elements",
+      "gfg": "Heap"
+     },
+     "slugs": [
+      "find-median-from-data-stream",
+      "sliding-window-median",
+      "ipo"
+     ]
+    },
+    {
+     "id": "heaps.scheduling",
+     "title": "Scheduling with heaps",
+     "idea": "Always pick the best available task, and push the ones you postpone back for later.",
+     "seeAlso": {
+      "striver": "Step 11",
+      "risingbrain": "Huffman pattern",
+      "gfg": "Heap"
+     },
+     "slugs": [
+      "task-scheduler",
+      "reorganize-string",
+      "furthest-building-you-can-reach",
+      "single-threaded-cpu"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "greedy",
+   "order": 13,
+   "title": "Greedy & intervals",
+   "summary": "Make the locally best choice and prove it never hurts; with intervals, sort first.",
+   "concepts": [
+    "Exchange arguments",
+    "Sort then decide",
+    "Merging intervals",
+    "Reach and jump problems"
+   ],
+   "leetcodeTags": [
+    "Greedy",
+    "Sorting"
+   ],
+   "patterns": [
+    {
+     "id": "greedy.local",
+     "title": "Local best choices",
+     "idea": "Ask what the best next move is, and check that a counter-example cannot beat it.",
+     "seeAlso": {
+      "striver": "Step 12",
+      "risingbrain": "Sorting / Local Choice",
+      "gfg": "Greedy"
+     },
+     "slugs": [
+      "assign-cookies",
+      "lemonade-change",
+      "jump-game",
+      "jump-game-ii",
+      "gas-station"
+     ]
+    },
+    {
+     "id": "greedy.sorted",
+     "title": "Sort, then be greedy",
+     "idea": "Sorting reveals the order in which decisions become safe, as when pairing the heaviest with the lightest.",
+     "seeAlso": {
+      "striver": "Step 12",
+      "risingbrain": "Sorting / Local Choice",
+      "gfg": "Greedy"
+     },
+     "slugs": [
+      "boats-to-save-people",
+      "minimum-number-of-arrows-to-burst-balloons",
+      "partition-labels",
+      "candy"
+     ]
+    },
+    {
+     "id": "greedy.intervals",
+     "title": "Intervals",
+     "idea": "Sort by start (or end), then merge, insert or count overlaps in one pass.",
+     "seeAlso": {
+      "striver": "Step 12",
+      "risingbrain": "Intervals & Reach",
+      "gfg": "Greedy"
+     },
+     "slugs": [
+      "merge-intervals",
+      "insert-interval",
+      "non-overlapping-intervals",
+      "interval-list-intersections",
+      "remove-covered-intervals"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "graphs",
+   "order": 14,
+   "title": "Graphs",
+   "summary": "Model the problem as nodes and edges, then choose BFS, DFS, topological order, union-find or Dijkstra.",
+   "concepts": [
+    "Adjacency lists",
+    "BFS vs DFS",
+    "Topological sort",
+    "Union-find",
+    "Shortest paths"
+   ],
+   "leetcodeTags": [
+    "Graph",
+    "Breadth-First Search",
+    "Depth-First Search",
+    "Union Find",
+    "Topological Sort",
+    "Shortest Path"
+   ],
+   "patterns": [
+    {
+     "id": "graphs.connectivity",
+     "title": "Connected regions",
+     "idea": "Run DFS or BFS from every unvisited cell or node; each start discovers one component.",
+     "seeAlso": {
+      "striver": "Step 15",
+      "risingbrain": "DFS (Connectivity)",
+      "gfg": "Graph"
+     },
+     "slugs": [
+      "flood-fill",
+      "number-of-islands",
+      "max-area-of-island",
+      "number-of-provinces",
+      "surrounded-regions",
+      "clone-graph"
+     ]
+    },
+    {
+     "id": "graphs.bfs",
+     "title": "Shortest steps with BFS",
+     "idea": "On unweighted graphs BFS reaches nodes in order of distance; start from every source at once when there are many.",
+     "seeAlso": {
+      "striver": "Step 15",
+      "risingbrain": "BFS Pattern",
+      "gfg": "Graph"
+     },
+     "slugs": [
+      "rotting-oranges",
+      "01-matrix",
+      "shortest-path-in-binary-matrix",
+      "word-ladder"
+     ]
+    },
+    {
+     "id": "graphs.toposort",
+     "title": "Topological order and cycles",
+     "idea": "Process nodes with no remaining prerequisites; anything left over is part of a cycle.",
+     "seeAlso": {
+      "striver": "Step 15",
+      "risingbrain": "Topological Sort",
+      "gfg": "Graph"
+     },
+     "slugs": [
+      "course-schedule",
+      "course-schedule-ii",
+      "find-eventual-safe-states",
+      "find-all-possible-recipes-from-given-supplies",
+      "parallel-courses-iii"
+     ]
+    },
+    {
+     "id": "graphs.union-find",
+     "title": "Union-find and MST",
+     "idea": "Union-find merges groups in near O(1); add the cheapest safe edges for a minimum spanning tree.",
+     "seeAlso": {
+      "striver": "Step 15",
+      "risingbrain": "MST / Union-Find",
+      "gfg": "Graph"
+     },
+     "slugs": [
+      "redundant-connection",
+      "number-of-operations-to-make-network-connected",
+      "accounts-merge",
+      "min-cost-to-connect-all-points"
+     ]
+    },
+    {
+     "id": "graphs.weighted",
+     "title": "Weighted shortest paths",
+     "idea": "Dijkstra pops the closest unsettled node from a heap; Floyd-Warshall handles all pairs on small graphs.",
+     "seeAlso": {
+      "striver": "Step 15",
+      "risingbrain": "Dijkstra (Weighted)",
+      "gfg": "Graph"
+     },
+     "slugs": [
+      "network-delay-time",
+      "path-with-minimum-effort",
+      "cheapest-flights-within-k-stops",
+      "find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance"
+     ]
+    },
+    {
+     "id": "graphs.bipartite",
+     "title": "Colouring and bipartite checks",
+     "idea": "Try to two-colour the graph with BFS; a same-colour edge proves it cannot be split.",
+     "seeAlso": {
+      "striver": "Step 15",
+      "risingbrain": "BFS Pattern",
+      "gfg": "Graph"
+     },
+     "slugs": [
+      "find-if-path-exists-in-graph",
+      "is-graph-bipartite",
+      "possible-bipartition"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dp",
+   "order": 15,
+   "title": "Dynamic programming",
+   "summary": "Define a state, write how it is built from smaller states, then compute each state once.",
+   "concepts": [
+    "States and transitions",
+    "Memoisation to tabulation",
+    "Space optimisation",
+    "Classic DP families"
+   ],
+   "leetcodeTags": [
+    "Dynamic Programming",
+    "Memoization"
+   ],
+   "patterns": [
+    {
+     "id": "dp.one-d",
+     "title": "1D DP",
+     "idea": "The answer at i depends on a few earlier answers; start with the recursion, then fill an array.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "risingbrain": "1D / Linear DP",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "climbing-stairs",
+      "min-cost-climbing-stairs",
+      "house-robber",
+      "house-robber-ii",
+      "decode-ways",
+      "word-break"
+     ]
+    },
+    {
+     "id": "dp.grid",
+     "title": "2D and grid DP",
+     "idea": "Each cell combines the cells it can be reached from; fill row by row.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "risingbrain": "2D / Grid DP",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "unique-paths",
+      "unique-paths-ii",
+      "minimum-path-sum",
+      "triangle",
+      "maximal-square"
+     ]
+    },
+    {
+     "id": "dp.strings",
+     "title": "DP on two strings",
+     "idea": "dp[i][j] compares prefixes of both strings; match, skip one, or edit.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "risingbrain": "DP on Strings",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "longest-common-subsequence",
+      "longest-palindromic-subsequence",
+      "edit-distance",
+      "distinct-subsequences",
+      "wildcard-matching"
+     ]
+    },
+    {
+     "id": "dp.knapsack",
+     "title": "Knapsack and subset sums",
+     "idea": "For each item decide take or skip against a remaining capacity.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "risingbrain": "Knapsack / Subset Sum",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "partition-equal-subset-sum",
+      "target-sum",
+      "coin-change",
+      "coin-change-ii",
+      "last-stone-weight-ii"
+     ]
+    },
+    {
+     "id": "dp.lis",
+     "title": "Increasing subsequences",
+     "idea": "For each element, extend the best sequence that ends at a smaller earlier element.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "longest-increasing-subsequence",
+      "number-of-longest-increasing-subsequence",
+      "largest-divisible-subset",
+      "russian-doll-envelopes"
+     ]
+    },
+    {
+     "id": "dp.stocks",
+     "title": "Buy and sell states",
+     "idea": "Track a few states per day, such as holding or not, and transition between them.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "risingbrain": "DP on Stocks",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "best-time-to-buy-and-sell-stock-ii",
+      "best-time-to-buy-and-sell-stock-with-cooldown",
+      "best-time-to-buy-and-sell-stock-with-transaction-fee",
+      "best-time-to-buy-and-sell-stock-iii"
+     ]
+    },
+    {
+     "id": "dp.intervals",
+     "title": "Interval and partition DP",
+     "idea": "Try every split point of a range and combine the best answers of the two sides.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "risingbrain": "DP on Intervals",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "partition-array-for-maximum-sum",
+      "palindrome-partitioning-ii",
+      "burst-balloons",
+      "minimum-cost-to-cut-a-stick"
+     ]
+    },
+    {
+     "id": "dp.trees",
+     "title": "DP on trees",
+     "idea": "Each node returns a small tuple of best answers, such as with and without itself, to its parent.",
+     "seeAlso": {
+      "striver": "Step 16",
+      "risingbrain": "DP on Trees / DAGs",
+      "gfg": "Dynamic Programming"
+     },
+     "slugs": [
+      "unique-binary-search-trees",
+      "house-robber-iii",
+      "binary-tree-cameras"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tries",
+   "order": 16,
+   "title": "Tries",
+   "summary": "A trie stores strings by shared prefixes, so prefix lookups cost the word length, not the word count.",
+   "concepts": [
+    "Trie nodes and children",
+    "Prefix search",
+    "Word search with tries",
+    "Bitwise tries"
+   ],
+   "leetcodeTags": [
+    "Trie"
+   ],
+   "patterns": [
+    {
+     "id": "tries.basics",
+     "title": "Building a trie",
+     "idea": "Each node holds children and an end-of-word flag; insert and search walk one character per level.",
+     "seeAlso": {
+      "striver": "Step 17",
+      "risingbrain": "Basic Trie Operations",
+      "gfg": "Trie"
+     },
+     "slugs": [
+      "implement-trie-prefix-tree",
+      "design-add-and-search-words-data-structure",
+      "replace-words",
+      "map-sum-pairs"
+     ]
+    },
+    {
+     "id": "tries.words",
+     "title": "Tries for word search",
+     "idea": "Search many words at once by walking the trie and the grid together.",
+     "seeAlso": {
+      "striver": "Step 17",
+      "risingbrain": "Word Break / Segmentation",
+      "gfg": "Trie"
+     },
+     "slugs": [
+      "word-search-ii",
+      "concatenated-words",
+      "stream-of-characters"
+     ]
+    },
+    {
+     "id": "tries.xor",
+     "title": "Bitwise tries",
+     "idea": "Store numbers bit by bit from the top; to maximise XOR, prefer the opposite bit at each level.",
+     "seeAlso": {
+      "striver": "Step 17",
+      "risingbrain": "Bitwise Trie / XOR",
+      "gfg": "Trie"
+     },
+     "slugs": [
+      "maximum-xor-of-two-numbers-in-an-array",
+      "maximum-xor-with-an-element-from-array",
+      "count-pairs-with-xor-in-a-range"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bits",
+   "order": 17,
+   "title": "Bit manipulation",
+   "summary": "Treat integers as bit arrays: masks test, set and clear bits, and XOR cancels pairs.",
+   "concepts": [
+    "Binary representation",
+    "Masks and shifts",
+    "XOR properties",
+    "Bitmask subsets"
+   ],
+   "leetcodeTags": [
+    "Bit Manipulation"
+   ],
+   "patterns": [
+    {
+     "id": "bits.basics",
+     "title": "Bit basics",
+     "idea": "x & (x - 1) clears the lowest set bit; most counting problems repeat that step.",
+     "seeAlso": {
+      "striver": "Step 8",
+      "risingbrain": "Basic Bit Operations",
+      "gfg": "Bitwise Algorithms"
+     },
+     "slugs": [
+      "number-of-1-bits",
+      "counting-bits",
+      "reverse-bits",
+      "single-number",
+      "missing-number"
+     ]
+    },
+    {
+     "id": "bits.xor",
+     "title": "XOR and arithmetic tricks",
+     "idea": "XOR cancels equal values; count bits per position when numbers appear three times.",
+     "seeAlso": {
+      "striver": "Step 8",
+      "risingbrain": "Advanced XOR",
+      "gfg": "Bitwise Algorithms"
+     },
+     "slugs": [
+      "single-number-ii",
+      "single-number-iii",
+      "sum-of-two-integers",
+      "minimum-flips-to-make-a-or-b-equal-to-c"
+     ]
+    },
+    {
+     "id": "bits.masks",
+     "title": "Bitmasks",
+     "idea": "Represent a set of up to ~20 items as an integer and iterate over all masks.",
+     "seeAlso": {
+      "striver": "Step 8",
+      "risingbrain": "Subsets / Bitmask",
+      "gfg": "Bitwise Algorithms"
+     },
+     "slugs": [
+      "bitwise-and-of-numbers-range",
+      "maximum-product-of-word-lengths",
+      "smallest-sufficient-team"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mixed",
+   "order": 18,
+   "title": "Mixed interview sets",
+   "summary": "Combine patterns under time pressure, the way real interviews do.",
+   "concepts": [
+    "Picking the pattern",
+    "Explaining trade-offs",
+    "Designing data structures",
+    "Hard problem strategy"
+   ],
+   "leetcodeTags": [],
+   "patterns": [
+    {
+     "id": "mixed.design",
+     "title": "Design a data structure",
+     "idea": "Choose the structures that make every required operation fast, then keep them in sync.",
+     "seeAlso": {
+      "striver": "Strivers 150 / mixed",
+      "risingbrain": "Stack-Based Design",
+      "gfg": "Interview Corner"
+     },
+     "slugs": [
+      "insert-delete-getrandom-o1",
+      "time-based-key-value-store",
+      "design-twitter",
+      "lfu-cache"
+     ]
+    },
+    {
+     "id": "mixed.medium",
+     "title": "Mixed mediums",
+     "idea": "No hint about the topic: read, choose the pattern, and justify the complexity.",
+     "seeAlso": {
+      "striver": "Strivers 150 / mixed",
+      "gfg": "Interview Corner"
+     },
+     "slugs": [
+      "find-the-duplicate-number",
+      "game-of-life",
+      "first-missing-positive",
+      "text-justification"
+     ]
+    },
+    {
+     "id": "mixed.hard",
+     "title": "Hard finals",
+     "idea": "Break hard problems into known pieces before writing any code.",
+     "seeAlso": {
+      "striver": "Strivers 150 / mixed",
+      "gfg": "Interview Corner"
+     },
+     "slugs": [
+      "regular-expression-matching",
+      "maximal-rectangle",
+      "the-skyline-problem"
+     ]
+    }
+   ]
+  }
+ ]
+}
