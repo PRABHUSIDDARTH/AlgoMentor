@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { checkKey, GIT_EVENT, GIT_KEY, linkRepo, loadGit, parseRepoUrl, recordCheck, unlinkRepo } from './repos'
+import { checkKey, GIT_EVENT, GIT_KEY, latestRepo, linkRepo, loadGit, parseRepoUrl, passedChallenges, PRACTICE_SCOPE, recordCheck, unlinkRepo } from './repos'
 
 const NOW = new Date(2026, 9, 22, 10).getTime()
 const LATER = NOW + 3 * 86_400_000
@@ -97,6 +97,24 @@ describe('git store', () => {
     const g = loadGit()
     expect(Object.keys(g.repos)).toEqual(['good'])
     expect(Object.keys(g.checks)).toEqual(['good:first-commit'])
+  })
+
+  it('passedChallengesCountsEveryScope', () => {
+    recordCheck(checkKey('library-manager', 'first-commit'), { passed: true, details: [] }, NOW)
+    recordCheck(checkKey(PRACTICE_SCOPE, 'first-commit'), { passed: true, details: [] }, LATER)
+    recordCheck(checkKey('tcp-chat', 'release'), { error: 'Make the repository public to verify it.' }, NOW)
+    recordCheck(checkKey('tcp-chat', 'squash'), { passed: false, details: [] }, NOW)
+    recordCheck(checkKey('parking-lot', 'revert'), { passed: true, details: [] }, LATER)
+    const passed = passedChallenges(loadGit())
+    expect([...passed.keys()].sort()).toEqual(['first-commit', 'revert'])
+    expect(passed.get('first-commit')).toBe(NOW) // the earliest pass
+  })
+
+  it('latestRepoIsTheMostRecentlyLinked', () => {
+    expect(latestRepo(loadGit())).toBeUndefined()
+    linkRepo('library-manager', 'ana', 'library', NOW)
+    linkRepo('tcp-chat', 'ana', 'chat', LATER)
+    expect(latestRepo(loadGit())).toMatchObject({ scope: 'tcp-chat', owner: 'ana', repo: 'chat' })
   })
 
   it('corruptStorageIsEmpty', () => {

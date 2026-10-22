@@ -1,4 +1,4 @@
-import { CHALLENGE_IDS } from '@/content/learn/types'
+import { CHALLENGE_IDS, type ChallengeId } from '@/content/learn/types'
 
 export type LinkedRepo = { owner: string; repo: string; linkedAt: number }
 export type CheckDetail = { ok: boolean; text: string }
@@ -110,4 +110,22 @@ export function recordCheck(key: string, outcome: CheckOutcome, now = Date.now()
     ? { checkedAt: now, passed: false, details: [], error: outcome.error, ...(passedAt === undefined ? {} : { passedAt }) }
     : { checkedAt: now, passed: outcome.passed, details: outcome.details, ...(passedAt === undefined ? {} : { passedAt }) }
   save(state)
+}
+
+/** Challenges passed in any project or on the Git page, with the date each was first passed. */
+export function passedChallenges(state: GitState): Map<ChallengeId, number> {
+  const out = new Map<ChallengeId, number>()
+  for (const [key, record] of Object.entries(state.checks)) {
+    if (record.passedAt === undefined) continue
+    const id = key.slice(key.indexOf(':') + 1) as ChallengeId
+    const before = out.get(id)
+    if (before === undefined || record.passedAt < before) out.set(id, record.passedAt)
+  }
+  return out
+}
+
+/** The most recently linked repository, whichever project or page it was linked from. */
+export function latestRepo(state: GitState): ({ scope: string } & LinkedRepo) | undefined {
+  const all = Object.entries(state.repos).map(([scope, r]) => ({ scope, ...r }))
+  return all.sort((a, b) => b.linkedAt - a.linkedAt)[0]
 }
