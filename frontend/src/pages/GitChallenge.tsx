@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { AppShell } from '@/components/AppShell'
+import { PageHeader } from '@/components/PageHeader'
 import { CheatSheet } from '@/components/learn/CheatSheet'
 import { CheckResultView } from '@/components/learn/CheckResultView'
 import { RepoLink } from '@/components/learn/RepoLink'
@@ -59,11 +60,12 @@ export default function GitChallenge() {
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_360px] xl:px-20">
         <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-7">
-          <header className="grid gap-2">
-            <p className="eyebrow">Git challenge {challenge.order} of {GIT_CHALLENGES.length}</p>
-            <h1 className="display text-[30px] leading-tight xl:text-[36px]">{challenge.title}</h1>
-            <p className="max-w-[72ch] text-[14.5px] leading-relaxed text-ink-muted">{challenge.brief}</p>
-          </header>
+          <PageHeader
+            crumbs={[{ label: 'Git', to: '/git' }, { label: challenge.title }]}
+            eyebrow={`Git challenge ${challenge.order} of ${GIT_CHALLENGES.length}`}
+            title={challenge.title}
+            summary={challenge.brief}
+          />
           <p className="max-w-[72ch] border-l-2 border-sage pl-3 text-[13.5px] leading-relaxed">
             No AI on Git pages: you run Git yourself, and the check only looks at the state of your repository on GitHub.
           </p>

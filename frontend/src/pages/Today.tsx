@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { AppShell } from '@/components/AppShell'
+import { PageHeader } from '@/components/PageHeader'
 import { ChecklistItem } from '@/components/practice/ChecklistItem'
 import { StreakStrip } from '@/components/practice/StreakStrip'
 import { Button } from '@/components/ui/button'
@@ -111,11 +112,9 @@ export default function Today() {
     <AppShell>
       <div className="grid gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_340px] xl:px-20">
         <div className="grid content-start gap-7">
-          <header className="grid gap-2">
-            <p className="eyebrow">{dateLabel}</p>
-            <h1 className="display text-[32px] leading-tight xl:text-[38px]">Today's plan</h1>
+          <PageHeader eyebrow={dateLabel} title="Today's plan">
             <p className="font-mono text-[12px] text-ink-muted">{done} of {total} done</p>
-          </header>
+          </PageHeader>
 
           <section aria-labelledby="t-new" className="grid gap-2.5">
             <h2 id="t-new" className="text-[16px] font-semibold">New problems</h2>
