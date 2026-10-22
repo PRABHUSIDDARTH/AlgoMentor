@@ -34,7 +34,7 @@ describe('coreScore', () => {
 
   it('everythingDoneIsAHundred', () => {
     const all = gitWith([...PROJECTS.flatMap((p) => p.gitMilestones.map((m) => checkKey(p.id, m)))])
-    const s = coreScore(input({ learn: learnFor(['oop', 'cn', 'dbms']), git: all }))
+    const s = coreScore(input({ learn: learnFor(['oop', 'cn', 'dbms', 'os']), git: all }))
     expect(s.parts.modules).toBeCloseTo(40)
     expect(s.parts.quiz).toBeCloseTo(30)
     expect(s.parts.projects).toBeCloseTo(20)
@@ -46,7 +46,7 @@ describe('coreScore', () => {
     const attemptedOnly: LearnProgress = { [TRACKS[0].modules[0].id]: { bestQuiz: 5, reviewStep: 0, nextReviewAt: null } }
     const s = coreScore(input({ learn: attemptedOnly }))
     expect(s.parts.modules).toBe(0)
-    expect(s.parts.quiz).toBeCloseTo((5 / 150) * 30) // a quiz score still counts
+    expect(s.parts.quiz).toBeCloseTo((5 / 200) * 30) // a quiz score still counts
   })
 
   it('serviceWeighsDbmsAndCnHigher', () => {
@@ -54,11 +54,11 @@ describe('coreScore', () => {
     const oop = learnFor(['oop'])
     const faangDbms = coreScore(input({ learn: dbms })).parts.modules
     const serviceDbms = coreScore(input({ learn: dbms, target: SERVICE })).parts.modules
-    expect(faangDbms).toBeCloseTo(40 / 3)
-    expect(serviceDbms).toBeCloseTo(40 * (15 / 40))
+    expect(faangDbms).toBeCloseTo(10)
+    expect(serviceDbms).toBeCloseTo(12)
     expect(serviceDbms).toBeGreaterThan(faangDbms)
     expect(coreScore(input({ learn: oop, target: SERVICE })).parts.modules).toBeLessThan(coreScore(input({ learn: oop })).parts.modules)
-    expect(coreScore(input({ learn: learnFor(['cn']), target: SERVICE })).parts.modules).toBeCloseTo(15)
+    expect(coreScore(input({ learn: learnFor(['cn']), target: SERVICE })).parts.modules).toBeCloseTo(12)
   })
 
   it('aProjectCountsOnlyWhenEveryMilestoneIsPassed', () => {
@@ -66,13 +66,13 @@ describe('coreScore', () => {
     const partial = gitWith(lib.gitMilestones.slice(0, 3).map((m) => checkKey(lib.id, m)))
     expect(coreScore(input({ git: partial })).parts.projects).toBe(0)
     const full = gitWith(lib.gitMilestones.map((m) => checkKey(lib.id, m)))
-    expect(coreScore(input({ git: full })).parts.projects).toBeCloseTo(20 / 9)
+    expect(coreScore(input({ git: full })).parts.projects).toBeCloseTo(20 / 12)
   })
 
   it('aPassKeptAfterTheRepoWentPrivateStillCounts', () => {
     const lib = PROJECTS.find((p) => p.id === 'library-manager')!
     const checks = Object.fromEntries(lib.gitMilestones.map((m) => [checkKey(lib.id, m), { checkedAt: 2, passed: false, passedAt: 1, details: [], error: 'Make the repository public to verify it.' }]))
-    expect(coreScore(input({ git: { repos: {}, checks } })).parts.projects).toBeCloseTo(20 / 9)
+    expect(coreScore(input({ git: { repos: {}, checks } })).parts.projects).toBeCloseTo(20 / 12)
   })
 
   it('gitChallengesCountOncePerChallengeAcrossScopes', () => {
@@ -82,7 +82,7 @@ describe('coreScore', () => {
 
   it('quizPartIsTheMeanOverAllModules', () => {
     const s = coreScore(input({ learn: learnFor(['oop'], 4) }))
-    expect(s.parts.quiz).toBeCloseTo((40 / 150) * 30)
+    expect(s.parts.quiz).toBeCloseTo((40 / 200) * 30)
   })
 })
 
@@ -113,7 +113,7 @@ describe('coreGaps', () => {
   })
 
   it('finishingLastModulesSaysHowManyAreLeft', () => {
-    const learn = learnFor(['oop', 'cn', 'dbms'])
+    const learn = learnFor(['oop', 'cn', 'dbms', 'os'])
     delete learn[TRACKS[2].modules[9].id]
     delete learn[TRACKS[2].modules[8].id]
     const gap = coreGaps(input({ learn })).find((g) => g.component === 'modules')
@@ -127,7 +127,7 @@ describe('coreGaps', () => {
   })
 
   it('gitGapNamesTheFirstUnpassedChallenge', () => {
-    const everythingElse = learnFor(['oop', 'cn', 'dbms'])
+    const everythingElse = learnFor(['oop', 'cn', 'dbms', 'os'])
     const git = gitWith([...PROJECTS.flatMap((p) => p.gitMilestones.map((m) => checkKey(p.id, m))).filter((k) => !k.endsWith(':merge-conflict') && !k.endsWith(':first-commit'))])
     const gaps = coreGaps(input({ learn: everythingElse, git }))
     const g = gaps.find((x) => x.component === 'git')!
@@ -136,6 +136,6 @@ describe('coreGaps', () => {
 
   it('noGapsWhenEverythingIsDone', () => {
     const all = gitWith(PROJECTS.flatMap((p) => p.gitMilestones.map((m) => checkKey(p.id, m))))
-    expect(coreGaps(input({ learn: learnFor(['oop', 'cn', 'dbms']), git: all }))).toEqual([])
+    expect(coreGaps(input({ learn: learnFor(['oop', 'cn', 'dbms', 'os']), git: all }))).toEqual([])
   })
 })

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
+import { PageHeader } from '@/components/PageHeader'
 import { ResumeCard } from '@/components/learn/ResumeCard'
 import { matchesFilter, RESUME_PROJECTS, type CompanyFilter, type RoleFilter } from '@/content/learn/resume-projects'
 import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
@@ -15,14 +15,12 @@ export default function Resume() {
   return (
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-7 px-6 py-8 sm:px-10 lg:px-14 xl:px-20">
-        <header className="grid gap-2">
-          <p className="eyebrow">Resume projects</p>
-          <h1 className="display text-[32px] leading-tight xl:text-[38px]">Projects a recruiter remembers.</h1>
-          <p className="max-w-[72ch] text-[14px] leading-relaxed text-ink-muted">
-            Twelve projects that show depth, each with the resume line to write about it and a checklist that makes the repository look the part.
-          </p>
-        </header>
-        <LearnNav />
+        <PageHeader
+          crumbs={[{ label: 'Progress', to: '/level' }, { label: 'Resume projects' }]}
+          eyebrow="Resume projects"
+          title="Projects a recruiter remembers."
+          summary="Twelve projects that show depth, each with the resume line to write about it and a checklist that makes the repository look the part."
+        />
 
         <section aria-labelledby="resume-how" className="grid max-w-[80ch] gap-3 rounded-lg border border-line bg-sand px-5 py-5">
           <h2 id="resume-how" className="text-[17px] font-semibold">How to write the bullet</h2>

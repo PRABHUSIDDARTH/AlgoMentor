@@ -117,7 +117,7 @@ describe('Workspace', () => {
 
   it('appNavHidesPhase2Links', () => {
     renderAt('/app')
-    for (const name of [/progress/i, /connections/i, /sign in/i]) {
+    for (const name of [/connections/i, /sign in/i]) {
       expect(screen.queryByRole('link', { name })).toBeNull()
     }
     expect(screen.getByRole('button', { name: 'Theme' })).toBeInTheDocument()
@@ -148,15 +148,16 @@ describe('Workspace', () => {
 
   it('settingsFollowsThemeInTabOrder', () => {
     renderAt('/app')
-    const names = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? b.textContent)
-    expect(names.indexOf('Settings')).toBe(names.indexOf('Theme') + 1)
+    const names = within(screen.getByRole('banner')).getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? b.textContent)
+    expect(names.indexOf('Settings')).toBe(names.length - 1)
+    expect(names.indexOf('Settings')).toBeGreaterThan(names.indexOf('Theme'))
   })
 
   it('hasLandmarksAndSkipLink', () => {
     renderAt('/app')
     expect(screen.getByRole('main')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveAttribute('href', '#main')
-    expect(screen.getByRole('navigation', { name: 'App' })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Sections' })).toBeInTheDocument()
   })
 })
 

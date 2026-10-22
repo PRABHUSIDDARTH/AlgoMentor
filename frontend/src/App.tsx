@@ -20,6 +20,10 @@ const Project = lazy(() => import('@/pages/Project'))
 const GitHub = lazy(() => import('@/pages/GitHub'))
 const GitChallenge = lazy(() => import('@/pages/GitChallenge'))
 const Resume = lazy(() => import('@/pages/Resume'))
+const Tests = lazy(() => import('@/pages/Tests'))
+const Projects = lazy(() => import('@/pages/Projects'))
+const GitHealth = lazy(() => import('@/pages/GitHealth'))
+const LevelCore = lazy(() => import('@/pages/LevelCore'))
 
 export default function App() {
   return (
@@ -34,12 +38,16 @@ export default function App() {
           <Route path="/roadmap/:stageId" element={<RoadmapStage />} />
           <Route path="/today" element={<Today />} />
           <Route path="/test/:testId" element={<TestRunner />} />
+          <Route path="/tests" element={<Tests />} />
           <Route path="/level" element={<Level />} />
+          <Route path="/level/core" element={<LevelCore />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/learn/:trackId" element={<LearnTrack />} />
           <Route path="/learn/:trackId/:moduleId" element={<Lesson />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:projectId" element={<Project />} />
           <Route path="/git" element={<GitHub />} />
+          <Route path="/git/health" element={<GitHealth />} />
           <Route path="/git/:challengeId" element={<GitChallenge />} />
           <Route path="/resume" element={<Resume />} />
           <Route path="*" element={<Navigate to="/" replace />} />

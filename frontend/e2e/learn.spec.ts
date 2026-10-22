@@ -143,9 +143,11 @@ test('resume projects filter by target and role, and check a repository', async 
   await expect(first.getByText('Add a CI workflow under .github/workflows')).toBeVisible()
 })
 
-test('the level page shows both meters and Today shows the lower readiness', async ({ page }) => {
+test('the level pages show both meters and Today shows the lower readiness', async ({ page }) => {
   await page.goto('/level')
   await expect(page.getByRole('meter', { name: /^Readiness for/ })).toBeVisible()
+  await page.getByRole('link', { name: 'Core CS level', exact: true }).first().click()
+  await expect(page).toHaveURL(/\/level\/core$/)
   await expect(page.getByRole('meter', { name: /^Core CS readiness for/ })).toBeVisible()
   await expect(page.getByRole('list', { name: 'Core CS: what to do next' }).getByRole('listitem')).toHaveCount(3)
   await page.goto('/today')

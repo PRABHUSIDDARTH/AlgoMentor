@@ -1,4 +1,5 @@
 import { AppShell } from '@/components/AppShell'
+import { PageHeader } from '@/components/PageHeader'
 import { StageCard } from '@/components/practice/StageCard'
 import { UpNext } from '@/components/practice/UpNext'
 import { PROBLEMS, STAGES } from '@/content/roadmap'
@@ -20,16 +21,15 @@ export default function Roadmap() {
   return (
     <AppShell>
       <div className="grid gap-6 px-6 py-8 sm:px-10 lg:px-14 xl:px-20">
-        <header className="grid gap-2">
-          <p className="eyebrow">Your DSA roadmap</p>
-          <h1 className="display text-[32px] leading-tight xl:text-[38px]">18 stages, one concept at a time.</h1>
-          <p className="max-w-[72ch] text-[14px] leading-relaxed text-ink-muted">
-            Each stage builds on the last. Solved problems come back for review after 1, 3, 7, 21 and 60 days, so you keep what you learn.
-          </p>
+        <PageHeader
+          eyebrow="Your DSA roadmap"
+          title="18 stages, one concept at a time."
+          summary="Each stage builds on the last. Solved problems come back for review after 1, 3, 7, 21 and 60 days, so you keep what you learn."
+        >
           <p className="font-mono text-[12px] text-ink-muted">
             {solvedTotal} of {PROBLEMS.size} solved · Target: {COMPANY_LABEL[settings.target.company]} · {ROLE_LABEL[settings.target.role]}
           </p>
-        </header>
+        </PageHeader>
         <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
         <ol aria-label="Roadmap stages" className="grid">
           {STAGES.map((stage, i) => {

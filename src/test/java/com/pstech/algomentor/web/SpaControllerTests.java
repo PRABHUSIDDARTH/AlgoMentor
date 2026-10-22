@@ -33,7 +33,7 @@ class SpaControllerTests {
 
 	@Test
 	void forwardsLearnRoutes() throws Exception {
-		for (String path : new String[] { "/learn/oop/classes-objects", "/projects/library-manager", "/git", "/git/merge-conflict", "/resume" }) {
+		for (String path : new String[] { "/learn/oop/classes-objects", "/projects", "/projects/library-manager", "/git", "/git/merge-conflict", "/git/health", "/resume", "/tests", "/level/core" }) {
 			mvc.perform(get(path)).andExpect(status().isOk()).andExpect(forwardedUrl("/index.html"));
 		}
 		mvc.perform(get("/git/check/ana$/x/first-commit")).andExpect(status().isBadRequest());

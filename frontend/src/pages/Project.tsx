@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router'
 import { AppShell } from '@/components/AppShell'
-import { LearnNav } from '@/components/learn/LearnNav'
+import { PageHeader } from '@/components/PageHeader'
 import { MilestoneList } from '@/components/learn/MilestoneList'
 import { RepoLink } from '@/components/learn/RepoLink'
 import { PROJECT_BY_ID } from '@/content/learn/projects'
@@ -42,14 +42,12 @@ export default function Project() {
     <AppShell>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_380px] xl:px-20">
         <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-7">
-          <LearnNav />
-          <header className="grid gap-2">
-            <p className="eyebrow">
-              <Link to={`/learn/${track.id}`} className="hover:underline">{track.short}</Link> · {LEVEL[project.level]} project
-            </p>
-            <h1 className="display text-[30px] leading-tight xl:text-[36px]">{project.title}</h1>
-            <p className="max-w-[72ch] text-[14.5px] leading-relaxed text-ink-muted">{project.goal}</p>
-          </header>
+          <PageHeader
+            crumbs={[{ label: 'Projects', to: '/projects' }, { label: project.title }]}
+            eyebrow={`${track.short} · ${LEVEL[project.level]} project`}
+            title={project.title}
+            summary={project.goal}
+          />
           <Section id="proj-proves" title="What it proves" items={project.proves} />
           <Section id="proj-req" title="Requirements" items={project.requirements} />
           <Section id="proj-stretch" title="Stretch goals" items={project.stretch} />

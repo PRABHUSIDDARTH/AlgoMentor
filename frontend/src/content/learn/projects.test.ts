@@ -5,8 +5,8 @@ import { TRACKS } from '.'
 const ALL_CHALLENGES = ['first-commit', 'meaningful-commits', 'feature-pr', 'merge-conflict', 'squash', 'revert', 'rescue-branch', 'cherry-pick', 'release', 'remove-secret']
 
 describe('projects content', () => {
-  it('nineProjectsThreePerTrackBeginnerToAdvanced', () => {
-    expect(PROJECTS).toHaveLength(9)
+  it('twelveProjectsThreePerTrackBeginnerToAdvanced', () => {
+    expect(PROJECTS).toHaveLength(12)
     for (const t of TRACKS) {
       const mine = PROJECTS.filter((p) => p.track === t.id)
       expect(mine.map((p) => p.level), t.id).toEqual(['beginner', 'intermediate', 'advanced'])
@@ -15,7 +15,7 @@ describe('projects content', () => {
   })
 
   it('specExamplesAreThere', () => {
-    expect(PROJECTS.map((p) => p.id)).toEqual(['library-manager', 'parking-lot', 'expense-splitter', 'tcp-chat', 'http-server', 'dns-resolver', 'ecommerce-schema', 'kv-store', 'bplus-index'])
+    expect(PROJECTS.map((p) => p.id)).toEqual(['library-manager', 'parking-lot', 'expense-splitter', 'tcp-chat', 'http-server', 'dns-resolver', 'ecommerce-schema', 'kv-store', 'bplus-index', 'mini-shell', 'thread-pool', 'vm-simulator'])
   })
 
   it('everyProjectIsFullySpecified', () => {

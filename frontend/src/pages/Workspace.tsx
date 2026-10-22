@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
-import { AppNav } from '@/components/workspace/AppNav'
+import { SiteNav } from '@/components/nav/SiteNav'
 import { EmptyState } from '@/components/workspace/EmptyState'
 import { JumpToProblem } from '@/components/workspace/JumpToProblem'
 import { MentorPanel } from '@/components/workspace/MentorPanel'
@@ -62,7 +62,7 @@ export default function Workspace() {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-cream">
         Skip to content
       </a>
-      <AppNav onJump={() => setJumpOpen(true)} onMenu={() => setMenuOpen(true)} />
+      <SiteNav onJump={() => setJumpOpen(true)} onMenu={() => setMenuOpen(true)} />
       <div className="grid min-h-0 flex-1 min-[1200px]:grid-cols-[220px_minmax(0,1fr)]">
         {sidebar('hidden overflow-y-auto border-r border-line min-[1200px]:grid')}
         <main id="main" className="min-h-0 min-w-0 md:overflow-hidden">

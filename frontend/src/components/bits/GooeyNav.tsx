@@ -29,6 +29,8 @@ interface GooeyNavProps {
   initialActiveIndex?: number;
   activeIndex?: number;
   onChange?: (index: number, item: GooeyNavItem) => void;
+  /** Called on a plain click of a link item; call `event.preventDefault()` to handle navigation yourself (e.g. a client-side router). */
+  onItemClick?: (item: GooeyNavItem, event: MouseEvent) => void;
   theme?: Palette;
   color?: string;
   activeTextColor?: string;
@@ -44,6 +46,7 @@ interface GooeyNavProps {
   hoverEffect?: boolean;
   className?: string;
   style?: CSSProperties;
+  'aria-label'?: string;
 }
 
 interface Rect {
@@ -321,6 +324,7 @@ const GooeyNav = ({
   initialActiveIndex = 0,
   activeIndex,
   onChange,
+  onItemClick,
   theme = 'dark',
   color,
   activeTextColor,
@@ -335,7 +339,8 @@ const GooeyNav = ({
   wobble = 0.5,
   hoverEffect = true,
   className = '',
-  style
+  style,
+  'aria-label': ariaLabel
 }: GooeyNavProps) => {
   const [innerIndex, setInnerIndex] = useState(initialActiveIndex);
   const current = Math.min(Math.max(0, activeIndex ?? innerIndex), Math.max(0, items.length - 1));
@@ -884,6 +889,7 @@ const GooeyNav = ({
         'aria-current': index === current ? ('page' as const) : undefined,
         onClick: (event: MouseEvent) => {
           if (!item.href || item.href === '#') event.preventDefault();
+          else if (onItemClick && !event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) onItemClick(item, event);
           select(index);
         }
       };
@@ -909,6 +915,7 @@ const GooeyNav = ({
 
   return (
     <nav
+      aria-label={ariaLabel}
       className={`${ROOT}${frame ? ` ${FRAMED}` : ''} ${className}`.trim()}
       style={
         {

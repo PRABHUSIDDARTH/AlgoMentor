@@ -1,11 +1,12 @@
 import { CN } from './cn'
 import { DBMS } from './dbms'
 import { OOP } from './oop'
+import { OS } from './os'
 import type { Lesson, Track, TrackId } from './types'
 
 export type { Lesson, QuizQuestion, Track, TrackId } from './types'
 
-export const TRACKS: Track[] = [OOP, CN, DBMS]
+export const TRACKS: Track[] = [OOP, CN, DBMS, OS]
 
 export const TRACK_BY_ID = new Map<TrackId, Track>(TRACKS.map((t) => [t.id, t]))
 
