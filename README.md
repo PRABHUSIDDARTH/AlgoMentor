@@ -23,12 +23,23 @@ An AI assistant that explains DSA problems, gives hints, and provides optimal so
 - 🕘 Recent problems saved in your browser, plus Ctrl K to jump to any problem
 - 🌗 Light and dark themes (follows your system by default)
 
+### Practice hub
+- ⚙️ **Settings** (top-right on every page): connect your **LeetCode, HackerRank and GeeksforGeeks** profile URLs (public data only, no passwords), pick a target company and role, and set a daily goal
+- 🗺️ **Roadmap**: AlgoMentor's own 18-stage, 329-problem progressive DSA roadmap, with patterns, original explanations, company/role weighting and links to Striver A2Z, RisingBrain and GfG
+- 🔁 **Never forget**: solved problems come back for review after 1, 3, 7, 21 and 60 days
+- ✅ **Today**: a daily checklist of new problems, due reviews and a concept refresher, with a streak
+- 🧪 **Generate test**: 10 mixed problems (revision + new) matched to your level, timed, with a report
+- 📈 **Level & readiness**: levels 1-10 and readiness % for your target, with the three things to do next
+
+Progress is saved in your browser for now. LeetCode only shares your ~20 most recent accepted problems publicly, so older solves count through topic totals.
+
 ## 🔌 API
 | Endpoint | Description |
 | --- | --- |
 | `POST /ask` | `{"problem", "mode": "explain\|hint\|solution\|followup", "previousHints": [...], "language": "python\|java\|cpp", "conversation": [...], "question", "solutionRevealed"}` → `{"result"}` |
 | `POST /ask/stream` | Same body; Server-Sent Events: `chunk` `{"text"}` … then `done`, or `error` `{"error"}` |
 | `GET /problem?ref=1` | Fetches a LeetCode problem by number or URL → `{number, title, difficulty, tags, url, statement}` |
+| `GET /profiles/{leetcode,hackerrank,gfg}/{user}` | Public profile stats (cached 6 hours) |
 
 Errors are always `{"error": "..."}`. LeetCode lookups use LeetCode's public but unofficial endpoints, so Premium problems can't be fetched.
 
