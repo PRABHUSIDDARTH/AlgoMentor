@@ -31,12 +31,25 @@ for (const [path, section, tab] of ROUTES) {
     await expect(tabs.getByRole('link', { name: tab, exact: true })).toHaveAttribute('aria-current', 'page')
     await expect(page.getByRole('button', { name: 'Settings' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Theme' })).toBeVisible()
+    // Both rows are the React Bits GooeyNav, which draws its blob on a canvas.
+    await expect(sections.locator('canvas')).toHaveCount(1)
+    await expect(tabs.locator('canvas')).toHaveCount(1)
+  })
+}
+
+for (const [path, section] of [['/learn/nope', 'Learn'], ['/git/nope', 'Git'], ['/projects/nope', 'Learn'], ['/test/nope', 'Practice'], ['/roadmap/nope', 'Practice']] as const) {
+  test(`${path} (not found) keeps the gooey navbar with ${section} current`, async ({ page }) => {
+    await page.goto(path)
+    const sections = page.getByRole('navigation', { name: 'Sections' })
+    await expect(sections.locator('canvas')).toHaveCount(1)
+    await expect(sections.getByRole('link', { name: section, exact: true })).toHaveAttribute('aria-current', 'page')
   })
 }
 
 test('the landing page keeps its in-page links and Get started', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('navigation', { name: 'Page' }).getByRole('link', { name: 'How it works' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Page' }).locator('canvas')).toHaveCount(1)
   await expect(page.getByRole('link', { name: 'Get started' })).toHaveAttribute('href', '/app')
   await expect(page.getByRole('navigation', { name: 'Sections' })).toHaveCount(0)
 })

@@ -34,6 +34,13 @@ describe('sections', () => {
     expect(tabFor('/')).toBeNull()
   })
 
+  it('keeps the right section highlighted on a not-found page inside it', () => {
+    for (const [path, section] of [['/learn/nope', 'learn'], ['/level/nope', 'progress'], ['/learn/os/nope/deeper', 'learn'], ['/test', 'practice']] as const) {
+      expect(sectionFor(path), path).toBe(section)
+    }
+    expect(tabFor('/learn/nope')).toBeNull()
+  })
+
   it('does not match on a shared prefix', () => {
     expect(sectionFor('/learnings')).toBeNull()
     expect(sectionFor('/github')).toBeNull()
