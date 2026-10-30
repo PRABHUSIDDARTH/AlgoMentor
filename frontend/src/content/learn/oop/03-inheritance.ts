@@ -5,11 +5,21 @@ const lesson: Lesson = {
   title: 'Inheritance',
   minutes: 9,
   diagram: 'inheritance-tree',
+  hook: 'A library adds `EBook` by copying `Book` and editing it. Months later a fix to the late-fee rule lands in one copy and not the other, and members are charged wrongly. Inheritance lets `EBook` reuse a shared `LibraryItem` instead, but only when the two really are the same kind of thing.',
+  keyPoints: [
+    'Inheritance models an is-a relationship: the child gets the parent\'s members and can add or override them.',
+    'The child\'s constructor must run the parent\'s constructor, or the parent\'s invariants are never set up.',
+    'A subclass must work anywhere its parent is expected (Liskov substitution). That is the real test of fit.',
+    'Inheritance is the tightest coupling in OOP, so keep hierarchies shallow and design parents on purpose.',
+  ],
   body: `## "Is a" relationships
 
 **Inheritance** lets one class (the *subclass* or *child*) build on another (the *superclass* or *parent*). The child gets the parent's fields and methods and can add its own or change how some of them work.
 
 Use it when the child truly **is a** kind of the parent. A \`Car\` is a \`Vehicle\`; an \`EBook\` is a \`LibraryItem\`. If you find yourself saying "has a" instead (a car *has an* engine), you want composition, which a later module covers.
+
+> [!KEY] Two tests, not one
+> Saying "is a" is not enough. Inheritance fits only when the child is a kind of the parent and can stand in for it anywhere the parent is used. If the second test fails, use composition.
 
 ## What the child gets
 
@@ -21,15 +31,40 @@ A subclass inherits every non-private member of its parent. It can:
 
 The child's constructor must make sure the parent part is set up too. In Java that is the \`super(...)\` call on the first line; in Python it is \`super().__init__(...)\`; in C++ it is the base class in the initialiser list. Skipping it leaves the parent's invariants unestablished.
 
+> [!TRY] Where did kind go?
+> What happens on the last line?
+>
+> \`\`\`python
+> class Item:
+>     def __init__(self):
+>         self.kind = "item"
+>
+> class EBook(Item):
+>     def __init__(self):
+>         pass
+>
+> print(EBook().kind)
+> \`\`\`
+>
+> ---
+>
+> It raises \`AttributeError: 'EBook' object has no attribute 'kind'\`. \`EBook.__init__\` replaced the parent's and never called \`super().__init__()\`, so the field was never set. Java and C++ call a no-argument parent constructor for you when one exists; Python never does.
+
 ## Overriding, and calling the parent's version
 
 When a subclass overrides a method, calls through any reference to that object use the subclass version. That is what makes inheritance powerful: code written against \`LibraryItem\` keeps working when you hand it an \`EBook\`. An override can still call the parent's implementation with \`super.method()\` and add to it, which is common for things like \`toString\` or validation.
 
 In Java, mark overrides with \`@Override\` so the compiler catches a typo that would otherwise silently add a new method. In C++, the parent method must be \`virtual\` and the child should say \`override\`.
 
+> [!GOTCHA] The override that is not one
+> In Java a method named \`tostring()\`, or one with a slightly different parameter list, overrides nothing. It is a new method, so the parent's version keeps running, and without \`@Override\` the compiler stays quiet. C++ accepts the same typo unless you write \`override\`, and a missing \`virtual\` makes the call bind to the parent.
+
 ## The substitution rule
 
 A subclass must be usable anywhere its parent is expected without surprising the caller. This is the **Liskov substitution principle**, and it is the real test of whether inheritance fits. The classic failure is \`Square extends Rectangle\`: a rectangle lets you set width and height independently, a square can't, so code that sets the width of a "rectangle" and expects the height to stay put breaks when given a square.
+
+> [!INTERVIEW] Square and Rectangle
+> This is the standard probe. Argue from behaviour, not geometry: a rectangle promises that setting the width leaves the height alone, a square cannot keep that promise, so code written for rectangles breaks. Then offer a fix, such as no inheritance between them or making both immutable.
 
 If a child has to throw "not supported" for a parent method, or weaken a promise the parent made, the hierarchy is wrong.
 

@@ -20,6 +20,10 @@ const CASES: [string, string, string][] = [
   ['/level', 'progress', '/level'],
   ['/level/core', 'progress', '/level/core'],
   ['/resume', 'progress', '/resume'],
+  ['/companies', 'progress', '/companies'],
+  ['/companies/meta', 'progress', '/companies'],
+  ['/about', 'about', '/about'],
+  ['/about/settings', 'about', '/about/settings'],
 ]
 
 describe('sections', () => {
@@ -34,6 +38,13 @@ describe('sections', () => {
     expect(tabFor('/')).toBeNull()
   })
 
+  it('keeps the right section highlighted on a not-found page inside it', () => {
+    for (const [path, section] of [['/learn/nope', 'learn'], ['/level/nope', 'progress'], ['/learn/os/nope/deeper', 'learn'], ['/test', 'practice'], ['/companies/nope/x', 'progress']] as const) {
+      expect(sectionFor(path), path).toBe(section)
+    }
+    expect(tabFor('/learn/nope')).toBeNull()
+  })
+
   it('does not match on a shared prefix', () => {
     expect(sectionFor('/learnings')).toBeNull()
     expect(sectionFor('/github')).toBeNull()
@@ -44,8 +55,8 @@ describe('sections', () => {
     for (const t of TRACKS) expect(tos).toContain(`/learn/${t.id}`)
   })
 
-  it('has four sections and no route in two tabs', () => {
-    expect(SECTIONS.map((s) => s.id)).toEqual(['practice', 'learn', 'git', 'progress'])
+  it('has five sections and no route in two tabs', () => {
+    expect(SECTIONS.map((s) => s.id)).toEqual(['practice', 'learn', 'git', 'progress', 'about'])
     const all = SECTIONS.flatMap((s) => sectionTabs(s.id).map((t) => t.to))
     expect(new Set(all).size).toBe(all.length)
   })

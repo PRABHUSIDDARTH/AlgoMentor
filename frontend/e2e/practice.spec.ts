@@ -12,15 +12,15 @@ async function waitForAnswer(page: Page) {
 }
 
 test('Settings connects a LeetCode profile and shows its stats', async ({ page }) => {
-  await page.goto('/app')
-  await page.getByRole('button', { name: 'Settings' }).click()
-  const dialog = page.getByRole('dialog', { name: 'Settings' })
-  await dialog.getByRole('textbox', { name: 'LeetCode profile URL' }).fill('https://leetcode.com/u/demo/')
-  await dialog.getByRole('button', { name: 'Connect LeetCode' }).click()
-  await expect(dialog.getByText('312 solved · 140 Easy · 150 Medium · 22 Hard')).toBeVisible()
-  await dialog.getByRole('textbox', { name: 'GeeksforGeeks profile URL' }).fill('geeksforgeeks.org/user/ghost')
-  await dialog.getByRole('button', { name: 'Connect GeeksforGeeks' }).click()
-  await expect(dialog.getByRole('alert')).toContainText('No public profile found for ghost')
+  await page.goto('/about')
+  await page.getByRole('link', { name: 'Edit profile settings' }).click()
+  await expect(page).toHaveURL(/\/about\/settings$/)
+  await page.getByRole('textbox', { name: 'LeetCode profile URL' }).fill('https://leetcode.com/u/demo/')
+  await page.getByRole('button', { name: 'Connect LeetCode' }).click()
+  await expect(page.getByText('312 solved · 140 Easy · 150 Medium · 22 Hard')).toBeVisible()
+  await page.getByRole('textbox', { name: 'GeeksforGeeks profile URL' }).fill('geeksforgeeks.org/user/ghost')
+  await page.getByRole('button', { name: 'Connect GeeksforGeeks' }).click()
+  await expect(page.getByRole('alert')).toContainText('No public profile found for ghost')
 })
 
 test('solving a roadmap problem in the workspace updates the roadmap', async ({ page }) => {
@@ -76,16 +76,21 @@ test('the level page shows a level, readiness and three next steps', async ({ pa
 })
 
 for (const path of ['/', '/app', '/roadmap', '/today', '/level', '/learn', '/git', '/resume']) {
-  test(`the Settings gear is reachable and clear of the nav on ${path}`, async ({ page }) => {
+  test(`${path} has no floating settings button, and About is one click away`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto(path)
-    const gear = page.getByRole('button', { name: 'Settings' })
-    await expect(gear).toBeVisible()
-    const theme = page.getByRole('button', { name: 'Theme' }).first()
-    const [g, t] = [await gear.boundingBox(), await theme.boundingBox()]
-    const overlap = !!g && !!t && g.x < t.x + t.width && t.x < g.x + g.width && g.y < t.y + t.height && t.y < g.y + g.height
-    expect(overlap).toBe(false)
-    await gear.click()
-    await expect(page.getByRole('dialog', { name: 'Settings' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Settings' })).toHaveCount(0)
+    if (path !== '/') {
+      await page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: 'About', exact: true }).click()
+      await expect(page).toHaveURL(/\/about$/)
+    }
   })
 }
+
+test('choosing a company as the target shows up on Today', async ({ page }) => {
+  await page.goto('/companies/meta')
+  await page.getByRole('button', { name: 'Set Meta as my target' }).click()
+  await expect(page.getByText('Meta is your target.')).toBeVisible()
+  await page.goto('/today')
+  await expect(page.getByRole('meter', { name: /Readiness for Meta/ })).toBeVisible()
+})

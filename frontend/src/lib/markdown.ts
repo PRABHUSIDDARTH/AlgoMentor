@@ -61,6 +61,11 @@ function parseComplexity(text: string): Complexity | undefined {
   return time && space ? { time, space } : undefined
 }
 
+/** One line of Markdown (code, emphasis, links) as sanitised inline HTML, with no paragraph around it. */
+export function inlineMarkdown(md: string): string {
+  return sanitize(marked.parseInline(md) as string)
+}
+
 export function sanitize(html: string): string {
   return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } })
 }

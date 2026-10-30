@@ -5,11 +5,21 @@ const lesson: Lesson = {
   id: 'virtual-memory',
   title: 'Virtual memory',
   minutes: 12,
+  hook: 'A machine with 8 GB of RAM can run programs whose memory adds up to far more than that, as long as each one uses only a small part at a time. When a program does need a page that is not in RAM, it stops for a disk read that costs millions of cycles on a hard disk. Virtual memory works because of locality and fails sharply when locality runs out.',
+  keyPoints: [
+    'Virtual memory keeps only a process\'s working set in RAM; the rest waits on disk until a page fault brings it in.',
+    'A page fault costs milliseconds, so even a tiny fault rate dominates the average memory access time.',
+    'LRU approximates the optimal replacement policy, while FIFO can show Belady\'s anomaly, where more frames cause more faults.',
+    'Thrashing happens when processes lack frames for their working sets and spend their time swapping pages.',
+  ],
   body: `## Running programs bigger than memory
 
 **Virtual memory** lets a process use more memory than is physically installed by keeping only part of its address space in RAM, and the rest on disk. It works because programs do not use all their memory at once: they spend long periods in a small **working set** of code and data, a property called **locality**.
 
 Virtual memory also gives every process its own private, uniform address space, makes it possible to start programs without loading them completely, and allows processes to share pages.
+
+> [!KEY] Locality is why it works
+> Virtual memory is only usable because programs touch a small working set at a time. Without locality, nearly every access would fault and the machine would crawl at disk speed. Whenever you reason about paging, ask what the working set is.
 
 ## Demand paging
 
@@ -30,6 +40,9 @@ with memory 100 ns, fault 8 ms, p = 1 in 1000: EAT = 0.999 * 100 + 0.001 * 8,000
 
 A one-in-a-thousand fault rate slows memory down by a factor of 80.
 
+> [!GOTCHA] A page fault is not always an error
+> Treating every page fault as a bug is wrong. A fault on a valid page that simply is not in RAM is normal and handled invisibly. Only an access to an illegal address ends in a segmentation fault. Mixing the two leads people to misread fault counts in profilers.
+
 ## Page replacement algorithms
 
 When memory is full, which page should be evicted? The goal is to minimise page faults. Consider the reference string 7, 0, 1, 2, 0, 3, 0, 4 with three frames.
@@ -41,11 +54,21 @@ When memory is full, which page should be evicted? The goal is to minimise page 
 
 For the string above with three frames, FIFO gives 7 faults and LRU gives 6, and the optimal algorithm gives 6 as well. Counting faults by hand, one reference at a time while tracking the frames, is a common exam question.
 
+> [!TRY] Belady's anomaly by hand
+> Reference string 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5 with FIFO replacement. How many page faults with 3 frames, and how many with 4?
+>
+> ---
+>
+> 3 frames: 9 faults. 4 frames: 10 faults. Adding a frame made FIFO worse, which is Belady's anomaly. LRU cannot do this, because the pages it keeps with n frames are always a subset of those it keeps with n + 1.
+
 ## Thrashing
 
 If a process has too few frames to hold its working set, it faults constantly, spending nearly all its time swapping pages and almost none computing. Worse, a low CPU use can lead the scheduler to start more processes, which take frames and make it worse. This collapse is **thrashing**.
 
 Remedies: give each process enough frames for its **working set** (the pages used in a recent window of time), use page-fault frequency to adjust allocation, or reduce the number of running processes by suspending some.
+
+> [!INTERVIEW] Describe the feedback loop
+> When asked about thrashing, give the loop: CPU use drops because processes wait on faults, the scheduler starts more processes, each gets fewer frames, and there are still more faults. Then give the remedy: allocate frames by working set size, or suspend processes.
 
 ## Related ideas
 

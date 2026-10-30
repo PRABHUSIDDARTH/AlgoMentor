@@ -5,19 +5,47 @@ const lesson: Lesson = {
   title: 'Composition over inheritance',
   minutes: 8,
   diagram: 'composition',
+  hook: 'A game has `Archer` and `Mage` classes, then someone asks for an archer who casts spells. Copying code feels fast and inheriting from both feels clever, but neither survives the next class. Giving a character a `Weapon` and a `Spell` to hold turns the problem into combining parts, not choosing a parent.',
+  keyPoints: [
+    'Composition means an object holds other objects and delegates work to them: a car has an engine, it is not one.',
+    'Inheritance fixes behaviour at compile time and exposes the parent\'s whole interface. Composition lets you swap parts at run time.',
+    'The Strategy pattern is composition at its most useful: a behaviour held as an object you can choose, configure or fake.',
+    'Keep inheritance for real is-a relationships that are shallow and stable. Do not inherit only to reuse a few methods.',
+  ],
   body: `## Build objects out of objects
 
 **Composition** means an object holds other objects and delegates work to them. A \`Car\` *has an* \`Engine\`, *has* \`Wheels\` and *has a* \`Radio\`. It doesn't inherit from any of them. When you ask the car to start, it asks its engine.
 
 "Favour composition over inheritance" is one of the best-known lines in object-oriented design. It doesn't say inheritance is wrong. It says that when either would work, composition usually ages better.
 
+> [!KEY] Ask what varies
+> List what changes independently in your design: channel, priority, pricing, weapon. Each independent axis becomes a part the object holds. Inheritance can express only one such axis at a time.
+
 ## Why inheritance gets painful
 
 Inheritance decides behaviour at compile time and couples the child to the parent's internals. Problems pile up as requirements grow:
 
-- **Class explosion.** Suppose notifications can be email or SMS, and urgent or normal. With inheritance you write \`UrgentEmailNotifier\`, \`NormalEmailNotifier\`, \`UrgentSmsNotifier\`, \`NormalSmsNotifier\`. Add push notifications and a "digest" mode and you have nine classes. With composition, a \`Notifier\` holds a \`Channel\` and a \`Priority\`: two small families that combine freely.
+- **Class explosion.** Suppose notifications can be email or SMS, and urgent or normal. With inheritance you write \`UrgentEmailNotifier\`, \`NormalEmailNotifier\`, \`UrgentSmsNotifier\`, \`NormalSmsNotifier\`. Add push notifications and a "digest" mode and you have twelve classes. With composition, a \`Notifier\` holds a \`Channel\` and a \`Priority\`: two small families that combine freely.
 - **Fixed at compile time.** An object can't change its parent while running, but it can swap a component. A game character can pick up a new \`Weapon\` object; it can't stop being a subclass of \`Archer\`.
 - **Leaking the parent's interface.** Inheriting from \`ArrayList\` to build a \`Playlist\` exposes \`clear()\`, \`removeAll()\` and dozens of other methods that may break the playlist's rules. Holding a private list and exposing only \`add\` and \`next\` keeps the invariants safe.
+
+> [!TRY] The playlist that can be cleared
+> The playlist is meant to offer only \`add\`. What does this print?
+>
+> \`\`\`python
+> class Playlist(list):
+>     def add(self, song):
+>         self.append(song)
+>
+> p = Playlist()
+> p.add("a")
+> p.clear()
+> print(len(p))
+> \`\`\`
+>
+> ---
+>
+> It prints \`0\`. \`Playlist\` inherits every \`list\` method, so \`clear()\` works and bypasses whatever rules \`add\` enforces. A private list inside the class, with only \`add\` and \`next\` exposed, keeps \`clear\` out of reach.
 
 ## Delegation
 
@@ -36,9 +64,15 @@ UML distinguishes two strengths of "has a":
 
 In code the difference shows up in who creates and owns the part, which matters most in C++, where ownership decides who frees memory: a \`std::unique_ptr\` member says composition; a reference or \`std::shared_ptr\` says shared ownership.
 
+> [!GOTCHA] A part that outlives its owner
+> In C++ a whole that stores a reference or raw pointer to a part owned elsewhere is left dangling when the owner destroys the part. Decide who owns the part and say so in the type: a value or \`unique_ptr\` member when the whole owns it, \`shared_ptr\` when ownership is shared.
+
 ## When inheritance is still right
 
-Use inheritance when the "is a" relationship is real, substitution holds, and the hierarchy is shallow and stable: \`IOException\` extends \`Exception\`, a framework's \`AbstractController\` you are meant to extend. Use composition for everything that varies independently, for behaviour you want to swap, and whenever you are tempted to inherit only to reuse a few methods.`,
+Use inheritance when the "is a" relationship is real, substitution holds, and the hierarchy is shallow and stable: \`IOException\` extends \`Exception\`, a framework's \`AbstractController\` you are meant to extend. Use composition for everything that varies independently, for behaviour you want to swap, and whenever you are tempted to inherit only to reuse a few methods.
+
+> [!INTERVIEW] The follow-up to the slogan
+> Saying "favour composition" is the easy half. The follow-up is when you would still inherit. Answer with the two tests: it is a true is-a, and substitution holds. Then give one example you would accept, such as a framework base class meant for extension, and one you would refuse, such as extending \`ArrayList\` to make a playlist.`,
   code: {
     java: `public interface Channel {
     void deliver(String to, String text);

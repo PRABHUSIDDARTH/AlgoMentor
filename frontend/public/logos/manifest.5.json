@@ -1,0 +1,129 @@
+{
+ "entries": [
+  {
+   "id": "amazon",
+   "file": "amazon.svg",
+   "source": "https://m.media-amazon.com/images/G/01/sell/navigation/amazon-logo-squid-menu.svg",
+   "page": "https://sell.amazon.com/",
+   "brandName": "Amazon",
+   "primary": "#161D26",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "apple",
+   "file": "apple.svg",
+   "source": "https://www.apple.com/ (inline asset)",
+   "page": "https://www.apple.com/",
+   "brandName": "Apple",
+   "primary": "#000000",
+   "kind": "symbol",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "adobe",
+   "file": "adobe.svg",
+   "source": "https://www.adobe.com/federal/site-redesign/assets/adobe-logo-black.svg",
+   "page": "https://www.adobe.com/",
+   "brandName": "Adobe",
+   "primary": "#000000",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "razorpay",
+   "file": "razorpay.svg",
+   "source": "https://razorpay.com/ (inline asset)",
+   "page": "https://razorpay.com/",
+   "brandName": "Razorpay",
+   "primary": "#3395FF",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "tcs",
+   "file": "tcs.svg",
+   "source": "https://www.tcs.com/content/dam/global-tcs/en/images/home/tcs-logo-1.svg",
+   "page": "https://www.tcs.com/",
+   "brandName": "Tata Consultancy Services",
+   "primary": null,
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "white artwork, needs a dark background"
+  },
+  {
+   "id": "infosys",
+   "file": "infosys.svg",
+   "source": "https://www.infosys.com/ (inline asset)",
+   "page": "https://www.infosys.com/",
+   "brandName": "Infosys",
+   "primary": null,
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "white artwork, needs a dark background"
+  },
+  {
+   "id": "accenture",
+   "file": "accenture.svg",
+   "source": "https://www.accenture.com/en (inline asset)",
+   "page": "https://www.accenture.com/en",
+   "brandName": "Accenture",
+   "primary": "#A100FF",
+   "kind": "symbol",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "nvidia",
+   "file": "nvidia.svg",
+   "source": "https://www.nvidia.com/en-in/ (inline asset)",
+   "page": "https://www.nvidia.com/en-in/",
+   "brandName": "NVIDIA",
+   "primary": "#76B900",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "intel",
+   "file": "intel.svg",
+   "source": "https://www.intel.com/content/www/us/en/homepage.html (inline asset)",
+   "page": "https://www.intel.com/content/www/us/en/homepage.html",
+   "brandName": "Intel",
+   "primary": "#0068B5",
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "dot colour #00C7FD as on site; text colour set to Intel blue (site used currentColor)"
+  },
+  {
+   "id": "oracle",
+   "file": "oracle.svg",
+   "source": "https://www.oracle.com/a/ocom/img/customerlogo-oracle-clr.svg",
+   "page": "https://www.oracle.com/corporate/",
+   "brandName": "Oracle",
+   "primary": "#C74634",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "ibm",
+   "file": "ibm.svg",
+   "source": "https://www.ibm.com/ (inline asset)",
+   "page": "https://www.ibm.com/",
+   "brandName": "IBM",
+   "primary": "#1F70C1",
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "colour set to IBM blue (site styled via CSS)"
+  },
+  {
+   "id": "cisco",
+   "file": "cisco.svg",
+   "source": "https://www.cisco.com/ (inline asset)",
+   "page": "https://www.cisco.com/",
+   "brandName": "Cisco",
+   "primary": "#02C8FF",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  }
+ ],
+ "failed": []
+}

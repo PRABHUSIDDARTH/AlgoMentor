@@ -1,0 +1,223 @@
+{
+ "entries": [
+  {
+   "id": "stripe",
+   "file": "stripe.svg",
+   "source": "https://stripe.com/ (inline asset)",
+   "page": "https://stripe.com/",
+   "brandName": "Stripe",
+   "primary": "#533AFD",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "phonepe",
+   "file": "phonepe.svg",
+   "source": "https://www.phonepe.com/ (inline asset)",
+   "page": "https://www.phonepe.com/",
+   "brandName": "PhonePe",
+   "primary": "#5F259F",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "hcltech",
+   "file": "hcltech.svg",
+   "source": "https://www.hcltech.com/ (inline asset)",
+   "page": "https://www.hcltech.com/",
+   "brandName": "HCLTech",
+   "primary": "#0F5FDC",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "tech-mahindra",
+   "file": "tech-mahindra.svg",
+   "source": "https://www.techmahindra.com/ (inline asset)",
+   "page": "https://www.techmahindra.com/",
+   "brandName": "Tech Mahindra",
+   "primary": "#E31837",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "openai",
+   "file": "openai.svg",
+   "source": "https://openai.com/ (inline asset)",
+   "page": "https://openai.com/",
+   "brandName": "OpenAI",
+   "primary": "#000000",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "anthropic",
+   "file": "anthropic.svg",
+   "source": "https://www.anthropic.com/ (inline asset)",
+   "page": "https://www.anthropic.com/",
+   "brandName": "Anthropic",
+   "primary": "#D97757",
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "rebuilt from the page's animated (Lottie) inline wordmark: same letter paths, flattened to plain static paths, fill #141413"
+  },
+  {
+   "id": "databricks",
+   "file": "databricks.svg",
+   "source": "https://www.databricks.com/ (inline asset)",
+   "page": "https://www.databricks.com/",
+   "brandName": "Databricks",
+   "primary": "#EE3D2C",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "samsung",
+   "file": "samsung.svg",
+   "source": "https://www.samsung.com/ (inline asset)",
+   "page": "https://www.samsung.com/",
+   "brandName": "Samsung",
+   "primary": "#1428A0",
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "wordmark ships without a fill (renders black); official brand blue is #1428A0"
+  },
+  {
+   "id": "spotify",
+   "file": "spotify.svg",
+   "source": "https://www.spotify.com/ (inline asset)",
+   "page": "https://www.spotify.com/",
+   "brandName": "Spotify",
+   "primary": "#1ED760",
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "white artwork, needs a dark background; viewBox corrected from 0 0 24 24 to 0 0 88 24 to match the artwork extents"
+  },
+  {
+   "id": "swiggy",
+   "file": "swiggy.svg",
+   "source": "https://www.swiggy.com/ (inline asset)",
+   "page": "https://www.swiggy.com/",
+   "brandName": "Swiggy",
+   "primary": "#FF5200",
+   "kind": "symbol",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "cred",
+   "file": "cred.svg",
+   "source": "https://cred.club/ (inline asset)",
+   "page": "https://cred.club/",
+   "brandName": "CRED",
+   "primary": null,
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "white artwork, needs a dark background"
+  },
+  {
+   "id": "goldman-sachs",
+   "file": "goldman-sachs.svg",
+   "source": "https://www.goldmansachs.com/ (inline asset)",
+   "page": "https://www.goldmansachs.com/",
+   "brandName": "Goldman Sachs",
+   "primary": null,
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "black wordmark (95% opacity)"
+  },
+  {
+   "id": "linkedin",
+   "file": "linkedin.svg",
+   "source": "https://about.linkedin.com/ (inline asset)",
+   "page": "https://about.linkedin.com/",
+   "brandName": "LinkedIn",
+   "primary": "#0A66C2",
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "page asset was a nested svg without a viewBox; same shapes re-wrapped in an outer svg with viewBox 0 0 55.2 14"
+  },
+  {
+   "id": "github",
+   "file": "github.svg",
+   "source": "https://github.com/ (inline asset)",
+   "page": "https://github.com/",
+   "brandName": "GitHub",
+   "primary": null,
+   "kind": "symbol",
+   "fetched": "2026-10-22",
+   "note": "white artwork, needs a dark background"
+  },
+  {
+   "id": "figma",
+   "file": "figma.svg",
+   "source": "https://www.figma.com/ (inline asset)",
+   "page": "https://www.figma.com/",
+   "brandName": "Figma",
+   "primary": null,
+   "kind": "symbol",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "notion",
+   "file": "notion.svg",
+   "source": "https://www.notion.com/ (inline asset)",
+   "page": "https://www.notion.com/",
+   "brandName": "Notion",
+   "primary": "#000000",
+   "kind": "symbol",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "snowflake",
+   "file": "snowflake.svg",
+   "source": "https://www.snowflake.com/ (inline asset)",
+   "page": "https://www.snowflake.com/",
+   "brandName": "Snowflake",
+   "primary": "#249EDC",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "dell",
+   "file": "dell.svg",
+   "source": "https://www.dell.com/ (inline asset)",
+   "page": "https://www.dell.com/",
+   "brandName": "Dell Technologies",
+   "primary": "#0076CE",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "qualcomm",
+   "file": "qualcomm.svg",
+   "source": "https://www.qualcomm.com/ (inline asset)",
+   "page": "https://www.qualcomm.com/",
+   "brandName": "Qualcomm",
+   "primary": "#2A2AEA",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "tesla",
+   "file": "tesla.svg",
+   "source": "https://www.tesla.com/ (inline asset)",
+   "page": "https://www.tesla.com/",
+   "brandName": "Tesla",
+   "primary": "#171A20",
+   "kind": "wordmark",
+   "fetched": "2026-10-22"
+  },
+  {
+   "id": "bytedance",
+   "file": "bytedance.svg",
+   "source": "https://www.bytedance.com/ (inline asset)",
+   "page": "https://www.bytedance.com/",
+   "brandName": "ByteDance",
+   "primary": "#3C8CFF",
+   "kind": "wordmark",
+   "fetched": "2026-10-22",
+   "note": "white artwork, needs a dark background"
+  }
+ ],
+ "failed": []
+}

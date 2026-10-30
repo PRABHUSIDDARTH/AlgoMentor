@@ -4,15 +4,19 @@ import { AppShell } from '@/components/AppShell'
 import { PageHeader } from '@/components/PageHeader'
 import { DIAGRAMS } from '@/components/learn/diagrams'
 import { InterviewQuestions } from '@/components/learn/InterviewQuestions'
+import { LessonIntro } from '@/components/learn/LessonIntro'
+import { LessonSection } from '@/components/learn/LessonSection'
 import { ModuleList } from '@/components/learn/ModuleList'
 import { Quiz } from '@/components/learn/Quiz'
+import { ReadingProgress } from '@/components/learn/ReadingProgress'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CodeBlock } from '@/components/workspace/CodeBlock'
 import { MODULES } from '@/content/learn'
 import { markModuleComplete, PASS_SCORE, recordQuiz } from '@/learn/progress'
 import { useLearn } from '@/learn/useLearn'
-import { splitMarkdown } from '@/lib/markdown'
+import { parseLesson } from '@/learn/lessonBlocks'
+import { extractToc } from '@/learn/toc'
+import { CodeBlock } from '@/components/workspace/CodeBlock'
 
 const LANGS = [
   { id: 'java', label: 'Java' },
@@ -25,7 +29,8 @@ export default function Lesson() {
   const { trackId = '', moduleId = '' } = useParams()
   const entry = MODULES.get(moduleId)
   const progress = useLearn()
-  const segments = useMemo(() => (entry ? splitMarkdown(entry.lesson.body).segments : []), [entry])
+  const parsed = useMemo(() => (entry ? parseLesson(entry.lesson.body) : { intro: [], sections: [] }), [entry])
+  const toc = useMemo(() => (entry ? extractToc(entry.lesson.body) : []), [entry])
 
   if (!entry || entry.track.id !== trackId) {
     return (
@@ -48,6 +53,7 @@ export default function Lesson() {
 
   return (
     <AppShell>
+      <ReadingProgress />
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-6 py-8 sm:px-10 lg:px-14 xl:grid-cols-[minmax(0,1fr)_300px] xl:px-20">
         <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-7">
           <PageHeader
@@ -60,18 +66,24 @@ export default function Lesson() {
             </p>
           </PageHeader>
 
-          <div className="prose-am max-w-[72ch]">
-            {segments.map((s, i) => (s.kind === 'html' ? <div key={i} dangerouslySetInnerHTML={{ __html: s.html }} /> : <CodeBlock key={i} code={s.code} lang={s.lang} />))}
-          </div>
+          <LessonIntro hook={lesson.hook} keyPoints={lesson.keyPoints} />
 
           {Diagram && (
-            <figure className="max-w-[72ch] rounded-lg border border-line bg-cream p-4">
+            <figure className="rounded-lg border border-line bg-cream p-4 [&_svg]:mx-auto [&_svg]:max-h-[320px]">
               <Diagram />
             </figure>
           )}
 
+          {parsed.intro.length > 0 && (
+            <div className="prose-am max-w-[68ch]">
+              {parsed.intro.map((seg, i) => (seg.kind === 'html' ? <div key={i} dangerouslySetInnerHTML={{ __html: seg.html }} /> : <CodeBlock key={i} code={seg.code} lang={seg.lang} />))}
+            </div>
+          )}
+
+          {parsed.sections.map((section) => <LessonSection key={section.id} section={section} />)}
+
           {lesson.code && (
-            <section aria-labelledby="lesson-code" className="grid max-w-[80ch] grid-cols-[minmax(0,1fr)] gap-2">
+            <section aria-labelledby="lesson-code" className="grid grid-cols-[minmax(0,1fr)] gap-2">
               <h2 id="lesson-code" className="text-[18px] font-semibold">In code</h2>
               <Tabs defaultValue="java">
                 <TabsList>
@@ -86,7 +98,7 @@ export default function Lesson() {
             </section>
           )}
 
-          <section aria-labelledby="lesson-quiz" className="grid max-w-[72ch] grid-cols-[minmax(0,1fr)] gap-3 rounded-lg border border-line bg-sand px-5 py-5">
+          <section aria-labelledby="lesson-quiz" className="grid grid-cols-[minmax(0,1fr)] gap-3 rounded-lg border border-line bg-sand px-5 py-5">
             <h2 id="lesson-quiz" className="text-[18px] font-semibold">Check yourself</h2>
             <p className="text-[13px] text-ink-muted">Score {PASS_SCORE} of 5 or better to complete this module.{p?.bestQuiz ? ` Best so far: ${p.bestQuiz} of 5.` : ''}</p>
             <Quiz key={lesson.id} questions={lesson.quiz} onGraded={(score) => recordQuiz(lesson.id, score)} />
@@ -102,18 +114,28 @@ export default function Lesson() {
             )}
           </div>
 
-          <div className="max-w-[72ch]"><InterviewQuestions items={lesson.interview} /></div>
+          <InterviewQuestions items={lesson.interview} />
 
-          <nav aria-label="Lesson navigation" className="flex max-w-[72ch] flex-wrap justify-between gap-3 border-t border-line pt-5 text-[13.5px]">
+          <nav aria-label="Lesson navigation" className="flex flex-wrap justify-between gap-3 border-t border-line pt-5 text-[13.5px]">
             {prev ? <Link to={`/learn/${track.id}/${prev.id}`} className="underline underline-offset-[3px]">Previous: {prev.title}</Link> : <span />}
             {next ? <Link to={`/learn/${track.id}/${next.id}`} className="underline underline-offset-[3px]">Next: {next.title}</Link>
               : <Link to={`/learn/${track.id}`} className="underline underline-offset-[3px]">Back to {track.short}</Link>}
           </nav>
         </article>
 
-        <aside aria-label="Track" className="hidden content-start gap-3 xl:grid xl:sticky xl:top-6 xl:self-start">
-          <p className="eyebrow">{track.title}</p>
-          <ModuleList track={track} progress={progress} currentId={lesson.id} compact />
+        <aside aria-label="Track" className="hidden content-start gap-6 xl:grid xl:sticky xl:top-6 xl:self-start">
+          {toc.length > 0 && (
+            <nav aria-label="On this page" className="grid gap-1.5">
+              <p className="eyebrow">On this page</p>
+              {toc.map((t) => (
+                <a key={t.id} href={`#${t.id}`} className="border-l border-line-strong py-0.5 pl-3 text-[12.5px] leading-snug text-ink-muted hover:border-ink hover:text-ink">{t.text}</a>
+              ))}
+            </nav>
+          )}
+          <div className="grid gap-3">
+            <p className="eyebrow">{track.title}</p>
+            <ModuleList track={track} progress={progress} currentId={lesson.id} compact />
+          </div>
         </aside>
       </div>
     </AppShell>

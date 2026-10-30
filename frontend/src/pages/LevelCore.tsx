@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { AppShell } from '@/components/AppShell'
 import { PageHeader } from '@/components/PageHeader'
 import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
-import { COMPANY_LABEL } from '@/content/targets'
+import { targetName } from '@/content/targets'
 import { CORE_WEIGHTS, type CoreComponent } from '@/learn/coreReadiness'
 import { useCore } from '@/learn/useCore'
 
@@ -26,7 +26,7 @@ export default function LevelCore() {
           />
           <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <div className="grid content-start gap-5">
-              <ReadinessMeter value={core.readiness} label={`Core CS readiness for ${COMPANY_LABEL[core.input.target.company]}`} />
+              <ReadinessMeter value={core.readiness} label={`Core CS readiness for ${targetName(core.input.target)}`} />
               <ol aria-label="Core CS: what to do next" className="grid gap-2">
                 {core.gaps.map((g, i) => (
                   <li key={g.component} className="flex gap-3 rounded-lg border border-line bg-cream px-4 py-3 text-[14px]">

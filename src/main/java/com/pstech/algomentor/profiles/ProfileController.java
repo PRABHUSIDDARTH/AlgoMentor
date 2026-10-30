@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Public profile stats for LeetCode, HackerRank and GeeksforGeeks, cached for six hours. */
+/** Public profile stats for LeetCode, HackerRank, GeeksforGeeks and GitHub, cached for six hours. */
 @RestController
 public class ProfileController {
 
@@ -25,16 +25,20 @@ public class ProfileController {
 
 	private final GfgProfileClient gfg;
 
+	private final GitHubProfileClient gitHub;
+
 	// Successful reads only: a failure should be retried on the next request.
 	private final Cache<String, Object> cache = Caffeine.newBuilder()
 		.expireAfterWrite(Duration.ofHours(6))
 		.maximumSize(10_000)
 		.build();
 
-	public ProfileController(LeetCodeProfileClient leetCode, HackerRankProfileClient hackerRank, GfgProfileClient gfg) {
+	public ProfileController(LeetCodeProfileClient leetCode, HackerRankProfileClient hackerRank, GfgProfileClient gfg,
+			GitHubProfileClient gitHub) {
 		this.leetCode = leetCode;
 		this.hackerRank = hackerRank;
 		this.gfg = gfg;
+		this.gitHub = gitHub;
 	}
 
 	@GetMapping("/profiles/leetcode/{user}")
@@ -50,6 +54,11 @@ public class ProfileController {
 	@GetMapping("/profiles/gfg/{user}")
 	public Profiles.GfgProfile gfg(@PathVariable String user, @RequestParam(defaultValue = "false") boolean refresh) {
 		return cached("gfg", user, refresh, gfg::fetch);
+	}
+
+	@GetMapping("/profiles/github/{user}")
+	public Profiles.GitHubProfile gitHub(@PathVariable String user, @RequestParam(defaultValue = "false") boolean refresh) {
+		return cached("github", user, refresh, gitHub::fetch);
 	}
 
 	/** For tests. */

@@ -5,6 +5,13 @@ const lesson: Lesson = {
   id: 'threads',
   title: 'Threads and concurrency',
   minutes: 10,
+  hook: 'A web server that starts a process per request pays for a new address space every time, and sharing a cache between those processes needs special machinery. Put the requests on threads and they share one cache for free, right up to the moment two of them update it at once. Threads buy cheap sharing and cost you isolation.',
+  keyPoints: [
+    'Threads of one process share code, heap, globals and open files; each has its own stack and registers.',
+    'Switching threads is cheaper than switching processes, but a fatal fault in one thread usually takes the whole process down.',
+    'Concurrency means tasks overlap in time; parallelism means they run at the same instant on different cores.',
+    'A thread pool bounds resource use by reusing a fixed set of workers that take tasks from a queue.',
+  ],
   body: `## Why threads exist
 
 A process gives you isolation, but sometimes you want several activities inside one program that share data: a web server handling many clients, an editor that saves while you type, a game that renders and plays sound. Starting a whole process for each is heavy, and sharing data between processes needs special machinery.
@@ -27,9 +34,15 @@ A **thread** is a flow of execution inside a process. The threads of one process
 
 The sharing is both the benefit and the danger. Two threads can exchange data instantly, but a bug in one can corrupt the data of all of them.
 
+> [!KEY] Private stack, shared everything else
+> A local variable lives on the thread's own stack, so only that thread sees it. A heap object or a global is visible to all threads, and so is anything reached through a shared reference. For every variable, know which kind it is.
+
 ## Concurrency and parallelism
 
 These are different ideas that are often confused. **Concurrency** means several tasks are in progress during the same period, possibly interleaved on one CPU core. **Parallelism** means tasks literally run at the same instant on different cores. A single-core machine can be concurrent but not parallel.
+
+> [!INTERVIEW] Concurrency versus parallelism
+> Give the single-core example: one core can switch between tasks, which is concurrent but not parallel. Interviewers dislike hearing that threads simply mean parallelism. Add that parallel speed-up needs several cores and work that can actually be split.
 
 ## User-level and kernel-level threads
 
@@ -58,9 +71,29 @@ print(sorted(results))     # [0, 1, 4, 9]
 
 \`start\` begins running the thread and \`join\` waits for it. The order in which the threads run is decided by the scheduler, so a program must never depend on it.
 
+> [!TRY] Three threads, then done
+> Three threads each print their number, \`main\` joins all of them, then prints \`done\`.
+>
+> \`\`\`python
+> def work(n): print(n)
+> ts = [threading.Thread(target=work, args=(i,)) for i in range(3)]
+> for t in ts: t.start()
+> for t in ts: t.join()
+> print("done")
+> \`\`\`
+>
+> Which parts of the output are guaranteed?
+>
+> ---
+>
+> Guaranteed: each of 0, 1 and 2 appears once, and \`done\` comes last, because \`join\` waits for every thread. Not guaranteed: the order of the three numbers. Two threads printing at once can also mix their text on one line. A typical run prints 0, 1, 2, but nothing promises it.
+
 ## Thread pools
 
 Creating a thread per task is wasteful and, if tasks arrive faster than they finish, can exhaust memory. A **thread pool** creates a fixed number of worker threads up front; tasks go into a queue and each idle worker takes the next one. This bounds resource use and removes the cost of creating threads repeatedly. A good size depends on the work: close to the number of cores for CPU-bound tasks, larger for tasks that mostly wait on I/O.
+
+> [!GOTCHA] A pool can deadlock itself
+> A task running in a fixed-size pool submits a subtask to the same pool and waits for its result. If every worker is doing this, no worker is free to run the subtasks, and the pool hangs. Keep waiting tasks and the tasks they wait for in separate pools.
 
 ## The cost of sharing
 

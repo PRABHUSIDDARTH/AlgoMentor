@@ -5,6 +5,13 @@ const lesson: Lesson = {
   title: 'TCP vs UDP',
   minutes: 11,
   diagram: 'tcp-handshake',
+  hook: 'A video call and a file download share one Wi-Fi network. When a packet is lost, the download quietly asks for it again and carries on, while the call just skips ahead. Both behaviours are correct. TCP and UDP make opposite promises, and picking the wrong one costs you either correctness or latency.',
+  keyPoints: [
+    'TCP gives a reliable ordered byte stream; UDP gives independent best-effort datagrams with ports and a checksum.',
+    'The handshake is SYN, SYN-ACK, ACK and costs one round trip before any data flows.',
+    'Flow control protects the receiver with its window; congestion control protects the network with the congestion window.',
+    'Choose UDP when late data is useless, requests are tiny, or you build your own reliability, as QUIC does.',
+  ],
   body: `## Two very different promises
 
 IP delivers packets on a best-effort basis: they can be lost, duplicated or arrive out of order. The transport layer decides what to do about that.
@@ -13,6 +20,9 @@ IP delivers packets on a best-effort basis: they can be lost, duplicated or arri
 - **UDP** promises almost nothing: it sends independent **datagrams** with a checksum and port numbers. Some may be lost or reordered, and nobody retries.
 
 Both use **ports** to identify which program on a host gets the data. A connection is identified by four values: source IP, source port, destination IP, destination port.
+
+> [!KEY] Pick by the guarantee you need
+> Neither protocol is better. Ask what the application needs: every byte, complete and in order (TCP), or fresh data and low delay even if some is lost (UDP).
 
 ## The three-way handshake
 
@@ -23,6 +33,13 @@ TCP sets up a connection before any data flows:
 3. Client sends **ACK**.
 
 Now both sides agree on sequence numbers and the connection is open. This costs one round trip before the first byte of real data, which is why connection reuse matters so much for performance. Closing uses FIN and ACK from each side, and the side that closes first waits in **TIME_WAIT** for a while so stray late packets can't confuse a new connection on the same ports.
+
+> [!TRY] Read the handshake numbers
+> A client sends SYN with sequence number 1000. The server answers SYN-ACK with its own sequence number 5000. What acknowledgement numbers appear in the SYN-ACK and in the client's final ACK?
+>
+> ---
+>
+> The SYN-ACK acknowledges 1001 and the final ACK acknowledges 5001. A SYN uses up one sequence number, so each side acknowledges the other's initial number plus one.
 
 ## How reliability works
 
@@ -36,6 +53,9 @@ The receiver advertises a **window**: how many more bytes it has buffer space fo
 
 Congestion control protects the *network*. TCP doesn't know the capacity of the path, so it probes. It starts with a small **congestion window** and doubles it every round trip (**slow start**, which is not slow at all). After reaching a threshold it grows by one segment per round trip (**congestion avoidance**). When loss signals congestion, it cuts the window, often in half. This "additive increase, multiplicative decrease" pattern is why many TCP connections can share a link fairly. Modern algorithms such as CUBIC and BBR refine the curve, but the idea is the same.
 
+> [!INTERVIEW] Who does each control protect?
+> Flow control protects the receiver (its advertised window); congestion control protects the network (the sender's congestion window). Add that the sender may have no more in flight than the smaller of the two, and the answer is complete.
+
 ## When to choose UDP
 
 UDP has no handshake, no retransmission and no head-of-line blocking (with TCP, one lost segment holds up everything behind it). That makes it the right base when:
@@ -43,6 +63,9 @@ UDP has no handshake, no retransmission and no head-of-line blocking (with TCP, 
 - **Late data is useless**: voice and video calls, live games. A retransmitted video frame from 300 ms ago is just noise.
 - **Requests are tiny and independent**: DNS lookups fit in one datagram and simply retry on timeout.
 - **You want your own reliability rules**: **QUIC**, the transport under HTTP/3, runs on UDP and implements reliable streams, encryption and smarter loss recovery in user space, without TCP's head-of-line blocking across streams.
+
+> [!GOTCHA] UDP is not just faster TCP
+> Choosing UDP for speed alone gives you lost, reordered data and no congestion control. A UDP sender that ignores network limits can flood a link and hurt everyone on it. Applications on UDP must supply their own rate control, which is a large part of what QUIC implements.
 
 ## Comparing them in one line each
 

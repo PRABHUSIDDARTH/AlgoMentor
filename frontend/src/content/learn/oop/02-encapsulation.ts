@@ -4,6 +4,13 @@ const lesson: Lesson = {
   id: 'encapsulation',
   title: 'Encapsulation',
   minutes: 8,
+  hook: 'A shop\'s checkout shows an account balance of minus four million, and nobody can say how. `balance` was a public field, so any of sixty call sites could have written it. Encapsulation puts the rules about a value in the one place that owns it, so a wrong number has a short list of suspects.',
+  keyPoints: [
+    'Encapsulation keeps fields private and lets callers change them only through methods that enforce the rules.',
+    'An invariant is a fact that must hold between method calls, such as a balance never going negative.',
+    'A setter for every field is still an open door. Prefer methods named for what the object does, like withdraw.',
+    'Never hand out a reference to an internal collection. Return a copy or an unmodifiable view.',
+  ],
   body: `## Hide the data, expose the behaviour
 
 **Encapsulation** means an object keeps its fields private and lets the outside world change them only through methods that protect its rules.
@@ -13,6 +20,9 @@ If \`balance\` on a bank account is public, any code anywhere can set it to minu
 ## The rules an object protects are its invariants
 
 An **invariant** is something that must always be true of an object between method calls: a balance is never negative, a date range ends after it starts, a shopping cart's total equals the sum of its lines. Encapsulation exists to protect invariants. The constructor establishes them, and every public method must leave them true when it returns.
+
+> [!KEY] Name the invariant first
+> Before you decide what is private, write down what must always be true of the object. Each invariant tells you which fields to hide and which methods must check their input. If you cannot name one, you may only need a plain data record.
 
 When you can name the invariants of a class, you know which fields must be private and which methods must check their inputs. When you can't name any, the class is probably just a bag of data, and that is fine for a plain record type.
 
@@ -26,11 +36,31 @@ Languages give you tools to enforce the boundary:
 
 Python has no enforced private members. By convention a leading underscore (\`_balance\`) means "internal, don't touch", and properties let you put a method behind what looks like a field.
 
+> [!TRY] How private is _balance?
+> Does the last line raise an error?
+>
+> \`\`\`python
+> class Account:
+>     def __init__(self):
+>         self._balance = 100
+>
+> a = Account()
+> a._balance = -50
+> print(a._balance)
+> \`\`\`
+>
+> ---
+>
+> No, it prints \`-50\`. The underscore is a convention that asks callers to stay out; Python does not enforce it. To make the rule real, keep callers on a method or a property setter that checks the value.
+
 ## Getters and setters are not automatically encapsulation
 
 A private field with a public setter for every field is still an open door. \`setBalance(-1000000)\` is no safer than a public field. Prefer methods named after what the object *does* (\`withdraw\`) over methods that just poke its data (\`setBalance\`).
 
 Getters deserve a second look too. Returning a reference to an internal list lets the caller add to it behind your back. Return an unmodifiable view or a copy instead.
+
+> [!GOTCHA] The getter that leaks
+> A getter that returns the internal list lets any caller add or remove items and skip every check you wrote. The field is private, yet it is public in practice. In Java return \`List.copyOf(items)\` or \`Collections.unmodifiableList(items)\`; in C++ return a const reference or a copy.
 
 ## Tell, don't ask
 
@@ -40,7 +70,10 @@ A useful rule of thumb: tell objects what to do instead of asking for their data
 
 Encapsulation makes change cheap. If callers depend only on \`withdraw\` and \`balance()\`, you can switch the internal representation from an integer of cents to a list of transactions without touching a single caller. It also makes bugs local: when the balance is wrong, there are only a few methods that could have changed it.
 
-In interviews, encapsulation shows up whenever you design a class. Make fields private by default, expose behaviour, and say out loud which invariant each method protects.`,
+In interviews, encapsulation shows up whenever you design a class. Make fields private by default, expose behaviour, and say out loud which invariant each method protects.
+
+> [!INTERVIEW] Getters and setters on trial
+> A common prompt is whether a class with private fields and a getter and setter for each one is encapsulated. The expected answer is no, with the reason: the setter can still break an invariant. Show one method that refuses a bad state, such as a \`withdraw\` that rejects an overdraft.`,
   code: {
     java: `import java.util.ArrayList;
 import java.util.Collections;

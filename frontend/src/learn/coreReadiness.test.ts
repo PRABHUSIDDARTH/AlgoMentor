@@ -7,7 +7,7 @@ import { CORE_WEIGHTS, coreGaps, coreReadiness, coreScore, type CoreInput } from
 import { checkKey, type CheckRecord, type GitState } from './repos'
 import type { LearnProgress } from './progress'
 
-const FAANG = { company: 'faang', role: 'sde1' } as const
+const MAANG = { company: 'maang', role: 'sde1' } as const
 const SERVICE = { company: 'service', role: 'sde1' } as const
 const NO_GIT: GitState = { repos: {}, checks: {} }
 
@@ -17,19 +17,19 @@ const learnFor = (trackIds: string[], best = 5): LearnProgress =>
 
 const passed = (key: string): [string, CheckRecord] => [key, { checkedAt: 1, passed: true, passedAt: 1, details: [] }]
 const gitWith = (keys: string[]): GitState => ({ repos: {}, checks: Object.fromEntries(keys.map(passed)) })
-const input = (over: Partial<CoreInput> = {}): CoreInput => ({ learn: {}, git: NO_GIT, target: FAANG, ...over })
+const input = (over: Partial<CoreInput> = {}): CoreInput => ({ learn: {}, git: NO_GIT, target: MAANG, ...over })
 
 describe('coreScore', () => {
   it('weightsAndBars', () => {
     expect(CORE_WEIGHTS).toEqual({ modules: 40, quiz: 30, projects: 20, git: 10 })
     expect(Object.values(CORE_WEIGHTS).reduce((a, b) => a + b, 0)).toBe(100)
-    expect(CORE_BAR).toEqual({ faang: 70, startup: 60, service: 75 })
+    expect(CORE_BAR).toEqual({ maang: 70, product: 65, startup: 60, service: 75 })
   })
 
   it('emptyIsZero', () => {
     const s = coreScore(input())
     expect(s.total).toBe(0)
-    expect(coreReadiness(s.total, FAANG)).toBe(0)
+    expect(coreReadiness(s.total, MAANG)).toBe(0)
   })
 
   it('everythingDoneIsAHundred', () => {
@@ -88,10 +88,10 @@ describe('coreScore', () => {
 
 describe('coreReadiness', () => {
   it('isTheScoreAsAPercentageOfTheTargetsBarCappedAt100', () => {
-    expect(coreReadiness(35, FAANG)).toBe(50)
+    expect(coreReadiness(35, MAANG)).toBe(50)
     expect(coreReadiness(35, SERVICE)).toBe(47)
     expect(coreReadiness(35, { company: 'startup', role: 'intern' })).toBe(58)
-    expect(coreReadiness(99, FAANG)).toBe(100)
+    expect(coreReadiness(99, MAANG)).toBe(100)
   })
 })
 
@@ -137,5 +137,33 @@ describe('coreGaps', () => {
   it('noGapsWhenEverythingIsDone', () => {
     const all = gitWith(PROJECTS.flatMap((p) => p.gitMilestones.map((m) => checkKey(p.id, m))))
     expect(coreGaps(input({ learn: learnFor(['oop', 'cn', 'dbms', 'os']), git: all }))).toEqual([])
+  })
+})
+
+describe('focus', () => {
+  const backend = { ...MAANG, focus: 'backend' } as const
+
+  it('aBackendFocusCountsDatabasesNetworksAndOsMoreThanOop', () => {
+    const systems = learnFor(['dbms', 'os', 'cn'])
+    const oop = learnFor(['oop'])
+    expect(coreScore(input({ learn: systems, target: backend })).parts.modules).toBeGreaterThan(coreScore(input({ learn: systems })).parts.modules)
+    expect(coreScore(input({ learn: oop, target: backend })).parts.modules).toBeLessThan(coreScore(input({ learn: oop })).parts.modules)
+  })
+
+  it('aGeneralFocusChangesNothing', () => {
+    const learn = learnFor(['oop', 'cn'])
+    expect(coreScore(input({ learn, target: { ...MAANG, focus: 'general' } }))).toEqual(coreScore(input({ learn })))
+  })
+
+  it('aFrontendFocusLeansOnOopAndNetworks', () => {
+    const oop = learnFor(['oop'])
+    expect(coreScore(input({ learn: oop, target: { ...MAANG, focus: 'frontend' } })).parts.modules).toBeGreaterThan(coreScore(input({ learn: oop })).parts.modules)
+  })
+
+  it('stacksWithTheServiceTierWeighting', () => {
+    const dbms = learnFor(['dbms'])
+    const plain = coreScore(input({ learn: dbms, target: SERVICE })).parts.modules
+    const both = coreScore(input({ learn: dbms, target: { ...SERVICE, focus: 'data' } })).parts.modules
+    expect(both).toBeGreaterThan(plain)
   })
 })

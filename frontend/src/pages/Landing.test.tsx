@@ -114,12 +114,9 @@ describe('Landing', () => {
     expect(document.body.innerHTML).not.toMatch(/max-w-\[1180px\]/)
   })
 
-  it('settingsIsInTheNavAfterTheme', () => {
+  it('thereIsNoFloatingSettingsButtonAnyMore', () => {
     renderLanding()
-    const banner = screen.getByRole('banner')
-    const names = within(banner).getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? b.textContent)
-    expect(names).toContain('Settings')
-    expect(names.indexOf('Settings')).toBeGreaterThan(names.indexOf('Theme'))
+    expect(screen.queryByRole('button', { name: 'Settings' })).toBeNull()
   })
 
   it('headlineIsReadableAsOneSentence', () => {

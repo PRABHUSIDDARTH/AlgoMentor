@@ -2,6 +2,7 @@ import { createElement } from 'react'
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { DIAGRAMS } from '@/components/learn/diagrams'
+import { parseLesson } from '@/learn/lessonBlocks'
 import { TRACKS } from '.'
 
 /** Module ids in the order spec §3 lists them. */
@@ -13,6 +14,8 @@ const SPEC_ORDER: Record<string, string[]> = {
 }
 
 const words = (md: string) => md.replace(/```[\s\S]*?```/g, ' ').split(/\s+/).filter((w) => /[A-Za-z0-9]/.test(w)).length
+/** The lesson's text without its callouts, which are counted separately. */
+const proseOf = (body: string) => parseLesson(body).sections.map((s) => s.segments.filter((x) => x.kind === 'html').map((x) => (x as { html: string }).html.replace(/<[^>]+>/g, ' ')).join(' ')).join(' ')
 
 it('hasFourTracks', () => {
   expect(TRACKS.map((t) => t.id)).toEqual(['oop', 'cn', 'dbms', 'os'])
@@ -24,9 +27,29 @@ describe.each(TRACKS.map((t) => [t.id, t] as const))('%s content', (id, track) =
   })
 
   it.each(track.modules.map((m) => [m.id, m] as const))('bodyLength400to900Words: %s', (_, m) => {
-    const n = words(m.body)
+    const n = words(proseOf(m.body))
     expect(n, `${m.id} has ${n} words`).toBeGreaterThanOrEqual(400)
     expect(n, `${m.id} has ${n} words`).toBeLessThanOrEqual(900)
+  })
+
+  it.each(track.modules.map((m) => [m.id, m] as const))('hasAHookKeyPointsAndCallouts: %s', (_, m) => {
+    expect(words(m.hook ?? ''), `${m.id} hook`).toBeGreaterThanOrEqual(25)
+    expect(words(m.hook ?? ''), `${m.id} hook`).toBeLessThanOrEqual(110)
+    expect(m.keyPoints?.length, `${m.id} keyPoints`).toBeGreaterThanOrEqual(3)
+    expect(m.keyPoints?.length, `${m.id} keyPoints`).toBeLessThanOrEqual(4)
+    for (const k of m.keyPoints ?? []) {
+      expect(k.length, `${m.id}: ${k}`).toBeGreaterThanOrEqual(20)
+      expect(k.length, `${m.id}: ${k}`).toBeLessThanOrEqual(170)
+    }
+    const callouts = parseLesson(m.body).sections.flatMap((s) => s.callouts)
+    const kinds = new Set(callouts.map((c) => c.kind))
+    for (const k of ['key', 'gotcha', 'interview', 'try'] as const) expect(kinds.has(k), `${m.id} needs a ${k} callout`).toBe(true)
+    expect(callouts.length, `${m.id} callouts`).toBeLessThanOrEqual(6)
+    for (const c of callouts) {
+      expect(c.body.length, `${m.id} ${c.kind} body`).toBeGreaterThan(0)
+      if (c.kind === 'try') expect(c.answer?.length, `${m.id} try needs an answer after a --- line`).toBeGreaterThan(0)
+    }
+    expect(words(callouts.map((c) => [...c.body, ...(c.answer ?? [])].map((x) => (x.kind === 'html' ? x.html.replace(/<[^>]+>/g, ' ') : '')).join(' ')).join(' ')), `${m.id} callout words`).toBeLessThanOrEqual(420)
   })
 
   it('fiveQuizQuestionsAnswerInRange', () => {

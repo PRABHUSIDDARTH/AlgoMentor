@@ -3,7 +3,7 @@ import { PageHeader } from '@/components/PageHeader'
 import { StageCard } from '@/components/practice/StageCard'
 import { UpNext } from '@/components/practice/UpNext'
 import { PROBLEMS, STAGES } from '@/content/roadmap'
-import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
+import { ROLE_LABEL, targetName } from '@/content/targets'
 import type { LeetCodeProfile } from '@/lib/api'
 import { isUnlocked, markStageKnown, stageCompletion, unlockStage } from '@/practice/progress'
 import { currentStageId, isKeyStage, KNOWN_TAG_THRESHOLD, tagSolves } from '@/practice/roadmapView'
@@ -27,7 +27,7 @@ export default function Roadmap() {
           summary="Each stage builds on the last. Solved problems come back for review after 1, 3, 7, 21 and 60 days, so you keep what you learn."
         >
           <p className="font-mono text-[12px] text-ink-muted">
-            {solvedTotal} of {PROBLEMS.size} solved · Target: {COMPANY_LABEL[settings.target.company]} · {ROLE_LABEL[settings.target.role]}
+            {solvedTotal} of {PROBLEMS.size} solved · Target: {targetName(settings.target)} · {ROLE_LABEL[settings.target.role]}
           </p>
         </PageHeader>
         <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">

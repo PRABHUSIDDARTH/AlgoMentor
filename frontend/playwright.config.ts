@@ -15,7 +15,8 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], ...(process.env.CI ? {} : { channel: 'chrome' }) } }],
   webServer: {
-    command: 'java -jar ../target/algomentor-0.0.1-SNAPSHOT.jar --spring.profiles.active=e2e --server.port=8091',
+    // A fresh contributions file and a known admin token, so the review flow can be tested.
+    command: 'rm -f ../target/e2e-contributions.json && java -jar ../target/algomentor-0.0.1-SNAPSHOT.jar --spring.profiles.active=e2e --server.port=8091 --algomentor.admin-token=e2e-admin-token --algomentor.contributions.file=../target/e2e-contributions.json',
     url: 'http://localhost:8091/actuator/health',
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

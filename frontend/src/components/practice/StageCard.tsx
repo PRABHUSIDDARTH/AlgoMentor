@@ -2,7 +2,7 @@ import { Lock } from 'lucide-react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import type { Stage } from '@/content/roadmap'
-import { COMPANY_LABEL } from '@/content/targets'
+import { targetName } from '@/content/targets'
 import { cn } from '@/lib/utils'
 import type { Target } from '@/practice/store'
 import { ProgressBar } from './ProgressBar'
@@ -47,7 +47,7 @@ export function StageCard({ stage, previousTitle, solved, total, unlocked, curre
         <p className="mt-1.5 max-w-[70ch] text-[13px] leading-relaxed text-ink-muted">{stage.summary}</p>
         <ProgressBar value={total ? solved / total : 0} label={`${stage.title} progress`} className="mt-3" />
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px]">
-          {key3 && <span className="font-medium">Key for {COMPANY_LABEL[target.company]}</span>}
+          {key3 && <span className="font-medium">Key for {targetName(target)}</span>}
           {current && <span className="text-ink-muted">You are here</span>}
           {!unlocked && (
             <>

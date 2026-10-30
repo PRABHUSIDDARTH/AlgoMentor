@@ -4,9 +4,19 @@ const lesson: Lesson = {
   id: 'design-patterns',
   title: 'Core design patterns',
   minutes: 11,
+  hook: 'A shop prices items with an `if` chain on customer type, and every new discount means editing the same method and re-testing the old rules. Patterns exist for this kind of repeated pain. Five of them, Singleton, Factory, Strategy, Observer and Decorator, cover most design questions and a lot of everyday code.',
+  keyPoints: [
+    'A design pattern is a named, reusable shape for a recurring problem. The name gives a team shared vocabulary.',
+    'Singleton, Factory, Strategy, Observer and Decorator cover one instance, hidden construction, swappable rules, notification and wrapping.',
+    'Each pattern has a cost. Singleton hides global state, and Observer can leak listeners that are never removed.',
+    'Start from the problem, then name the pattern. Using one because it exists produces over-engineered code.',
+  ],
   body: `## Named solutions to recurring problems
 
 A **design pattern** is a reusable shape for solving a problem that keeps coming up. Patterns give teams shared vocabulary: "make the pricing a Strategy" says in four words what would otherwise take a paragraph. Five patterns cover most interview questions and most everyday code.
+
+> [!KEY] Problem first, name second
+> A pattern is the answer to a question. State the problem in your own words first (the rule varies, several parts must react), then give the pattern's name. A pattern with no problem behind it is just extra classes.
 
 ## Singleton
 
@@ -15,6 +25,9 @@ A **design pattern** is a reusable shape for solving a problem that keeps coming
 **Shape:** a private constructor and a static accessor that returns the one instance.
 
 **Caution:** a Singleton is global state in disguise. It hides dependencies (any code can grab it), makes tests share state, and needs care with threads. Prefer creating one instance at start-up and passing it to whoever needs it. When you do write one, make initialisation thread-safe; in Java the simplest way is an \`enum\` with a single value or a static holder class.
+
+> [!GOTCHA] The lazy singleton race
+> The usual lazy version checks whether the instance is null and then creates it. Two threads can both pass the check and each build one, so the "single" registry exists twice with different state. Create it at start-up, use an enum or static holder, or guard the check with a lock.
 
 ## Factory
 
@@ -30,6 +43,9 @@ Factories keep \`new ConcreteClass()\` in one place, so adding a new type change
 
 **Shape:** an interface for the behaviour, one class per variant, and a host that holds one and delegates to it. Pricing rules, sorting comparisons, payment methods and retry policies are all strategies. It is the cleanest way to replace a growing \`if\`/\`switch\` on a type.
 
+> [!INTERVIEW] Pricing means Strategy
+> When a prompt has a rule that varies, such as pricing, payment or discounts, the expected pattern is Strategy. Say which \`switch\` it replaces and what it costs: one more class per variant. Interviewers listen for the problem you name before the pattern.
+
 ## Observer
 
 **Problem:** when something changes, several other parts of the system need to react, and the source shouldn't know who they are.
@@ -37,6 +53,28 @@ Factories keep \`new ConcreteClass()\` in one place, so adding a new type change
 **Shape:** a *subject* keeps a list of *observers* (listeners) and notifies each when its state changes. A stock price notifies charts and alerts; a "book returned" event notifies the waiting-list service and the fines service. UI frameworks, event buses and reactive streams are all built on Observer.
 
 **Caution:** observers that are never removed keep objects alive (a memory leak), and long chains of events can be hard to debug. Unsubscribe when a listener's owner goes away.
+
+> [!TRY] The listener that leaves
+> A listener removes itself while the subject loops over the list. Which letters print?
+>
+> \`\`\`python
+> subs = []
+>
+> def once():
+>     print("a")
+>     subs.remove(once)
+>
+> def other():
+>     print("b")
+>
+> subs.extend([once, other])
+> for s in subs:
+>     s()
+> \`\`\`
+>
+> ---
+>
+> Only \`a\`. Removing an entry shifts the next one into the position the loop has already passed, so \`other\` is never called. Loop over a copy (\`for s in list(subs)\`) or collect removals until the loop ends.
 
 ## Decorator
 

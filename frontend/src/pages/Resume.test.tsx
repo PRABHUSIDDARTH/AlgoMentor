@@ -8,7 +8,7 @@ import { linkRepo, loadGit } from '@/learn/repos'
 import { ApiError } from '@/lib/api'
 import Resume from './Resume'
 
-const api = vi.hoisted(() => ({ repoHealth: vi.fn(), askStream: vi.fn() }))
+const api = vi.hoisted(() => ({ repoHealth: vi.fn(), askStream: vi.fn(), fetchSharedProjects: vi.fn() }))
 vi.mock('@/lib/api', async (importOriginal) => ({ ...(await importOriginal<typeof import('@/lib/api')>()), ...api }))
 
 const HEALTH = {
@@ -34,6 +34,7 @@ const cards = () => Array.from(screen.getByRole('list', { name: 'Resume projects
 
 beforeEach(() => {
   api.repoHealth.mockResolvedValue(HEALTH)
+  api.fetchSharedProjects.mockResolvedValue([])
 })
 
 afterEach(() => {
@@ -41,13 +42,14 @@ afterEach(() => {
   vi.restoreAllMocks()
   api.repoHealth.mockReset()
   api.askStream.mockReset()
+  api.fetchSharedProjects.mockReset()
 })
 
 describe('Resume page', () => {
-  it('twelveProjects', () => {
+  it('listsEveryProject', () => {
     renderResume()
-    expect(cards()).toHaveLength(12)
-    expect(screen.getByText('12 projects')).toBeInTheDocument()
+    expect(cards()).toHaveLength(RESUME_PROJECTS.length)
+    expect(screen.getByText(`${RESUME_PROJECTS.length} projects`)).toBeInTheDocument()
   })
 
   it('filtersByTargetAndRole', async () => {
@@ -55,7 +57,7 @@ describe('Resume page', () => {
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'startup')
     const startup = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'startup', 'all'))
     expect(cards()).toHaveLength(startup.length)
-    expect(startup.length).toBeLessThan(12)
+    expect(startup.length).toBeLessThan(RESUME_PROJECTS.length)
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Role' }), 'intern')
     const both = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'startup', 'intern'))
     expect(cards()).toHaveLength(both.length)
@@ -63,7 +65,82 @@ describe('Resume page', () => {
     for (const p of both) expect(screen.getByRole('heading', { name: p.title })).toBeInTheDocument()
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'all')
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Role' }), 'all')
-    expect(cards()).toHaveLength(12)
+    expect(cards()).toHaveLength(RESUME_PROJECTS.length)
+  })
+
+  it('filtersByFocus', async () => {
+    renderResume()
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Focus' }), 'mobile')
+    const mobile = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'mobile'))
+    expect(cards()).toHaveLength(mobile.length)
+    for (const p of mobile) expect(screen.getByRole('heading', { name: p.title })).toBeInTheDocument()
+  })
+
+  it('filtersByAnyCompanyThroughItsTier', async () => {
+    renderResume()
+    const select = screen.getByRole('combobox', { name: 'Company' })
+    expect(within(select).getAllByRole('option').length).toBeGreaterThan(200)
+    await userEvent.selectOptions(select, 'meta')
+    const shown = RESUME_PROJECTS.filter((p) => matchesFilter(p, 'all', 'all', 'all', 'meta'))
+    expect(cards()).toHaveLength(shown.length)
+    expect(shown.length).toBeLessThan(RESUME_PROJECTS.length)
+    expect(screen.getByRole('status')).toHaveTextContent(`${shown.length} projects for Meta`)
+  })
+
+  it('theCompanyListFollowsTheTierAndChangingTierClearsAMismatchedCompany', async () => {
+    renderResume()
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'service')
+    const options = within(screen.getByRole('combobox', { name: 'Company' })).getAllByRole('option').map((o) => o.textContent)
+    expect(options).toContain('TCS')
+    expect(options).not.toContain('Meta')
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Company' }), 'tcs')
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'maang')
+    expect(screen.getByRole('combobox', { name: 'Company' })).toHaveValue('all')
+  })
+
+  it('startsOnYourDreamCompanyWhenYouHaveOne', () => {
+    localStorage.setItem('algomentor.profile.v1', JSON.stringify({ dailyGoal: 3, target: { company: 'maang', role: 'sde1', employer: 'google' } }))
+    renderResume()
+    expect(screen.getByRole('combobox', { name: 'Company' })).toHaveValue('google')
+  })
+
+  it('everyCardHasABuildItLikeProductionSection', async () => {
+    renderResume()
+    const p = RESUME_PROJECTS[0]
+    const card = cards()[0]
+    await userEvent.click(within(card).getByRole('button', { name: /Build it like production/ }))
+    expect(within(card).getByText(p.production.architecture)).toBeInTheDocument()
+    for (const m of p.production.milestones) expect(within(card).getByText(m)).toBeInTheDocument()
+    for (const c of p.production.shipIt) expect(within(card).getByText(c)).toBeInTheDocument()
+  })
+
+  it('offersToShareTheProjectThatGotYouIn', async () => {
+    renderResume()
+    await userEvent.click(screen.getByRole('button', { name: 'Share the project that got you in' }))
+    expect(screen.getByRole('dialog', { name: 'Share the project that got you in' })).toBeInTheDocument()
+  })
+
+  it('showsReviewedProjectsFromPeopleWhoGotInWithoutAnEmail', async () => {
+    api.fetchSharedProjects.mockResolvedValue([{ id: '1', company: 'Atlassian', level: 'sde1', roleTitle: 'Software Engineer, Backend', projectTitle: 'Seat reservation system', summary: 'A booking API where one seat is never sold twice.', whyItHelped: 'It was the centre of my system design round.', stack: 'Spring Boot', repoUrl: 'https://github.com/ana/seats', name: 'Ana G.', linkedin: 'ana-gomez', year: 2026, approvedAt: '2026-10-01T00:00:00Z' }])
+    renderResume()
+    const region = await screen.findByRole('region', { name: 'From people who got in' })
+    expect(within(region).getByText('Seat reservation system')).toBeInTheDocument()
+    expect(within(region).getByText(/Atlassian/)).toBeInTheDocument()
+    expect(within(region).getByRole('link', { name: /github.com\/ana\/seats/ })).toHaveAttribute('href', 'https://github.com/ana/seats')
+    expect(region).toHaveTextContent(/shared by users, reviewed by AlgoMentor, not verified/i)
+  })
+
+  it('hidesTheCommunitySectionWhenThereIsNothingToShow', async () => {
+    renderResume()
+    await vi.waitFor(() => expect(api.fetchSharedProjects).toHaveBeenCalled())
+    expect(screen.queryByRole('region', { name: 'From people who got in' })).toBeNull()
+  })
+
+  it('creditsTheRepositoryOrRoadmapAProjectCameFrom', () => {
+    renderResume()
+    const p = RESUME_PROJECTS.find((x) => x.id === 'mini-docker')!
+    const card = cards().find((c) => within(c).queryByRole('heading', { name: p.title }))!
+    expect(within(card).getByRole('link', { name: new RegExp(p.inspiredBy!.label) })).toHaveAttribute('href', p.inspiredBy!.url)
   })
 
   it('cardShowsBulletTemplateAndExample', () => {
@@ -125,13 +202,13 @@ describe('Resume page', () => {
     await userEvent.click(within(card).getByRole('button', { name: /Make your GitHub shine/ }))
     await userEvent.click(within(card).getByRole('button', { name: 'Check repository' }))
     expect(await within(card).findByText(/Couldn't reach AlgoMentor/)).toBeInTheDocument()
-    expect(cards()).toHaveLength(12)
+    expect(cards()).toHaveLength(RESUME_PROJECTS.length)
   })
 
   it('noAskCallsOnTheResumePage', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch')
     renderResume()
-    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'faang')
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Target' }), 'maang')
     expect(fetchSpy.mock.calls.filter(([u]) => String(u).includes('/ask'))).toHaveLength(0)
     expect(api.askStream).not.toHaveBeenCalled()
   })

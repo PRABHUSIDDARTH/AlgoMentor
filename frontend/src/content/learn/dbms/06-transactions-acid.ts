@@ -4,6 +4,13 @@ const lesson: Lesson = {
   id: 'transactions-acid',
   title: 'Transactions & ACID',
   minutes: 10,
+  hook: 'A transfer takes 500 from one account, then the server loses power before the other account is credited. Without a transaction, the money is simply gone. With one, the database restarts, reads its log and undoes the half-finished transfer as if it had never begun. That guarantee is what ACID means.',
+  keyPoints: [
+    'A transaction makes several statements succeed or fail as one unit: BEGIN, then COMMIT or ROLLBACK.',
+    'ACID is atomicity, consistency, isolation and durability; the write-ahead log provides atomicity and durability.',
+    'Keep transactions short, and retry them after deadlocks and serialisation failures.',
+    'ACID covers one database; across services you need sagas or two-phase commit.',
+  ],
   body: `## All or nothing
 
 Transferring money means two updates: take 500 from Ana's account and add 500 to Ben's. If the system crashes between them, money vanishes. A **transaction** groups operations so they succeed or fail as one unit:
@@ -32,11 +39,30 @@ The key structure is the **write-ahead log** (WAL, or redo log). Before a change
 
 After a crash, the database **recovers** by replaying the log: redoing committed changes that hadn't reached the data files and undoing changes from transactions that never committed. Writing sequentially to one log is also much faster than updating pages scattered across the disk, which is why nearly every database, and many other systems such as Kafka and file systems, are built around a log.
 
+> [!KEY] The log is the commit
+> A transaction counts as committed once its log records are safely on disk, not when the data pages are written. Recovery replays the log to redo what committed and undo what did not.
+
 \`fsync\` is the expensive part: forcing data to stable storage. Databases batch several commits into one flush (**group commit**) to keep throughput high. Settings that skip the flush trade durability for speed, and you should know when one is on.
 
 ## Savepoints
 
 Long transactions can set **savepoints** and roll back to one without abandoning the whole transaction: \`SAVEPOINT before_fees; ... ROLLBACK TO before_fees;\`.
+
+> [!TRY] Where did the money go?
+> Ana has 1000 and Ben has 0. What are the balances after \`COMMIT\`?
+>
+> \`\`\`sql
+> BEGIN;
+> UPDATE account SET balance = balance - 500 WHERE id = 'ana';
+> SAVEPOINT s;
+> UPDATE account SET balance = balance + 500 WHERE id = 'ben';
+> ROLLBACK TO s;
+> COMMIT;
+> \`\`\`
+>
+> ---
+>
+> Ana has 500 and Ben has 0. \`ROLLBACK TO s\` undoes only the work after the savepoint, so the debit stays and the commit makes it permanent. Savepoints narrow a rollback; they do not cancel the transaction. SQLite gives the same result, and so does PostgreSQL.
 
 ## Transactions in application code
 
@@ -46,9 +72,15 @@ Some rules make transactions work in practice:
 - **Retry on serialisation failures and deadlocks.** The database may abort a transaction to keep things correct; the application should retry it, which means the code inside must be safe to repeat.
 - **Know your framework's defaults.** Many drivers run in autocommit mode, so each statement is its own transaction unless you open one explicitly. Spring's \`@Transactional\`, Django's \`atomic()\` and similar helpers start and end transactions for you.
 
+> [!GOTCHA] Same function, not same transaction
+> Assuming two statements run as a unit because they sit in one function. In autocommit mode each commits alone, so an exception between them leaves half a transfer. Check that a transaction is really opened: for example, in Spring a \`@Transactional\` method called from another method of the same class bypasses the proxy and starts nothing.
+
 ## Beyond one database
 
-ACID covers one database. When an operation spans services or databases (charge a card, then reserve stock), you can't wrap it in one local transaction. Options include **two-phase commit** (a coordinator asks every participant to prepare, then to commit; correct but blocking and fragile) and the **saga pattern** (a sequence of local transactions, each with a compensating action to undo it if a later step fails). Distributed systems usually choose sagas, idempotent operations and eventual consistency, which the NoSQL and CAP module explores.`,
+ACID covers one database. When an operation spans services or databases (charge a card, then reserve stock), you can't wrap it in one local transaction. Options include **two-phase commit** (a coordinator asks every participant to prepare, then to commit; correct but blocking and fragile) and the **saga pattern** (a sequence of local transactions, each with a compensating action to undo it if a later step fails). Distributed systems usually choose sagas, idempotent operations and eventual consistency, which the NoSQL and CAP module explores.
+
+> [!INTERVIEW]
+> "How do you keep two services consistent?" Say you avoid a distributed transaction if you can, name two-phase commit and its blocking cost, then describe a saga with compensating actions and idempotent steps. The interviewer wants the trade-off, not one right answer.`,
   quiz: [
     { id: 'ta-1', prompt: 'A crash happens after debiting Ana but before crediting Ben, inside one transaction. What does atomicity guarantee?', options: ['Neither change survives: the transaction is rolled back', 'Ana is debited and Ben is not', 'Both changes survive', 'The database deletes both accounts'], answer: 0, why: 'Atomicity means all of a transaction\'s changes happen or none do.' },
     { id: 'ta-2', prompt: 'Which mechanism lets a database make commits durable and recover after a crash?', options: ['The query planner', 'The write-ahead log', 'Indexes', 'Views'], answer: 1, why: 'Changes are logged and flushed before data pages; recovery replays the log.' },

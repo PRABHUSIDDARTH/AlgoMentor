@@ -4,15 +4,28 @@ const lesson: Lesson = {
   id: 'solid',
   title: 'SOLID',
   minutes: 10,
+  hook: 'Reports for a small firm are computed, formatted as HTML and emailed by one `Report` class. Every change to the mail server risks the maths, and every layout tweak risks the emails. SOLID is five names for the ways a class ends up like this, each paired with a cheap fix.',
+  keyPoints: [
+    'SOLID is five named design principles. Each describes a pain in changing code and a way to avoid it.',
+    'Single responsibility means one reason to change, not one tiny job. Open/closed means new behaviour arrives as new classes.',
+    'Liskov substitution says a subtype must work wherever its base type is expected without surprising the caller.',
+    'Interface segregation and dependency inversion keep contracts small and make high-level code depend on abstractions.',
+  ],
   body: `## Five principles for code that bends instead of breaking
 
 **SOLID** is an acronym for five design principles. None of them is a law; each one names a common way object-oriented code becomes hard to change and suggests how to avoid it. Know each by name, a one-line definition and a small example, because interviewers ask for exactly that.
+
+> [!KEY] Learn the symptom, not the letter
+> For each principle, remember the pain that sends you to it: a class changed for unrelated reasons, a switch edited for every new case, an inherited method that throws, a stub forced to implement what it cannot do, a service welded to its database. Symptom first makes the definition easy to recall.
 
 ## S: Single responsibility
 
 *A class should have one reason to change.* A \`Report\` class that computes figures, formats them as HTML and emails them changes whenever the maths, the layout or the mail server changes. Split it into \`ReportCalculator\`, \`HtmlReportFormatter\` and \`ReportMailer\`. Each is smaller, easier to test, and a change in one area can't break the others.
 
 "Responsibility" means a reason to change, usually tied to one group of people asking for changes, not "does one tiny thing". A class with ten methods can still have a single responsibility.
+
+> [!GOTCHA] One method per class
+> Reading single responsibility as "do one tiny thing" produces dozens of one-method classes that must be wired together to do anything. The cost is navigation, not clarity. Split along reasons to change, such as maths, layout and delivery, not along verbs.
 
 ## O: Open/closed
 
@@ -22,6 +35,26 @@ const lesson: Lesson = {
 
 *Subtypes must be usable wherever their base type is expected.* If code works with a \`Bird\` and breaks when given a \`Penguin\` because \`fly()\` throws, the hierarchy is wrong. Either not every bird flies (split \`FlyingBird\` out), or penguins don't belong under \`Bird\` as modelled. Substitution failures show up as \`instanceof\` checks and "not supported" exceptions.
 
+> [!TRY] Can a Penguin migrate?
+> What does this print, and which principle does it break?
+>
+> \`\`\`python
+> class Bird:
+>     def fly(self): return "flap"
+>
+> class Penguin(Bird):
+>     def fly(self): raise NotImplementedError
+>
+> def migrate(birds):
+>     return [b.fly() for b in birds]
+>
+> print(migrate([Bird(), Penguin()]))
+> \`\`\`
+>
+> ---
+>
+> It prints nothing and raises \`NotImplementedError\`: one \`Penguin\` makes the whole call fail, even though the \`Bird\` worked. A \`Penguin\` cannot stand in for a \`Bird\`, which is a Liskov violation. Model flying as a separate type so \`migrate\` accepts only birds that fly.
+
 ## I: Interface segregation
 
 *Clients should not depend on methods they don't use.* A \`Machine\` interface with \`print\`, \`scan\` and \`fax\` forces a simple printer to implement \`fax\` with an error. Split it into \`Printer\`, \`Scanner\` and \`Fax\`. A multifunction device implements all three, the simple printer only one, and callers depend only on what they call.
@@ -29,6 +62,9 @@ const lesson: Lesson = {
 ## D: Dependency inversion
 
 *High-level policy should not depend on low-level details; both should depend on abstractions.* An \`OrderService\` that creates a \`MySqlOrderRepository\` itself is welded to MySQL. Make it depend on an \`OrderRepository\` interface and receive the implementation from outside. The business rules now sit above the database, and the database adapts to them, not the other way round. This is what makes swapping storage or testing with an in-memory fake possible.
+
+> [!INTERVIEW] Inversion or injection?
+> Interviewers like to see whether you keep these apart. Dependency inversion is the principle: high-level code depends on an abstraction. Dependency injection is one technique for following it: the dependency is passed in from outside, often through the constructor. You can invert without a framework.
 
 ## How the principles relate
 

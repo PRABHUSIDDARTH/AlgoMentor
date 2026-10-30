@@ -3,7 +3,7 @@ import { GIT_CHALLENGES } from '@/content/learn/git-challenges'
 import { PROJECTS } from '@/content/learn/projects'
 import { CHALLENGE_IDS, type TrackId } from '@/content/learn/types'
 import { CORE_BAR } from '@/content/targets'
-import type { Target } from '@/practice/store'
+import type { Focus, Target } from '@/practice/store'
 import type { LearnProgress } from './progress'
 import { checkKey, passedChallenges, type GitState } from './repos'
 
@@ -16,7 +16,21 @@ export type CoreInput = { learn: LearnProgress; git: GitState; target: Target }
 
 /** Service companies lean on networks and databases, so those modules count one and a half times. */
 const SERVICE_WEIGHT: Partial<Record<TrackId, number>> = { cn: 1.5, dbms: 1.5 }
-const trackWeight = (id: TrackId, target: Target) => (target.company === 'service' ? (SERVICE_WEIGHT[id] ?? 1) : 1)
+
+/** What kind of engineer you are aiming to be changes which tracks count for more. */
+export const FOCUS_WEIGHT: Record<Focus, Partial<Record<TrackId, number>>> = {
+  general: {},
+  backend: { dbms: 1.5, os: 1.5, cn: 1.5 },
+  frontend: { oop: 1.5, cn: 1.5 },
+  fullstack: { oop: 1.25, dbms: 1.25, cn: 1.25 },
+  mobile: { oop: 1.5, os: 1.25 },
+  data: { dbms: 2 },
+  devops: { os: 2, cn: 2 },
+  sdet: { oop: 1.5, dbms: 1.25 },
+}
+
+const trackWeight = (id: TrackId, target: Target) =>
+  (target.company === 'service' ? (SERVICE_WEIGHT[id] ?? 1) : 1) * (FOCUS_WEIGHT[target.focus ?? 'general'][id] ?? 1)
 
 const isDone = (learn: LearnProgress, moduleId: string) => learn[moduleId]?.completedAt !== undefined
 const projectVerified = (git: GitState, p: (typeof PROJECTS)[number]) => p.gitMilestones.every((m) => git.checks[checkKey(p.id, m)]?.passedAt !== undefined)

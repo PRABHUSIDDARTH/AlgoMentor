@@ -4,7 +4,9 @@ import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { TRACKS } from '@/content/learn'
-import { loadLearn } from '@/learn/progress'
+import { LEARN_KEY, loadLearn } from '@/learn/progress'
+import { parseLesson } from '@/learn/lessonBlocks'
+import { extractToc } from '@/learn/toc'
 import Learn from './Learn'
 import LearnTrack from './LearnTrack'
 import Lesson from './Lesson'
@@ -121,6 +123,41 @@ describe('Lesson page', () => {
   })
 })
 
+describe('Lesson layout', () => {
+  it('opensWithTheHookAndKeyPoints', () => {
+    renderAt(`/learn/oop/${first.id}`)
+    const why = screen.getByRole('region', { name: 'Why this matters' })
+    expect(why).toHaveTextContent('A library app misbehaves at 2 a.m.')
+    const points = within(screen.getByRole('list', { name: 'Key points' })).getAllByRole('listitem')
+    expect(points).toHaveLength(first.keyPoints!.length)
+    expect(why.querySelector('code')).not.toBeNull()
+  })
+
+  it('putsEachCalloutInTheSectionItBelongsTo', () => {
+    renderAt(`/learn/oop/${first.id}`)
+    const { sections } = parseLesson(first.body)
+    expect(screen.getAllByRole('note')).toHaveLength(sections.flatMap((s) => s.callouts).length)
+    for (const s of sections.filter((x) => x.callouts.length > 0)) {
+      const el = document.getElementById(s.id)!.closest('section')!
+      expect(within(el).getAllByRole('note'), s.title).toHaveLength(s.callouts.length)
+    }
+  })
+
+  it('theTryCalloutHidesItsAnswerUntilAsked', async () => {
+    renderAt(`/learn/oop/${first.id}`)
+    const note = screen.getByRole('note', { name: 'Two books, one change' })
+    expect(within(note).getByText(/separate objects/)).not.toBeVisible()
+    await userEvent.click(within(note).getByRole('button', { name: 'Show the answer' }))
+    expect(within(note).getByText(/separate objects/)).toBeVisible()
+  })
+
+  it('theLessonIsNotCappedToANarrowColumn', () => {
+    renderAt(`/learn/oop/${first.id}`)
+    expect(document.querySelector('article')?.className).not.toMatch(/72ch/)
+    expect(document.querySelector('figure')?.className).not.toMatch(/72ch/)
+  })
+})
+
 describe('Learn hub', () => {
   it('learnHubShowsThreeTracksWithProgress', () => {
     localStorage.setItem('algomentor.learn.v1', JSON.stringify({ [first.id]: { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: null } }))
@@ -138,5 +175,43 @@ describe('Learn hub', () => {
     renderAt('/learn/oop')
     const list = screen.getByRole('list', { name: 'Modules' })
     expect(within(list).getAllByRole('link').map((a) => a.textContent)).toEqual(oop.modules.map((m, i) => expect.stringContaining(`${i + 1}. ${m.title}`)))
+  })
+
+  it('lessonHasAnOnThisPageListLinkingToItsHeadings', () => {
+    const lesson = TRACKS[3].modules[1]
+    renderAt(`/learn/os/${lesson.id}`)
+    const toc = screen.getByRole('navigation', { name: 'On this page' })
+    const items = extractToc(lesson.body)
+    expect(within(toc).getAllByRole('link')).toHaveLength(items.length)
+    for (const t of items) {
+      expect(within(toc).getByRole('link', { name: t.text })).toHaveAttribute('href', `#${t.id}`)
+      expect(document.getElementById(t.id)?.tagName).toBe('H2')
+    }
+  })
+
+  it('trackPageShowsModulesAsATimelineWithDoneNodes', () => {
+    localStorage.setItem(LEARN_KEY, JSON.stringify({ [first.id]: { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: null } }))
+    renderAt('/learn/oop')
+    const list = screen.getByRole('list', { name: 'Modules' })
+    expect(list.querySelectorAll('[data-node="done"]')).toHaveLength(1)
+    expect(list.querySelectorAll('[data-node="todo"]')).toHaveLength(oop.modules.length - 1)
+  })
+
+  it('learnHubShowsHowManyModulesAreDueForReview', () => {
+    localStorage.setItem(LEARN_KEY, JSON.stringify({ [first.id]: { bestQuiz: 5, completedAt: 1, reviewStep: 0, nextReviewAt: 1 } }))
+    renderAt('/learn')
+    const strip = screen.getByRole('region', { name: 'Due for review' })
+    expect(within(strip).getByText('1 module due for review')).toBeInTheDocument()
+    expect(within(strip).getByRole('link', { name: /Review on Today/ })).toHaveAttribute('href', '/today')
+  })
+
+  it('learnHubHasNoDueStripWhenNothingIsDue', () => {
+    renderAt('/learn')
+    expect(screen.queryByRole('region', { name: 'Due for review' })).toBeNull()
+  })
+
+  it('trackCardsHaveAProgressRing', () => {
+    renderAt('/learn')
+    expect(screen.getByRole('img', { name: `${oop.short}: 0 of ${oop.modules.length} modules complete` })).toBeInTheDocument()
   })
 })

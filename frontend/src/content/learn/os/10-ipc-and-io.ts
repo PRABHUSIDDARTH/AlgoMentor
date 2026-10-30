@@ -5,12 +5,22 @@ const lesson: Lesson = {
   id: 'ipc-and-io',
   title: 'Inter-process communication and I/O',
   minutes: 11,
+  hook: 'A shell runs `ls | grep txt` and the two programs share no memory, yet the text flows from one to the other. Behind it are a kernel buffer, a pair of file descriptors and a careful set of `close` calls. This lesson covers how processes talk to each other, how the CPU talks to devices, and the pipe mistake that makes a program hang forever.',
+  keyPoints: [
+    'Shared memory is the fastest IPC once set up but needs manual synchronisation; message passing is simpler but costs copies.',
+    'A pipe reader sees end-of-file only after every write end is closed, so close the ends you do not use.',
+    'Polling wastes the CPU, interrupts let it work meanwhile, and DMA moves bulk data without involving the CPU per byte.',
+    'Blocking I/O sleeps the process until data arrives; non-blocking and readiness APIs let one thread serve many connections.',
+  ],
   body: `## Talking between processes
 
 Process isolation protects programs from each other, but real systems need them to cooperate: a shell connects commands, a browser talks to its renderer processes, a server hands work to workers. The OS provides **inter-process communication** (IPC) for this. There are two basic models.
 
 - **Shared memory**: the OS maps the same physical pages into two processes. After setup it is the fastest option, since no kernel calls are needed to move data, but the processes must synchronise their access themselves.
 - **Message passing**: processes send and receive messages through the kernel. It is simpler to reason about and works across machines, but each message costs a system call and a copy.
+
+> [!KEY] Who does the work
+> Every IPC choice decides who carries the data. With message passing the kernel copies and orders it for you. With shared memory the kernel steps aside after setup, which is faster, but ordering and locking become your job.
 
 ## Common mechanisms
 
@@ -35,6 +45,21 @@ read(fd[0], buf, 2);
 
 Closing the unused ends matters: a reader only sees end-of-file once every write end is closed.
 
+> [!TRY] The forgotten close
+> The child writes "hi" and exits. The parent forgets \`close(fd[1])\` and reads in a loop:
+>
+> \`\`\`c
+> while ((n = read(fd[0], buf, 2)) > 0)
+>     printf("got %d\\n", n);
+> printf("eof\\n");
+> \`\`\`
+>
+> What happens?
+>
+> ---
+>
+> It prints \`got 2\`, then hangs and never prints \`eof\`. The parent still holds its own copy of the write end, so the pipe never reports end-of-file and the second \`read\` blocks forever. This was run and confirmed on Linux.
+
 ## How the OS handles I/O devices
 
 Devices are wildly different, from keyboards to network cards, so the OS puts them behind a uniform interface. A **device driver** is the kernel code that knows one device's details. Above it, devices appear as files: \`/dev/sda\`, \`/dev/tty\`.
@@ -47,9 +72,15 @@ There are three ways for the CPU to deal with a device:
 
 Interrupt handlers must be short. Real drivers split the work: a fast **top half** that acknowledges the device, and a **bottom half** that does the longer processing later.
 
+> [!INTERVIEW] Pick the right device method
+> Do not answer "interrupts are better". Polling can win for a very fast device that is almost always ready, because it avoids interrupt overhead. Interrupts suit slow or irregular events, and DMA suits bulk transfers. Interviewers listen for the condition that decides each choice.
+
 ## Blocking and buffering
 
 A system call such as \`read\` is typically **blocking**: the process moves to the waiting state until data arrives. **Non-blocking** I/O returns immediately with "nothing yet", and **asynchronous** I/O lets the process continue and be notified on completion. Servers handling thousands of connections use \`epoll\`-style readiness notifications rather than one thread per connection.
+
+> [!GOTCHA] Waiting before reading the pipe
+> A parent starts a child with its output piped back, then waits for the child to exit before reading. If the child writes more than the pipe holds (64 KiB by default on Linux), it blocks on the full pipe and never exits. Both wait forever. Read the output while the child runs.
 
 Buffering smooths out mismatches in speed. **Caching** keeps recent data in memory, and **spooling** queues output for a slow device such as a printer.
 

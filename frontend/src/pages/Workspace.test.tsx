@@ -146,11 +146,11 @@ describe('Workspace', () => {
     expect(screen.getByTestId('starter-groups').className).toMatch(/lg:grid-cols-3/)
   })
 
-  it('settingsFollowsThemeInTabOrder', () => {
+  it('themeIsTheLastControlInTheNavbar', () => {
     renderAt('/app')
     const names = within(screen.getByRole('banner')).getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? b.textContent)
-    expect(names.indexOf('Settings')).toBe(names.length - 1)
-    expect(names.indexOf('Settings')).toBeGreaterThan(names.indexOf('Theme'))
+    expect(names[names.length - 1]).toBe('Theme')
+    expect(names).not.toContain('Settings')
   })
 
   it('hasLandmarksAndSkipLink', () => {

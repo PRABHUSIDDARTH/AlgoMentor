@@ -3,6 +3,7 @@ package com.pstech.algomentor.e2e;
 import java.util.List;
 
 import com.pstech.algomentor.profiles.GfgProfileClient;
+import com.pstech.algomentor.profiles.GitHubProfileClient;
 import com.pstech.algomentor.profiles.HackerRankProfileClient;
 import com.pstech.algomentor.profiles.LeetCodeProfileClient;
 import com.pstech.algomentor.profiles.Profiles;
@@ -57,6 +58,17 @@ public class StubProfilesConfig {
 			public Profiles.GfgProfile fetch(String user) {
 				requireDemo(user, "GeeksforGeeks");
 				return new Profiles.GfgProfile("demo", 125, 320, 454, 7);
+			}
+		};
+	}
+
+	@Bean
+	GitHubProfileClient gitHubProfileClient() {
+		return new GitHubProfileClient(RestClient.create(), "https://api.github.com", "") {
+			@Override
+			public Profiles.GitHubProfile fetch(String user) {
+				requireDemo(user, "GitHub");
+				return new Profiles.GitHubProfile("demo", 12, 30, 48, List.of("Java", "TypeScript"), 1_790_000_000L);
 			}
 		};
 	}

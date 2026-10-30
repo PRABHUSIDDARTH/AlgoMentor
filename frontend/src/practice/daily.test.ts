@@ -36,7 +36,7 @@ describe('daily plan', () => {
   })
 
   it('newItemsUseTargetWeightBetweenUnlockedStages', () => {
-    // Finish stage 1 and unlock stages 2 and 14; for FAANG, graphs (weight 3) outranks... stage 2 is current, so it comes first.
+    // Finish stage 1 and unlock stages 2 and 14; for MAANG, graphs (weight 3) outranks... stage 2 is current, so it comes first.
     markStageKnown(STAGES[0].id, NOON)
     const plan = buildPlan(KEY, { ...DEFAULT_SETTINGS, dailyGoal: 5 }, loadProgress(), ['graphs'], NOON)
     const stageOf = (id: string) => STAGES.find((s) => s.patterns.some((p) => p.problems.some((q) => q.id === id)))!.id

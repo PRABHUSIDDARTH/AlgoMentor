@@ -4,9 +4,19 @@ const lesson: Lesson = {
   id: 'oop-interviews',
   title: 'OOP in interviews: design a parking lot',
   minutes: 12,
+  hook: 'The prompt is one line: design a parking lot. Candidates who start coding `class Car` in the first minute often find out at minute thirty that the interviewer wanted several floors and hourly pricing. This lesson is a six-step routine for turning that one line into a clean design, out loud, in 45 minutes.',
+  keyPoints: [
+    'Low-level design interviews score your process: clarify, find the objects, define flows, name principles, probe edge cases, then code.',
+    'Underline the nouns for candidate classes and let the two core flows, park and leave, decide the methods.',
+    'Put each rule where its data lives, and make rules that may change, such as pricing, a strategy.',
+    'Check-then-act steps like find-a-spot-then-assign must be atomic, or two cars can get the same spot.',
+  ],
   body: `## What the interviewer is looking for
 
 "Design a parking lot" (or a library, an elevator, a vending machine) is a **low-level design** question. Nobody expects a finished system in 45 minutes. The interviewer wants to see you turn a vague problem into a clean set of classes, explain your choices, and adapt when requirements change. A steady process matters more than clever code.
+
+> [!KEY] Process beats cleverness
+> Nobody finishes a parking lot in 45 minutes, so completeness is not what is scored. The interviewer watches whether you clarify scope, choose objects for stated reasons, and stay calm when a requirement changes. Say which step you are on as you go.
 
 ## Step 1: clarify the requirements (5 minutes)
 
@@ -18,6 +28,9 @@ Ask before you design. For a parking lot:
 - Do we need to show free spots per floor? Handle payment, or just compute it?
 
 Write the agreed scope down in a few lines. It shows structure and gives you something to point back to when the interviewer adds a twist.
+
+> [!GOTCHA] Coding in the first five minutes
+> Starting with classes before the scope is agreed means designing for requirements you invented. When the interviewer reveals several floors or per-vehicle pricing, the structure has to be reworked while the clock runs. Ask first, write the scope down, then draw.
 
 ## Step 2: find the core objects
 
@@ -44,6 +57,9 @@ Keep each rule where its data lives: a spot knows whether it is free and whether
 
 Say why the design looks the way it does. **Encapsulation**: spots change state only through \`assign\` and \`release\`. **Strategy**: hourly or daily pricing is swappable. **Open/closed**: a new vehicle type or pricing rule is a new class. **Single responsibility**: the lot doesn't format receipts.
 
+> [!INTERVIEW] Tie each name to a decision
+> Reciting SOLID terms earns little. Attach each one to a choice in your own design: "pricing is a strategy, so a weekend rate is a new class and the lot is untouched." The interviewer is listening for a reason behind each class, not a vocabulary list.
+
 ## Step 5: handle edge cases and extensions
 
 Interviewers will probe. Have answers ready:
@@ -52,6 +68,18 @@ Interviewers will probe. Have answers ready:
 - **Two cars, one spot, at the same time:** spot assignment must be atomic. Synchronise the find-and-assign step or use a lock per floor.
 - **Lost ticket:** charge a maximum daily fee, found by vehicle registration.
 - **New requirement, electric charging spots:** add a spot feature or subtype and a fitting rule; existing code barely changes, which is the payoff of the earlier design.
+
+> [!TRY] Two gates, one spot
+> One spot is free and two gates call \`park\` at the same instant. Each call runs these two steps. How can both cars get a ticket for the spot, and what is the fix?
+>
+> \`\`\`python
+> spot = floor.find_free_spot(vehicle)  # step 1
+> spot.assign(vehicle)                  # step 2
+> \`\`\`
+>
+> ---
+>
+> Both calls can finish step 1 before either runs step 2, so both see the same free spot. This is a check-then-act race. Make find-and-assign one atomic step: hold a lock (one per floor is enough) around both, or have \`assign\` fail when the spot is taken and retry with the next one.
 
 ## Step 6: write the core code
 

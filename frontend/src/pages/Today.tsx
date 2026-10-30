@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router'
 import { AppShell } from '@/components/AppShell'
 import { PageHeader } from '@/components/PageHeader'
 import { ChecklistItem } from '@/components/practice/ChecklistItem'
+import { TimelineNode } from '@/components/practice/TimelineNode'
+import { ProgressBar } from '@/components/practice/ProgressBar'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { StreakStrip } from '@/components/practice/StreakStrip'
 import { Button } from '@/components/ui/button'
 import { PROBLEMS, STAGES } from '@/content/roadmap'
@@ -16,7 +19,7 @@ import { dueModules } from '@/learn/progress'
 import { useCore } from '@/learn/useCore'
 import type { ProfileSettings } from '@/practice/store'
 import { ReadinessMeter } from '@/components/practice/ReadinessMeter'
-import { COMPANY_LABEL, ROLE_LABEL } from '@/content/targets'
+import { ROLE_LABEL, targetName } from '@/content/targets'
 
 const PATTERNS = new Map(STAGES.flatMap((s) => s.patterns.map((p) => [p.id, { p, s }] as const)))
 
@@ -102,6 +105,7 @@ export default function Today() {
   const dateLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const refresher = groups.refresher?.patternId ? PATTERNS.get(groups.refresher.patternId) : undefined
   const currentStreak = streak(days, todayKey)
+  const allDone = (items: DailyItem[]) => items.length > 0 && items.every((i) => day.completedIds.includes(i.id))
 
   const row = (item: DailyItem, note?: string, extra?: React.ReactNode) => {
     const entry = item.problemId ? PROBLEMS.get(item.problemId) : undefined
@@ -114,9 +118,12 @@ export default function Today() {
         <div className="grid content-start gap-7">
           <PageHeader eyebrow={dateLabel} title="Today's plan">
             <p className="font-mono text-[12px] text-ink-muted">{done} of {total} done</p>
+            {total > 0 && <ProgressBar value={done / total} label="Today's progress" className="max-w-[420px]" />}
           </PageHeader>
 
-          <section aria-labelledby="t-new" className="grid gap-2.5">
+          <div className="relative grid gap-7 pl-9 before:absolute before:top-3 before:bottom-3 before:left-[13px] before:w-px before:bg-line-strong">
+          <section aria-labelledby="t-new" className="relative grid gap-2.5">
+            <TimelineNode done={allDone(groups.fresh)} />
             <h2 id="t-new" className="text-[16px] font-semibold">New problems</h2>
             {groups.fresh.length ? (
               <ul aria-label="New problems" className="overflow-hidden rounded-lg border border-line bg-cream">{groups.fresh.map((i) => row(i))}</ul>
@@ -125,7 +132,8 @@ export default function Today() {
             )}
           </section>
 
-          <section aria-labelledby="t-reviews" className="grid gap-2.5">
+          <section aria-labelledby="t-reviews" className="relative grid gap-2.5">
+            <TimelineNode done={groups.reviews.length === 0 || allDone(groups.reviews)} />
             <h2 id="t-reviews" className="text-[16px] font-semibold">Reviews due</h2>
             {groups.reviews.length ? (
               <ul aria-label="Reviews due" className="overflow-hidden rounded-lg border border-line bg-cream">
@@ -141,16 +149,20 @@ export default function Today() {
           </section>
 
           {groups.refresher?.moduleId && (
+            <div className="relative">
+            <TimelineNode done={day.completedIds.includes(groups.refresher.id)} />
             <ModuleRefresher
               moduleId={groups.refresher.moduleId}
               dateKey={todayKey}
               done={day.completedIds.includes(groups.refresher.id)}
               onDone={() => { const next = markItem(todayKey, groups.refresher!.id, true); if (next) setDay(next); setDays(loadDays()) }}
             />
+            </div>
           )}
 
           {refresher && groups.refresher && (
-            <section aria-labelledby="t-refresh" className="grid gap-2.5 rounded-lg border border-line bg-sand px-5 py-4">
+            <section aria-labelledby="t-refresh" className="relative grid gap-2.5 rounded-lg border border-line bg-sand px-5 py-4">
+              <TimelineNode done={day.completedIds.includes(groups.refresher.id)} />
               <h2 id="t-refresh" className="eyebrow">Concept refresher · {refresher.s.title}</h2>
               <p className="text-[15px] font-semibold">{refresher.p.title}</p>
               <p className="max-w-[70ch] text-[13.5px] leading-relaxed text-ink-muted">{refresher.p.idea}</p>
@@ -163,26 +175,27 @@ export default function Today() {
               </div>
             </section>
           )}
+          </div>
         </div>
 
         <aside aria-label="Progress" className="grid content-start gap-5">
-          <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
-            <p className="text-[15px] font-semibold">Level {level.level}</p>
-            <ReadinessMeter value={overall} label={`Readiness for ${COMPANY_LABEL[settings.target.company]} ${ROLE_LABEL[settings.target.role]}`} />
+          <Card>
+            <CardTitle>Level {level.level}</CardTitle>
+            <ReadinessMeter value={overall} label={`Readiness for ${targetName(settings.target)} ${ROLE_LABEL[settings.target.role]}`} />
             <p className="font-mono text-[11.5px] text-ink-muted">DSA {level.readiness}% · Core CS {core.readiness}%</p>
-            <p className="text-[12px] leading-relaxed text-ink-muted">The lower one counts, because interviews test both.</p>
+            <CardDescription>The lower one counts, because interviews test both.</CardDescription>
             <Link to="/level" className="text-[13px] underline underline-offset-[3px]">See what to improve</Link>
-          </div>
-          <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
-            <p className="text-[15px] font-semibold">Streak: {currentStreak} {currentStreak === 1 ? 'day' : 'days'}</p>
+          </Card>
+          <Card>
+            <CardTitle>Streak: {currentStreak} {currentStreak === 1 ? 'day' : 'days'}</CardTitle>
             <StreakStrip days={last14(days, todayKey)} />
-            <p className="text-[12px] text-ink-muted">A day counts when all its new problems are done.</p>
-          </div>
-          <div className="grid gap-3 rounded-lg border border-line bg-sand px-5 py-5">
-            <p className="text-[15px] font-semibold">Test yourself</p>
-            <p className="text-[13px] leading-relaxed text-ink-muted">10 problems mixed across the stages you've opened: some you've solved, most you haven't. 60 minutes.</p>
+            <CardDescription>A day counts when all its new problems are done.</CardDescription>
+          </Card>
+          <Card>
+            <CardTitle>Test yourself</CardTitle>
+            <CardDescription>10 problems mixed across the stages you've opened: some you've solved, most you haven't. 60 minutes.</CardDescription>
             <Button className="bg-sage font-semibold text-on-sage hover:bg-sage/90" onClick={() => navigate(`/test/new?level=${level.level}`)}>Generate test</Button>
-          </div>
+          </Card>
         </aside>
       </div>
     </AppShell>

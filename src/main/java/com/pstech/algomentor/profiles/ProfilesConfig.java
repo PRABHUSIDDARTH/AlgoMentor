@@ -3,6 +3,7 @@ package com.pstech.algomentor.profiles;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -37,6 +38,11 @@ public class ProfilesConfig {
 	@Bean
 	GfgProfileClient gfgProfileClient() {
 		return new GfgProfileClient(http(), "https://www.geeksforgeeks.org");
+	}
+
+	@Bean
+	GitHubProfileClient gitHubProfileClient(@Value("${algomentor.github.token:}") String token) {
+		return new GitHubProfileClient(http(), "https://api.github.com", token);
 	}
 
 }

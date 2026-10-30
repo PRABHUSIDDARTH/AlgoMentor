@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { MotionProvider } from '@/components/MotionProvider'
+import { RootLayout } from '@/components/nav/RootLayout'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Landing from '@/pages/Landing'
@@ -24,14 +25,19 @@ const Tests = lazy(() => import('@/pages/Tests'))
 const Projects = lazy(() => import('@/pages/Projects'))
 const GitHealth = lazy(() => import('@/pages/GitHealth'))
 const LevelCore = lazy(() => import('@/pages/LevelCore'))
+const Companies = lazy(() => import('@/pages/Companies'))
+const Company = lazy(() => import('@/pages/Company'))
+const About = lazy(() => import('@/pages/About'))
+const Settings = lazy(() => import('@/pages/Settings'))
+const AdminReview = lazy(() => import('@/pages/AdminReview'))
 
 export default function App() {
   return (
     <ErrorBoundary>
     <MotionProvider>
     <TooltipProvider delayDuration={300}>
-      <Suspense fallback={null}>
-        <Routes>
+      <Routes>
+        <Route element={<RootLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/app/*" element={<Workspace />} />
           <Route path="/roadmap" element={<Roadmap />} />
@@ -50,9 +56,14 @@ export default function App() {
           <Route path="/git/health" element={<GitHealth />} />
           <Route path="/git/:challengeId" element={<GitChallenge />} />
           <Route path="/resume" element={<Resume />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/companies/:companyId" element={<Company />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/about/settings" element={<Settings />} />
+          <Route path="/admin/review" element={<AdminReview />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
+        </Route>
+      </Routes>
       <Toaster position="bottom-right" />
     </TooltipProvider>
     </MotionProvider>

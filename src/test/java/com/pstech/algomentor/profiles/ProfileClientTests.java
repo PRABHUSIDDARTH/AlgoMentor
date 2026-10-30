@@ -154,4 +154,42 @@ class ProfileClientTests {
 
 	}
 
+	@Nested
+	class GitHub {
+
+		RestClient.Builder builder = RestClient.builder();
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+
+		GitHubProfileClient client = new GitHubProfileClient(builder.build(), "https://gh.test", "");
+
+		@Test
+		void mapsUserAndOwnRepositories() throws Exception {
+			server.expect(requestTo("https://gh.test/users/octocat")).andRespond(withSuccess(fixture("github-user.json"), MediaType.APPLICATION_JSON));
+			server.expect(requestTo("https://gh.test/users/octocat/repos?per_page=100&sort=pushed"))
+				.andRespond(withSuccess(fixture("github-repos.json"), MediaType.APPLICATION_JSON));
+			Profiles.GitHubProfile p = client.fetch("octocat");
+			assertThat(p.username()).isEqualTo("octocat");
+			assertThat(p.publicRepos()).isEqualTo(8);
+			assertThat(p.followers()).isEqualTo(24711);
+			// Stars and languages count the user's own repositories, not forks.
+			assertThat(p.stars()).isEqualTo(21117);
+			assertThat(p.languages()).containsExactly("CSS", "HTML");
+			assertThat(p.lastPushAt()).isEqualTo(1724253942L);
+		}
+
+		@Test
+		void unknownUserIsNotFound() {
+			server.expect(requestTo("https://gh.test/users/nobody")).andRespond(withStatus(HttpStatus.NOT_FOUND));
+			assertStatus(() -> client.fetch("nobody"), HttpStatus.NOT_FOUND);
+		}
+
+		@Test
+		void unexpectedShapeIsBadGateway() {
+			server.expect(requestTo("https://gh.test/users/octocat")).andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+			assertStatus(() -> client.fetch("octocat"), HttpStatus.BAD_GATEWAY);
+		}
+
+	}
+
 }

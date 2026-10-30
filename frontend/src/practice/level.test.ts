@@ -6,10 +6,10 @@ import type { Progress } from './progress'
 import { DAY_MS } from './schedule'
 
 const NOW = new Date(2026, 9, 22, 12).getTime()
-const FAANG = { company: 'faang' as const, role: 'sde1' as const }
+const MAANG = { company: 'maang' as const, role: 'sde1' as const }
 const solvedAll = (filter: (id: string) => boolean): Progress =>
   Object.fromEntries([...PROBLEMS.keys()].filter(filter).map((id) => [id, { status: 'solved' as const, reviewStep: 1, nextReviewAt: null }]))
-const input = (over: Partial<LevelInput> = {}): LevelInput => ({ progress: {}, unlocks: [], target: FAANG, tests: [], days: {}, reviewLog: [], leetcode: undefined, now: NOW, ...over })
+const input = (over: Partial<LevelInput> = {}): LevelInput => ({ progress: {}, unlocks: [], target: MAANG, tests: [], days: {}, reviewLog: [], leetcode: undefined, now: NOW, ...over })
 const lc = (total: number): LeetCodeProfile => ({ username: 'x', ranking: 1, solved: { easy: 0, medium: 0, hard: 0, total }, topics: [], recent: [] })
 
 describe('level', () => {
@@ -24,9 +24,9 @@ describe('level', () => {
   it('coverageUsesTargetWeights', () => {
     const graphs = STAGES.find((s) => s.id === 'graphs')!
     const graphIds = new Set(graphs.patterns.flatMap((p) => p.problems.map((q) => q.id)))
-    const faang = levelScore(input({ progress: solvedAll((id) => graphIds.has(id)) })).parts.coverage
+    const maang = levelScore(input({ progress: solvedAll((id) => graphIds.has(id)) })).parts.coverage
     const service = levelScore(input({ progress: solvedAll((id) => graphIds.has(id)), target: { company: 'service', role: 'sde1' } })).parts.coverage
-    expect(faang).toBeGreaterThan(service) // graphs weigh 3 for FAANG, 1 for service
+    expect(maang).toBeGreaterThan(service) // graphs weigh 3 for MAANG, 1 for service
     expect(levelScore(input({ progress: solvedAll(() => true) })).parts.coverage).toBeCloseTo(35)
   })
 
@@ -34,8 +34,8 @@ describe('level', () => {
     const hardIds = [...PROBLEMS.values()].filter((e) => e.problem.difficulty === 'Hard').slice(0, 2).map((e) => e.problem.id)
     const mediumIds = [...PROBLEMS.values()].filter((e) => e.problem.difficulty === 'Medium').slice(0, 18).map((e) => e.problem.id)
     const progress = solvedAll((id) => hardIds.includes(id) || mediumIds.includes(id)) // 2 of 20 hard = 10%
-    const intern = levelScore(input({ progress, target: { company: 'faang', role: 'intern' } })).parts.difficulty
-    const sde2 = levelScore(input({ progress, target: { company: 'faang', role: 'sde2' } })).parts.difficulty
+    const intern = levelScore(input({ progress, target: { company: 'maang', role: 'intern' } })).parts.difficulty
+    const sde2 = levelScore(input({ progress, target: { company: 'maang', role: 'sde2' } })).parts.difficulty
     expect(intern).toBeCloseTo(20)
     expect(sde2).toBeLessThan(intern)
   })
@@ -60,7 +60,7 @@ describe('level', () => {
   })
 
   it('readinessUsesBar', () => {
-    expect(readiness(60, FAANG)).toBe(75)
+    expect(readiness(60, MAANG)).toBe(75)
     expect(readiness(60, { company: 'service', role: 'intern' })).toBe(100)
   })
 
@@ -77,8 +77,8 @@ describe('level', () => {
   it('coverageGapPointsAtAnOpenStage', () => {
     // A new learner only has stage 1 open: don't send them to a locked key stage.
     expect(topGaps(input())[0].action).toBe('Complexity & maths basics: solve 10 more problems')
-    // With Graphs unlocked by hand, the FAANG key stage wins.
-    expect(topGaps(input({ unlocks: ['graphs'] }))[0].action).toMatch(/^Graphs: solve \d+ more problems \(key for FAANG \/ product\)$/)
+    // With Graphs unlocked by hand, the MAANG key stage wins.
+    expect(topGaps(input({ unlocks: ['graphs'] }))[0].action).toMatch(/^Graphs: solve \d+ more problems \(key for MAANG\)$/)
   })
 
   it('gapCopyIsConcrete', () => {

@@ -1,5 +1,5 @@
 import { STAGES } from '@/content/roadmap'
-import { TARGET_WEIGHTS } from '@/content/targets'
+import { weightsFor } from '@/content/targets'
 import { isUnlocked, stageCompletion, type Progress } from './progress'
 import { isDue } from './schedule'
 import type { ProfileSettings } from './store'
@@ -28,7 +28,7 @@ function hash(s: string): number {
  * re-quiz is due, otherwise a pattern from a finished stage.
  */
 export function buildPlan(dateKey: string, settings: ProfileSettings, progress: Progress, unlocks: string[], now: number, dueModuleIds: string[] = []): DailyItem[] {
-  const weights = TARGET_WEIGHTS[settings.target.company]
+  const weights = weightsFor(settings.target)
   const open = STAGES.filter((s) => isUnlocked(s.id, progress, unlocks) && stageCompletion(s.id, progress).ratio < 1)
   const [current, ...rest] = open
   const ordered = current ? [current, ...rest.sort((a, b) => (weights[b.id] ?? 0) - (weights[a.id] ?? 0) || a.order - b.order)] : []

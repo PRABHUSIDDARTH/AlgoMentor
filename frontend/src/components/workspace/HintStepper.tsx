@@ -32,7 +32,7 @@ export function HintStepper({ seen, current, revealed, onSelect }: Props) {
             className={cn(
               'grid size-[27px] place-items-center rounded-full border-[1.5px] bg-cream font-mono text-[11px] font-medium',
               state === 'done' && 'border-ink bg-ink text-cream',
-              state === 'current' && 'border-sage bg-sage text-on-sage shadow-[0_0_0_4px_rgb(139_154_110/0.25)]',
+              state === 'current' && 'border-sage bg-sage text-on-sage ring-2 ring-sage ring-offset-2 ring-offset-cream',
               state === 'upcoming' && 'border-line-strong',
               isSolution && !revealed && 'border-dashed',
             )}

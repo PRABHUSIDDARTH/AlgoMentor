@@ -4,11 +4,21 @@ const lesson: Lesson = {
   id: 'sockets',
   title: 'Sockets',
   minutes: 9,
+  hook: 'A chat client sends two short messages, HELLO and WORLD. On the developer\'s laptop the server reads them one at a time. In production it sometimes reads HELLOWOR and then LD. TCP never promised message boundaries, and a large share of socket bugs grow from forgetting that.',
+  keyPoints: [
+    'A TCP server runs socket, bind, listen, accept; accept returns a new socket per client while the listener keeps waiting.',
+    'A connection is identified by the 4-tuple, so one server port can serve thousands of clients at once.',
+    'TCP is a byte stream: mark message ends with a delimiter or length prefix, and loop on partial reads and writes.',
+    'Scale with an event loop (epoll, kqueue) or threads; set timeouts and always close sockets.',
+  ],
   body: `## The programmer's door into the network
 
 A **socket** is the operating system's interface for network communication. Your program creates a socket, the kernel handles TCP or UDP underneath, and you read and write bytes much like a file. Every web server, database driver and chat app is built on sockets, even when a framework hides them.
 
 A TCP connection is identified by a **4-tuple**: source IP, source port, destination IP, destination port. That is why one server port (say 443) can serve thousands of clients at once: each client connection has a different source address or port, so each is a different socket.
+
+> [!KEY] One listener, many sockets
+> The listening socket on port 443 never carries client data. Each accept() hands back a separate connected socket, told apart by the client's address and port.
 
 ## The server side
 
@@ -28,6 +38,13 @@ A client needs only **socket()**, then **connect()** to the server's address and
 
 TCP is a byte stream, not a sequence of messages. If a client sends "HELLO" and then "WORLD", the server may receive "HELLOWOR" in one read and "LD" in the next. Your protocol must define where messages end: a delimiter such as a newline (HTTP headers end with a blank line), or a **length prefix** before each message. Forgetting this is the most common socket bug, and it often only shows up under load or over real networks, not on localhost.
 
+> [!TRY] How many bytes come back?
+> A client calls send("HELLO") then send("WORLD") on a TCP socket. The server calls recv(1024) once. Which of these can it return: HELLOWORLD, HELLO, HELLOWOR, WORLD?
+>
+> ---
+>
+> The first three can. TCP keeps byte order but not send boundaries, so one recv returns some non-empty prefix of the bytes that have arrived. WORLD alone is impossible, because HELLO arrives first.
+
 Similarly, one \`send()\` may not send everything you asked; production code loops until all bytes are written.
 
 ## Handling many clients
@@ -38,13 +55,19 @@ A server that handles one connection at a time makes every other client wait. Th
 - **Non-blocking I/O with an event loop**: one thread asks the kernel which sockets are ready (\`select\`, \`poll\`, \`epoll\` on Linux, \`kqueue\` on macOS) and handles only those. This is how Node.js, Nginx and Netty serve huge numbers of connections.
 - **Thread pools** behind an event loop for slow work, so the loop never blocks.
 
+> [!INTERVIEW] From thread-per-client to event loop
+> A classic follow-up is how to serve ten thousand connections. Say thread per connection is simple but costs memory and context switches, then describe an event loop over epoll or kqueue with a thread pool for slow work. Mention blocking against non-blocking calls explicitly.
+
 ## UDP sockets
 
 UDP sockets skip listen, accept and connect. A server binds and calls **recvfrom()**, which returns a datagram plus the sender's address; it replies with **sendto()**. Each datagram is a complete message (boundaries are preserved), but delivery and order are not guaranteed.
 
 ## Practical details
 
-Timeouts are essential: a peer that disappears without closing will otherwise hang a blocking read forever. \`SO_REUSEADDR\` lets a restarted server bind its port while old connections sit in TIME_WAIT. And always close sockets: each one holds a file descriptor, and leaking them ends in "too many open files".`,
+Timeouts are essential: a peer that disappears without closing will otherwise hang a blocking read forever. \`SO_REUSEADDR\` lets a restarted server bind its port while old connections sit in TIME_WAIT. And always close sockets: each one holds a file descriptor, and leaking them ends in "too many open files".
+
+> [!GOTCHA] No timeout, no close
+> A peer that vanishes without closing leaves a blocking read waiting forever, and a socket you forget to close keeps its file descriptor. Enough of either and the server stalls or fails with "too many open files" in production, long after the tests passed.`,
   quiz: [
     { id: 'sk-1', prompt: 'What does accept() return on a listening TCP socket?', options: ['The client\'s IP address only', 'A new socket connected to that client', 'The same listening socket', 'A UDP datagram'], answer: 1, why: 'The listening socket keeps accepting; each client gets its own connected socket.' },
     { id: 'sk-2', prompt: 'A client sends "HELLO" then "WORLD" over TCP. What can the server\'s reads return?', options: ['Any split of the bytes, such as "HELLOWOR" then "LD"', 'Always exactly "HELLO" then "WORLD"', 'Only the last message', 'An error, because two sends are not allowed'], answer: 0, why: 'TCP is a byte stream; message boundaries must come from your protocol (delimiter or length prefix).' },

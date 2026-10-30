@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
-import { ApiError, fetchProfile, type GfgProfile, type HackerRankProfile, type LeetCodeProfile } from '@/lib/api'
+import { ApiError, fetchProfile, type GfgProfile, type GitHubProfile, type HackerRankProfile, type LeetCodeProfile } from '@/lib/api'
 import { syncFromLeetCode } from '@/practice/progress'
 import { parseProfileUrl, SITE_NAMES, type Site } from '@/practice/profileUrls'
 import { clearStats, saveStats, type StatsEntry } from '@/practice/store'
@@ -9,6 +9,7 @@ const PLACEHOLDER: Record<Site, string> = {
   leetcode: 'https://leetcode.com/u/yourname',
   hackerrank: 'https://www.hackerrank.com/profile/yourname',
   gfg: 'https://www.geeksforgeeks.org/user/yourname',
+  github: 'https://github.com/yourname',
 }
 const FRESH_MS = 6 * 60 * 60 * 1000
 
@@ -23,6 +24,12 @@ export function statsLine(site: Site, data: unknown): string[] {
     const p = data as HackerRankProfile
     if (!p.badges.length) return ['No badges yet']
     return p.badges.slice(0, 4).map((b) => `${b.name} · ${b.stars} ${b.stars === 1 ? 'star' : 'stars'} · ${b.solved} solved`)
+  }
+  if (site === 'github') {
+    const p = data as GitHubProfile
+    const pushed = p.lastPushAt ? new Date(p.lastPushAt * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null
+    return [`${p.publicRepos} public repos · ${p.stars} ${p.stars === 1 ? 'star' : 'stars'} · ${p.followers} followers`,
+      ...(p.languages.length ? [p.languages.join(' · ')] : []), ...(pushed ? [`Last push ${pushed}`] : [])]
   }
   const p = data as GfgProfile
   return [[`${p.solved} solved`, `score ${p.score}`, p.instituteRank ? `institute rank ${p.instituteRank}` : null, p.streak ? `${p.streak}-day streak` : null]

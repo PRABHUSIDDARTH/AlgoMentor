@@ -33,14 +33,22 @@ An AI assistant that explains DSA problems, gives hints, and provides optimal so
 
 ### Navigation
 One navbar (React Bits GooeyNav) on every page, with four sections and the section's pages underneath:
-**Practice** (Workspace, Roadmap, Today, Tests), **Learn** (Overview, one tab per track, Projects), **Git** (Challenges, Repo health) and **Progress** (DSA level, Core CS level, Resume projects). On phones the same structure opens as a menu.
+**Practice** (Workspace, Roadmap, Today, Tests), **Learn** (Overview, one tab per track, Projects), **Git** (Challenges, Repo health) and **Progress** (DSA level, Core CS level, Companies, Resume projects) and **About** (Profile, Settings).
+
+### About you
+- 🪪 **Dream ID**: pick a dream company from 221 across 26 countries and the About page hangs a badge-style card for it on the [React Bits Lanyard](https://reactbits.dev/components/lanyard): the company's own logo (fetched from its website, never an icon pack or an invented mark; companies without one show their name in plain type), its brand colour, your photo (resized and kept in your browser), your name and the role. It is a goal card, never an employee badge: a small line on it says so, there is no employee number or barcode, and nothing links it to the company. The readiness percentage is not on the card; the page shows it beside it
+- 📈 **Readiness for that company**: the lower of DSA and Core CS readiness against the company's tier, your level and focus (and the company's own published emphasis where AlgoMentor has checked it), with the next steps that would move it
+- 🔄 **Live profiles**: LeetCode, HackerRank, GeeksforGeeks and GitHub are read when About opens, every ten minutes while it is open, and when you come back to the tab. LinkedIn cannot be read by other sites, so it is a link only. Name, email and LinkedIn live in your browser
+- 🔗 **Share on LinkedIn**: downloads the card as a PNG and opens LinkedIn's composer with the post written for you (a goal, never a job claim). LinkedIn does not allow attaching images by link, so you attach the file
+- 🤝 **Share the project that got you in**: people who were placed submit the project that helped; entries wait in a review queue, and only approved ones appear on the Resume projects page (plain text, labelled as shared by users and not verified)
 
 ### Learning hub
 - 📚 **Learn**: four tracks of original lessons, **OOP, Computer Networks, DBMS and Operating Systems**, 10 modules each, with diagrams, Java/Python/C++ samples (OOP), a 5-question quiz per module and interview questions. A module completes at 4 of 5 on its quiz, then comes back on Today as a 3-question re-quiz after 1, 3, 7, 21 and 60 days
 - 🛠️ **Projects**: twelve specs (three per track, beginner to advanced) with requirements, stretch goals and an acceptance checklist. Link your public GitHub repo and AlgoMentor checks each project's Git milestones
 - 🔀 **Git challenges**: ten real situations in *your own* repository: first commit, meaningful commits, feature PR, merge conflict, squash, revert, recover a deleted branch, cherry-pick, release, remove a committed secret. Setup scripts (bash and PowerShell) put your clone into the situation, you fix it with Git, and the check reads your repo on GitHub. **There is no AI on the Git pages**
-- 📄 **Resume projects**: twelve projects that get shortlisted, filtered by target and role, each with a resume-bullet template and a "make your GitHub shine" checklist checked against your repo
-- 🎯 **Core CS readiness**: modules, quizzes, projects and Git challenges score out of 100 against your target's bar (FAANG/product 70, startup 60, service 75). Today shows the lower of your DSA and Core CS readiness
+- 🏢 **Companies**: how 14 real companies hire (Google, Meta, Amazon, Apple, Netflix, Microsoft, Adobe, Atlassian, Razorpay, TCS, Infosys, Cognizant, Accenture, Capgemini), round by round, taken from their own careers pages with the date each was read. Apple has no official guide, so it is marked as candidate-reported. Set one as your target and the roadmap weights follow what that company says it tests
+- 📄 **Resume projects**: 55 projects (21 intern, 44 SDE-1, 37 SDE-2, 21 senior; at least 10 each for backend, frontend, full stack, mobile, data, DevOps and test engineers). Filter by tier, any of 221 companies, level and focus. Every project has a resume-bullet template, a "build it like production" section (architecture, build order, ship checklist) and a "make your GitHub shine" checklist checked against your repo; ideas drawn from public repositories and roadmaps are credited on the card
+- 🎯 **Core CS readiness**: modules, quizzes, projects and Git challenges score out of 100 against your target's bar (MAANG 70, big tech and product 65, startup 60, service 75). Choosing a focus (backend, frontend, full stack, mobile, data, DevOps, test) changes which tracks count for more. Today shows the lower of your DSA and Core CS readiness
 
 Git checks read public GitHub data only (commits, branches, tags, releases), never your code, so the repository must be public.
 
@@ -96,3 +104,11 @@ Deployed on Google Cloud Run via Docker.
 
 ## 👨‍💻 Built by
 [PrabhuSiddarth](https://github.com/PRABHUSIDDARTH) — psTech
+
+## Running the review queue
+Contributions are stored in a JSON file and reviewed at `/admin/review`.
+
+| Setting | Env var | Purpose |
+| --- | --- | --- |
+| `algomentor.admin-token` | `ADMIN_TOKEN` | Enables the review page and API. Leave empty to turn review off. |
+| `algomentor.contributions.file` | `CONTRIBUTIONS_FILE` | Where entries are kept. Point it at a persistent disk; a single instance only. |

@@ -1,6 +1,6 @@
 import { TRACKS } from '@/content/learn'
 
-export type SectionId = 'practice' | 'learn' | 'git' | 'progress'
+export type SectionId = 'practice' | 'learn' | 'git' | 'progress' | 'about'
 export interface Tab { label: string; to: string; /** Extra path prefixes that belong to this tab. */ also?: string[]; /** Match `to` exactly instead of as a prefix. */ end?: boolean }
 export interface Section { id: SectionId; label: string; to: string }
 
@@ -9,6 +9,7 @@ export const SECTIONS: Section[] = [
   { id: 'learn', label: 'Learn', to: '/learn' },
   { id: 'git', label: 'Git', to: '/git' },
   { id: 'progress', label: 'Progress', to: '/level' },
+  { id: 'about', label: 'About', to: '/about' },
 ]
 
 const TABS: Record<SectionId, () => Tab[]> = {
@@ -30,7 +31,12 @@ const TABS: Record<SectionId, () => Tab[]> = {
   progress: () => [
     { label: 'DSA level', to: '/level', end: true },
     { label: 'Core CS level', to: '/level/core' },
+    { label: 'Companies', to: '/companies' },
     { label: 'Resume projects', to: '/resume' },
+  ],
+  about: () => [
+    { label: 'Profile', to: '/about', end: true },
+    { label: 'Settings', to: '/about/settings' },
   ],
 }
 
@@ -52,8 +58,14 @@ export function tabFor(pathname: string): Tab | null {
   return best
 }
 
+/** Section by first path segment, for pages that belong to a section but match none of its tabs (such as "not found" pages). */
+const BY_SEGMENT: Record<string, SectionId> = {
+  app: 'practice', roadmap: 'practice', today: 'practice', tests: 'practice', test: 'practice',
+  learn: 'learn', projects: 'learn', git: 'git', level: 'progress', resume: 'progress', companies: 'progress', about: 'about',
+}
+
 export function sectionFor(pathname: string): SectionId | null {
   const tab = tabFor(pathname)
-  if (!tab) return null
+  if (!tab) return BY_SEGMENT[pathname.split('/')[1] ?? ''] ?? null
   return SECTIONS.find((s) => sectionTabs(s.id).includes(tab) || sectionTabs(s.id).some((t) => t.to === tab.to))?.id ?? null
 }

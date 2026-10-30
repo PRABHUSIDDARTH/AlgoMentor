@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import leetcode from './roadmap-leetcode.json'
 import { PROBLEMS, STAGES } from './roadmap'
 import source from './roadmap.source.json'
-import { READINESS_BAR, ROLE_MULTIPLIER, TARGET_WEIGHTS } from './targets'
+import { TARGET_WEIGHTS } from './targets'
 
 const RANK = { Easy: 0, Medium: 1, Hard: 2 } as const
 
@@ -65,15 +65,9 @@ describe('roadmap content', () => {
   })
 
   it('weightsCoverEveryStage', () => {
-    for (const company of ['faang', 'startup', 'service'] as const) {
+    for (const company of ['maang', 'product', 'startup', 'service'] as const) {
       for (const s of STAGES) expect([0, 1, 2, 3], `${company} ${s.id}`).toContain(TARGET_WEIGHTS[company][s.id])
     }
-    expect(ROLE_MULTIPLIER).toEqual({ intern: 0.8, sde1: 1, sde2: 1.2 })
-    expect(READINESS_BAR).toEqual({
-      faang: { sde1: 80, intern: 65, sde2: 90 },
-      startup: { sde1: 65, intern: 55, sde2: 75 },
-      service: { sde1: 50, intern: 40, sde2: 60 },
-    })
   })
 
   it('validationFileCoversEverySlugAndAllResolved', () => {

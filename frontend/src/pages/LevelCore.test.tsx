@@ -16,7 +16,7 @@ describe('Core CS level page', () => {
   it('coreLevelShowsMeterGapsAndBreakdown', () => {
     renderCore()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Core CS')
-    expect(screen.getByRole('meter', { name: 'Core CS readiness for FAANG / product' })).toHaveAttribute('aria-valuenow', '0')
+    expect(screen.getByRole('meter', { name: 'Core CS readiness for MAANG' })).toHaveAttribute('aria-valuenow', '0')
     const core = screen.getByRole('list', { name: 'Core CS: what to do next' })
     expect(within(core).getAllByRole('listitem')).toHaveLength(3)
     expect(within(core).getByText('OOP: finish 3 more modules')).toBeInTheDocument()
@@ -31,7 +31,7 @@ describe('Core CS level page', () => {
     localStorage.setItem(LEARN_KEY, JSON.stringify(oop))
     renderCore()
     // 10 of 40 modules (10) + quiz 50/200 (7.5) = 17.5 of a 70 bar
-    expect(screen.getByRole('meter', { name: 'Core CS readiness for FAANG / product' })).toHaveAttribute('aria-valuenow', '25')
+    expect(screen.getByRole('meter', { name: 'Core CS readiness for MAANG' })).toHaveAttribute('aria-valuenow', '25')
     expect(within(screen.getByRole('table', { name: 'Core CS breakdown' })).getByText('10.0 / 40')).toBeInTheDocument()
     expect(within(screen.getByRole('list', { name: 'Core CS: what to do next' })).getByText('Networks: finish 3 more modules')).toBeInTheDocument()
   })
