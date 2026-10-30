@@ -160,7 +160,7 @@ The end-to-end tests start the jar with the `e2e` profile, which swaps Gemini, L
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `GEMINI_API_KEY` | none (required) | Google Gemini API key |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Gemini model to use |
+| `GEMINI_MODEL` | `gemini-3.8-flash` | Gemini model to use |
 | `PORT` | `8080` | HTTP port |
 | `GITHUB_TOKEN` | none (recommended) | Raises the GitHub API limit for Git checks |
 | `ADMIN_TOKEN` | empty | Enables the review page and API; leave empty to turn review off |
@@ -184,4 +184,4 @@ Licensed under the [Apache License, Version 2.0](LICENSE).
 
 ## Author
 
-Built by [PrabhuSiddarth](https://github.com/PRABHUSIDDARTH), psTech.
+Built by [PrabhuSiddarth](https://github.com/PRABHUSIDDARTH).
